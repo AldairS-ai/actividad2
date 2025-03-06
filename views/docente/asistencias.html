@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Infojis</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/filters.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+  <link rel="stylesheet" href="../../styles/components/notifications.css">
+</head>
+<body>
+  <div class="app"-container>
+   <!-- Sidebar -->
+   <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Inicio</a></li>        
+          <li><a href="asistencias.html" class="nav-link active"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="observaciones.html" class="nav-link"><i class="fas fa-comment-dots"></i> Observaciones</a></li>        
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+          <div class="sidebar-footer">
+              <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+          </div>
+      </ul>
+   </nav>
+
+   <!-- Overlay para cerrar sidebar en móviles -->
+   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+   <!-- Contenido Principal -->
+   <main class="main-content" id="main-content">
+       <!-- Encabezado -->
+       <header class="header">
+           <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+               <i class="fas fa-bars"></i>
+           </button>                  
+           <div class="user-profile" id="user-profile">
+               <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+               <div>
+                   <span class="user-name">Luz Ospino</span>
+                   <span class="user-role">Docente</span>
+               </div>
+           </div>
+       </header>     
+
+       <!-- Filtros de Asistencia -->
+       <section class="filter">         
+           <div class="filter-content">
+               <label>
+                   <span>Curso:</span>               
+                   <select id="select-curso" name="cursos">
+                       <option value="">Seleccionar curso</option>
+                       <option value="parvulos">Párvulos</option>
+                       <option value="maternos">Maternos</option>
+                       <option value="pre-jardin">Pre-Jardín</option>
+                       <option value="jardin" selected>Jardín</option>                      
+                       <option value="primero">Primero</option>                      
+                   </select>
+               </label>
+               <label>
+                   <span>Asignatura:</span>
+                   <select id="select-asignatura">
+                       <option value="">Seleccionar asignatura</option>
+                       <option value="matematicas">Matemáticas</option>
+                       <option value="arte" selected>Arte</option>
+                       <option value="idioma">Idioma</option>
+                       <option value="efisica">E. Física</option>                      
+                       <option value="religion">Religión</option>                      
+                   </select>
+               </label>
+               <label>
+                   <span>Fecha:</span>
+                   <input type="date" id="filter-fecha" value="2025-02-26">
+               </label>
+               <label>
+                   <span>Estado:</span>
+                   <div class="estado-filter">
+                       <select id="select-estado">
+                           <option value="todos" selected>Todos</option>
+                           <option value="asistencia">Asistencia</option>
+                           <option value="inasistencia">Inasistencia</option>
+                           <option value="justificado">Justificado</option>
+                           <option value="tarde">Tardanza</option>
+                       </select>
+                   </div>
+               </label>
+               <button class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>               
+           </div>         
+       </section>
+       
+
+       <!-- Lista de Asistencia -->
+       <section class="table-container"> 
+           <div class="table-header">
+               <div class="table-info">
+                   <h3>Jardín - Grupo A</h3>
+                   <div class="table-details">
+                       <span><i class="fas fa-users"></i> 26 estudiantes</span>
+                       <span><i class="fas fa-chalkboard-teacher"></i><strong>Profesora:</strong> Luz Marina Ospino Diaz</span>
+                   </div>               
+               </div>             
+               <div class="action">
+                   <button class="btn-exportar"><i class="fas fa-file-export"></i> Exportar</button>
+                   <button class="btn-guardar" id="guardar"><i class="fas fa-save"></i> Guardar</button>
+               </div>
+           </div>         
+           
+           <div class="table-responsive">
+               <table class="table-body">
+                   <thead>
+                       <tr>
+                           <th>#</th>
+                           <th>Foto</th>
+                           <th>Estudiante</th>
+                           <th>Estado</th>
+                           <th>Observaciones</th>                     
+                       </tr>
+                   </thead>
+                   <tbody id="tabla-asistencias">
+                       <tr>
+                           <td>1</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">Ana María López</span>
+                               <span class="student-id">ID: 20250001</span>
+                           </td>
+                           <td>
+                               <select class="attendance-select">
+                                   <option value="asistencia" selected>Asistencia</option>
+                                   <option value="inasistencia">Inasistencia</option>                             
+                                   <option value="justificado">Justificado</option>
+                               </select>
+                           </td>
+                           <td>                         
+                             <button class="btn-observacion" data-student="Ana María López"><i class="fas fa-comment-alt"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>2</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">Carlos Rodríguez</span>
+                               <span class="student-id">ID: 20250002</span>
+                           </td>
+                           <td>
+                               <select class="attendance-select">
+                                   <option value="asistencia">Asistencia</option>
+                                   <option value="inasistencia" selected>Inasistencia</option>                             
+                                   <option value="justificado">Justificado</option>
+                               </select>
+                           </td>
+                           <td>                         
+                             <button class="btn-observacion" data-student="Carlos Rodríguez"><i class="fas fa-comment-alt"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>3</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">María Fernanda Torres</span>
+                               <span class="student-id">ID: 20250003</span>
+                           </td>
+                           <td>
+                               <select class="attendance-select">
+                                   <option value="asistencia">Asistencia</option>
+                                   <option value="inasistencia">Inasistencia</option>                             
+                                   <option value="justificado" selected>Justificado</option>
+                               </select>
+                           </td>
+                           <td>                         
+                             <button class="btn-observacion" data-student="María Fernanda Torres"><i class="fas fa-comment-alt"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>4</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">Santiago Pérez</span>
+                               <span class="student-id">ID: 20250004</span>
+                           </td>
+                           <td>
+                               <select class="attendance-select">
+                                   <option value="asistencia" selected>Asistencia</option>
+                                   <option value="inasistencia">Inasistencia</option>                             
+                                   <option value="justificado">Justificado</option>
+                               </select>
+                           </td>                         
+                           <td>                         
+                             <button class="btn-observacion" data-student="Santiago Pérez"><i class="fas fa-comment-alt"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>5</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">Valentina Gómez</span>
+                               <span class="student-id">ID: 20250005</span>
+                           </td>
+                           <td>
+                               <select class="attendance-select">
+                                   <option value="asistencia" selected>Asistencia</option>
+                                   <option value="inasistencia">Inasistencia</option>                             
+                                   <option value="justificado">Justificado</option>
+                               </select>
+                           </td>
+                           <td>                         
+                             <button class="btn-observacion" data-student="Valentina Gómez"><i class="fas fa-comment-alt"></i></button>
+                           </td>                     
+                       </tr>
+                   </tbody>
+               </table>
+           </div>
+           
+           <div class="tabla-paginacion" role="navigation" aria-label="Paginación de resultados">
+               <button class="btn-pagina" aria-label="Página anterior" disabled>
+                   <i class="fas fa-chevron-left" aria-hidden="true"></i>
+               </button>
+               <span>Página 1 de 1</span>
+               <button class="btn-pagina" aria-label="Página siguiente" disabled>
+                   <i class="fas fa-chevron-right" aria-hidden="true"></i>
+               </button>
+           </div>         
+       </section>
+  
+       <!-- Modal de observaciones -->
+       <div id="modal-observacion" class="modal">
+         <div class="modal-contenido">
+             <div class="modal-header">
+                 <h3>Observación: <span id="student-name"></span></h3>
+                 <button class="btn-cerrar" id="btn-cerrar-modal"><i class="fas fa-times"></i></button>
+             </div>
+             <form id="form-observacion"> 
+                 <div class="group-form">                 
+                     <label for="observacion-texto">Detalle de la observación:</label>
+                     <textarea id="observacion-texto" placeholder="Escriba aquí su observación..." required></textarea>                 
+                 </div>
+                 <div class="form-acciones">                              
+                     <button type="button" class="btn-cancelar">Cancelar</button>
+                     <button type="submit" class="btn-guardar">Guardar</button>                              
+                 </div>                
+             </form>
+         </div>         
+       </div>
+
+       
+       <div class="notification" id="notification">
+           <i class="fas fa-check-circle"></i>
+           <span id="notification-message">Guardado con éxito</span>
+       </div>
+  </main>
+  </div>
+     <script src="../../scripts/docente/sidebar.js"></script>
+     <script src="../../scripts/docente/modules/asistencias.js"></script>          
+</body>
+</html>

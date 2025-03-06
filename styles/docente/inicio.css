@@ -1,0 +1,254 @@
+/* Estilos específicos para el dashboard */
+    .dashboard-widgets {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .widget {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .widget:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .widget-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .widget-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0;
+      color: #333;
+    }
+    
+    .widget-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    
+    .widget-content {
+      min-height: 100px;
+    }
+    
+    .stats-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .stat-item {
+      background: #f9f9f9;
+      border-radius: 6px;
+      padding: 15px;
+      text-align: center;
+      flex: 1;
+      min-width: 100px;
+    }
+    
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+    }
+    
+    .stat-label {
+      font-size: 0.85rem;
+      color: #666;
+    }
+    
+    .activity-list, .notification-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .activity-item, .notification-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .activity-item:last-child, .notification-item:last-child {
+      border-bottom: none;
+    }
+    
+    .activity-icon, .notification-icon {
+      margin-right: 10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+    
+    .activity-time, .notification-time {
+      font-size: 0.75rem;
+      color: #999;
+      margin-top: 3px;
+    }
+    
+    .activity-details, .notification-details {
+      flex: 1;
+    }
+    
+    .shortcuts-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 15px;
+    }
+    
+    .shortcut-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 15px 10px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      transition: background 0.3s ease;
+      text-decoration: none;
+      color: #333;
+    }
+    
+    .shortcut-item:hover {
+      background: #f0f0f0;
+    }
+    
+    .shortcut-icon {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .shortcut-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    /* Colores para widgets */
+    .bg-blue {
+      background-color: #e6f3ff;
+      color: #0066cc;
+    }
+    
+    .bg-green {
+      background-color: #e6fff0;
+      color: #00994d;
+    }
+    
+    .bg-orange {
+      background-color: #fff6e6;
+      color: #ff8c00;
+    }
+    
+    .bg-purple {
+      background-color: #f2e6ff;
+      color: #7700cc;
+    }
+    
+    .bg-red {
+      background-color: #ffe6e6;
+      color: #cc0000;
+    }
+    
+    /* Calendario simple */
+    .calendar-container {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+    
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    
+    .calendar-title {
+      font-weight: 600;
+    }
+    
+    .calendar-nav {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .calendar-nav button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    
+    .calendar-day {
+      font-size: 0.75rem;
+      text-align: center;
+      font-weight: 600;
+      padding: 5px 0;
+    }
+    
+    .calendar-date {
+      aspect-ratio: 1/1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 0.8rem;
+    }
+    
+    .today {
+      background-color: #ff6600;
+      color: white;
+    }
+    
+    .has-event {
+      position: relative;
+    }
+    
+    .has-event::after {
+      content: '';
+      position: absolute;
+      bottom: 3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background-color: #ff6600;
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+      .dashboard-widgets {
+        grid-template-columns: 1fr;
+      }
+    }

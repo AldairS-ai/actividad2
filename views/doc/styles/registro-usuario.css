@@ -1,0 +1,259 @@
+/* Variables globales */
+:root {
+  --primary-color: #ff6600; /* Naranja */
+  --accent-color: #ff9900; /* Naranja más claro */
+  --secondary-color: #cc4400; /* Rojo oscuro */
+  --success-color: #33cc66; /* Verde vibrante */
+  --light-color: #fff4e6; /* Beige claro */
+  --dark-color: #552200; /* Marrón oscuro */
+  --gray-color: #bfbfbf; /* Gris neutro */
+  --border-radius: 8px;
+  --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* Estilos Generales */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--light-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  overflow-y: auto;
+}
+
+/* Contenedor Principal */
+.registro-container {
+  overflow-y: 100%;
+    background: white;
+    width: 90%;
+    max-width: 600px;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border-top: 5px solid var(--primary-color);
+}
+
+/* Encabezado */
+.header {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 15px;
+}
+
+.btn-volver {
+    color: var(--dark-color);
+    text-decoration: none;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.btn-volver i {
+    margin-right: 5px;
+}
+
+/* Título del Formulario */
+.registro-form-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.registro-form-title h2 {
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.registro-form-title p {
+    color: var(--dark-color);
+    font-size: 14px;
+}
+
+/* Formulario */
+#registro-form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Grid del Formulario */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* Campos de Formulario */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--dark-color);
+}
+
+.required {
+    color: var(--secondary-color);
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border: 2px solid var(--gray-color);
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* Select */
+.form-group select {
+    appearance: none;
+    background-color: white;
+    cursor: pointer;
+}
+
+/* Casilla de Términos y Condiciones */
+.terms-checkbox {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+}
+
+.terms-checkbox input {
+    margin-right: 8px;
+}
+
+.terms-checkbox a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.terms-checkbox a:hover {
+    text-decoration: underline;
+}
+
+/* Botones */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.button {
+    padding: 12px;
+    font-size: 14px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    text-align: center;
+    font-weight: bold;
+    transition: var(--transition);
+    width: 48%;
+    border: none;
+}
+
+.button-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.button-primary:hover {
+    background-color: var(--accent-color);
+}
+
+.button-secondary {
+    background-color: var(--gray-color);
+    color: var(--dark-color);
+}
+
+.button-secondary:hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+
+/* Responsividad con media queries */
+/* Mobile Styles */
+@media (max-width: 480px) {
+  
+  .registro-container{
+    max-height: 80%;
+    overflow-y:  auto;
+    max-width: 80%;
+    
+  }
+  .hero {
+    padding: 40px 0;
+  }
+  
+  .hero-title {
+    font-size: 1.8rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .hero-text, .hero-image {
+    flex: 100%;
+    min-width: 100%;
+    padding-right: 0;
+    margin-bottom: 30px;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .nav-list {
+    display: none; /* Se mostraría con JS en móvil */
+  }
+  
+  /* Mobile columns */
+  .col-xs-12 { width: 100%; }
+  .col-xs-6 { width: 50%; }
+  .col-xs-4 { width: 33.33%; }
+  .col-xs-3 { width: 25%; }
+}
+
+
+
+@media (max-width: 768px) {
+  .registro-container {
+    padding: 20px;
+    margin: 20px auto;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .registro-container {
+    padding: 15px;
+    margin: 15px auto;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}

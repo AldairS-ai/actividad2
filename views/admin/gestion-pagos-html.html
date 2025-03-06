@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Infojis - Gestión de Pagos</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/filters.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+  <link rel="stylesheet" href="../../styles/components/notifications.css">
+  <link rel="stylesheet" href="../../styles/components/cards.css">
+  <style>
+    /* Estilos adicionales específicos para el módulo de pagos */
+    .dashboard-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .dashboard-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .dashboard-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .dashboard-card-title {
+      font-size: 1rem;
+      color: #555;
+      margin: 0;
+    }
+    
+    .dashboard-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: white;
+    }
+    
+    .icon-ingresos { background-color: #28a745; }
+    .icon-pendientes { background-color: #dc3545; }
+    .icon-vencidos { background-color: #ffc107; }
+    .icon-pagos { background-color: #17a2b8; }
+    
+    .dashboard-card-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+    
+    .dashboard-card-comparison {
+      font-size: 0.85rem;
+      color: #666;
+    }
+    
+    .comparison-positive { color: #28a745; }
+    .comparison-negative { color: #dc3545; }
+    
+    .payment-status-paid {
+      background-color: rgba(40, 167, 69, 0.2);
+      color: #28a745;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      display: inline-block;
+    }
+    
+    .payment-status-pending {
+      background-color: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      display: inline-block;
+    }
+    
+    .payment-status-overdue {
+      background-color: rgba(220, 53, 69, 0.2);
+      color: #dc3545;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      display: inline-block;
+    }
+    
+    .payment-methods {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+    
+    .payment-method {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.85rem;
+      background: #f5f5f5;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    
+    .payment-method i {
+      margin-right: 5px;
+      font-size: 0.9rem;
+    }
+    
+    .btn-registrar-pago {
+      background-color: #28a745;
+      color: white;
+    }
+    
+    .btn-generar-factura {
+      background-color: #17a2b8;
+      color: white;
+    }
+    
+    .tab-container {
+      margin-bottom: 20px;
+    }
+    
+    .tabs {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .tab {
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .tab.active {
+      background-color: #ff6600;
+      color: white;
+      font-weight: 500;
+    }
+    
+    .tab-content {
+      margin-top: 20px;
+    }
+    
+    .tab-panel {
+      display: none;
+    }
+    
+    .tab-panel.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+   <!-- Sidebar -->
+   <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="horario.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Horarios</a></li>
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="pagos.html" class="nav-link active"><i class="fas fa-file-invoice-dollar"></i> Pagos</a></li>
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+      </ul>
+     <div class="sidebar-footer">
+          <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+     </div>
+   </nav>
+
+   <!-- Overlay para cerrar sidebar en móviles -->
+   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+   <!-- Contenido Principal -->
+   <main class="main-content" id="main-content">
+       <!-- Encabezado -->
+       <header class="header">
+           <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+               <i class="fas fa-bars"></i>
+           </button>                  
+           <div class="user-profile" id="user-profile">
+               <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+               <div>
+                   <span class="user-name">Luz Ospino</span>
+                   <span class="user-role">Administrador</span>
+               </div>
+           </div>
+       </header>
+
+       <!-- Dashboard de Pagos -->
+       <section class="dashboard-cards">
+           <div class="dashboard-card">
+               <div class="dashboard-card-header">
+                   <h3 class="dashboard-card-title">Ingresos del Mes</h3>
+                   <div class="dashboard-card-icon icon-ingresos">
+                       <i class="fas fa-dollar-sign"></i>
+                   </div>
+               </div>
+               <div class="dashboard-card-value">$12,450,000</div>
+               <div class="dashboard-card-comparison">
+                   <i class="fas fa-arrow-up"></i>
+                   <span class="comparison-positive">8.2% más que el mes anterior</span>
+               </div>
+           </div>
+           
+           <div class="dashboard-card">
+               <div class="dashboard-card-header">
+                   <h3 class="dashboard-card-title">Pagos Pendientes</h3>
+                   <div class="dashboard-card-icon icon-pendientes">
+                       <i class="fas fa-clock"></i>
+                   </div>
+               </div>
+               <div class="dashboard-card-value">$3,250,000</div>
+               <div class="dashboard-card-comparison">
+                   <i class="fas fa-arrow-down"></i>
+                   <span class="comparison-positive">5.1% menos que el mes anterior</span>
+               </div>
+           </div>
+           
+           <div class="dashboard-card">
+               <div class="dashboard-card-header">
+                   <h3 class="dashboard-card-title">Pagos Vencidos</h3>
+                   <div class="dashboard-card-icon icon-vencidos">
+                       <i class="fas fa-exclamation-circle"></i>
+                   </div>
+               </div>
+               <div class="dashboard-card-value">$1,875,000</div>
+               <div class="dashboard-card-comparison">
+                   <i class="fas fa-arrow-up"></i>
+                   <span class="comparison-negative">3.7% más que el mes anterior</span>
+               </div>
+           </div>
+           
+           <div class="dashboard-card">
+               <div class="dashboard-card-header">
+                   <h3 class="dashboard-card-title">Total Pagos</h3>
+                   <div class="dashboard-card-icon icon-pagos">
+                       <i class="fas fa-receipt"></i>
+                   </div>
+               </div>
+               <div class="dashboard-card-value">158</div>
+               <div class="dashboard-card-comparison">
+                   <i class="fas fa-arrow-up"></i>
+                   <span class="comparison-positive">12 más que el mes anterior</span>
+               </div>
+           </div>
+       </section>
+
+       <!-- Pestañas de navegación -->
+       <div class="tab-container">
+           <ul class="tabs">
+               <li class="tab active" data-tab="pagos-recientes">Pagos Recientes</li>
+               <li class="tab" data-tab="historial-transacciones">Historial de Transacciones</li>
+               <li class="tab" data-tab="facturacion">Facturación</li>
+               <li class="tab" data-tab="pagos-pendientes">Pagos Pendientes</li>
+           </ul>
+           
+           <div class="tab-content">
+               <!-- Pestaña de Pagos Recientes -->
+               <div class="tab-panel active" id="pagos-recientes">
+                   <!-- Filtros de Pagos Recientes -->
+                   <section class="filter">         
+                       <div class="filter-content">
+                           <label>
+                               <span>Curso:</span>               
+                               <select id="select-curso" name="cursos">
+                                   <option value="">Todos los cursos</option>
+                                   <option value="parvulos">Párvulos</option>
+                                   <option value="maternos">Maternos</option>
+                                   <option value="pre-jardin">Pre-Jardín</option>
+                                   <option value="jardin" selected>Jardín</option>                      
+                                   <option value="primero">Primero</option>                      
+                               </select>
+                           </label>
+                           <label>
+                               <span>Concepto:</span>
+                               <select id="select-concepto">
+                                   <option value="">Todos los conceptos</option>
+                                   <option value="matricula">Matrícula</option>
+                                   <option value="mensualidad" selected>Mensualidad</option>
+                                   <option value="transporte">Transporte</option>
+                                   <option value="comedor">Comedor</option>                      
+                                   <option value="uniformes">Uniformes</option>                      
+                               </select>
+                           </label>
+                           <label>
+                               <span>Estado:</span>
+                               <select id="select-estado">
+                                   <option value="">Todos los estados</option>
+                                   <option value="pagado" selected>Pagado</option>
+                                   <option value="pendiente">Pendiente</option>
+                                   <option value="vencido">Vencido</option>                     
+                               </select>
+                           </label>
+                           <button class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>               
+                       </div>         
+                   </section>
+                   
+                   <!-- Tabla de Pagos Recientes -->
+                   <section class="table-container"> 
+                       <div class="table-header">
+                           <div class="table-info">
+                               <h3>Pagos Recientes</h3>
+                               <div class="table-details">
+                                   <span><i class="fas fa-receipt"></i> 15 transacciones</span>
+                                   <span><i class="fas fa-calendar-alt"></i> Febrero 2025</span>
+                               </div>               
+                           </div>             
+                           <div class="action">
+                               <button class="btn-exportar"><i class="fas fa-file-export"></i> Exportar</button>
+                               <button class="btn-registrar-pago" id="registrar-pago"><i class="fas fa-plus"></i> Registrar Pago</button>
+                           </div>
+                       </div>         
+                       
+                       <div class="table-responsive">
+                           <table class="table-body">
+                               <thead>
+                                   <tr>
+                                       <th>ID</th>
+                                       <th>Estudiante</th>
+                                       <th>Concepto</th>
+                                       <th>Fecha</th>
+                                       <th>Monto</th>
+                                       <th>Estado</th>
+                                       <th>Acciones</th>                     
+                                   </tr>
+                               </thead>
+                               <tbody id="tabla-pagos">
+                                   <tr>
+                                       <td>P25-001</td>
+                                       <td class="student-info">
+                                           <span class="student-name">Ana María López</span>
+                                           <span class="student-id">ID: 20250001</span>
+                                       </td>
+                                       <td>Mensualidad Febrero 2025</td>
+                                       <td>26/02/2025</td>
+                                       <td>$450,000</td>
+                                       <td>
+                                           <span class="payment-status-paid">Pagado</span>
+                                           <div class="payment-methods">
+                                               <span class="payment-method"><i class="fas fa-credit-card"></i> Tarjeta</span>
+                                           </div>
+                                       </td>
+                                       <td>                         
+                                         <button class="btn-observacion" data-student="Ana María López"><i class="fas fa-receipt"></i></button>
+                                         <button class="btn-factura"><i class="fas fa-file-invoice"></i></button>
+                                       </td>                     
+                                   </tr>
+                                   <tr>
+                                       <td>P25-002</td>
+                                       <td class="student-info">
+                                           <span class="student-name">Carlos Rodríguez</span>
+                                           <span class="student-id">ID: 20250002</span>
+                                       </td>
+                                       <td>Mensualidad Febrero 2025</td>
+                                       <td>25/02/2025</td>
+                                       <td>$450,000</td>
+                                       <td>
+                                           <span class="payment-status-pending">Pendiente</span>
+                                           <div class="payment-methods">
+                                               <span class="payment-method"><i class="fas fa-money-bill-wave"></i> Efectivo</span>
+                                           </div>
+                                       </td>
+                                       <td>                         
+                                         <button class="btn-observacion" data-student="Carlos Rodríguez"><i class="fas fa-receipt"></i></button>
+                                         <button class="btn-factura"><i class="fas fa-file-invoice"></i></button>
+                                       </td>                     
+                                   </tr>
+                                   <tr>
+                                       <td>P25-003</td>
+                                       <td class="student-info">
+                                           <span class="student-name">María Fernanda Torres</span>
+                                           <span class="student-id">ID: 20250003</span>
+                                       </td>
+                                       <td>Transporte Escolar Feb 2025</td>
+                                       <td>23/02/2025</td>
+                                       <td>$180,000</td>
+                                       <td>
+                                           <span class="payment-status-paid">Pagado</span>
+                                           <div class="payment-methods">
+                                               <span class="payment-method"><i class="fas fa-university"></i> Transferencia</span>
+                                           </div>
+                                       </td>
+                                       <td>                         
+                                         <button class="btn-observacion" data-student="María Fernanda Torres"><i class="fas fa-receipt"></i></button>
+                                         <button class="btn-factura"><i class="fas fa-file-invoice"></i></button>
+                                       </td>                     
+                                   </tr>
+                                   <tr>
+                                       <td>P25-004</td>
+                                       <td class="student-info">
+                                           <span class="student-name">Santiago Pérez</span>
+                                           <span class="student-id">ID: 20250004</span>
+                                       </td>
+                                       <td>Mensualidad Enero 2025</td>
+                                       <td>18/01/2025</td>
+                                       <td>$450,000</td>
+                                       <td>
+                                           <span class="payment-status-overdue">Vencido</span>
+                                           <div class="payment-methods">
+                                               <span class="payment-method"><i class="fas fa-ban"></i> Pendiente</span>
+                                           </div>
+                                       </td>
+                                       <td>                         
+                                         <button class="btn-observacion" data-student="Santiago Pérez"><i class="fas fa-receipt"></i></button>
+                                         <button class="btn-factura"><i class="fas fa-file-invoice"></i></button>
+                                       </td>                     
+                                   </tr>
+                                   <tr>
+                                       <td>P25-005</td>
+                                       <td class="student-info">
+                                           <span class="student-name">Valentina Gómez</span>
+                                           <span class="student-id">ID: 20250005</span>
+                                       </td>
+                                       <td>Comedor Escolar Feb 2025</td>
+                                       <td>22/02/2025</td>
+                                       <td>$220,000</td>
+                                       <td>
+                                           <span class="payment-status-paid">Pagado</span>
+                                           <div class="payment-methods">
+                                               <span class="payment-method"><i class="fas fa-credit-card"></i> Tarjeta</span>
+                                           </div>
+                                       </td>
+                                       <td>                         
+                                         <button class="btn-observacion" data-student="Valentina Gómez"><i class="fas fa-receipt"></i></button>
+                                         <button class="btn-factura"><i class="fas fa-file-invoice"></i></button>
+                                       </td>                     
+                                   </tr>
+                               </tbody>
+                           </table>
+                       </div>
+                       
+                       <div class="tabla-paginacion" role="navigation" aria-label="Paginación de resultados">
+                           <button class="btn-pagina" aria-label="Página anterior" disabled>
+                               <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                           </button>
+                           <span>Página 1 de 3</span>
+                           <button class="btn-pagina" aria-label="Página siguiente">
+                               <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                           </button>
+                       </div>         
+                   </section>
+               </div>
+               
+               <!-- Pestaña de Historial de Transacciones -->
+               <div class="tab-panel" id="historial-transacciones">
+                   <section class="filter">         
+                       <div class="filter-content">
+                           <label>
+                               <span>Estudiante:</span>               
+                               <select id="select-estudiante" name="estudiante">
+                                   <option value="">Todos los estudiantes</option>
+                                   <option value="20250001">Ana María López</option>
+                                   <option value="20250002">Carlos Rodríguez</option>
+                                   <option value="20250003">María Fernanda Torres</option>
+                                   <option value="20250004">Santiago Pérez</option>
+                                   <option value="20250005">Valentina Gómez</option>                     
+                               </select>
+                           </label>
+                           <label>
+                               <span>Desde:</span>
+                               <input type="date" id="fecha-desde" value="2025-01-01">
+                           </label>
+                           <label>
+                               <span>Hasta:</span>
+                               <input type="date" id="fecha-hasta" value="2025-02-28">
+                           </label>
+                           <button class="btn-filtrar"><i class="fas fa-search"></i> Buscar</button>               
+                       </div>         
+                   </section>
+                   
+                   <div class="table-container">
+                       <div class="table-header">
+                           <div class="table-info">
+                               <h3>Historial de Transacciones</h3>
+                               <div class="table-details">
+                                   <span><i class="fas fa-receipt"></i> 32 transacciones</span>
+                                   <span><i class="fas fa-calendar-alt"></i> Enero - Febrero 2025</span>
+                               </div>               
+                           </div>             
+                           <div class="action">
+                               <button class="btn-exportar"><i class="fas fa-file-export"></i> Exportar</button>
+                           </div>
+                       </div>
+                       
+                       <!-- Contenido del historial aquí -->
+                       <div class="table-responsive">
+                           <table class="table-body">
+                               <thead>
+                                   <tr>
+                                       <th>ID</th>
+                                       <th>Estudiante</th>
+                                       <th>Concepto</th>
+                                       <th>Fecha</th>
+                                       <th>Monto</th>
+                                       <th>Estado</th>
+                                       <th>Método de Pago</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                   <!-- Historial de transacciones aquí -->
+                               </tbody>
+                           </table>
+                       </div>
+                   </div>
+               </div>
+               
+               <!-- Pestaña de Facturación -->
+               <div class="tab-panel" id="facturacion">
+                   <section class="filter">         
+                       <div class="filter-content">
+                           <label>
+                               <span>Curso:</span>               
+                               <select id="select-curso-facturacion" name="cursos">
+                                   <option value="">Todos los cursos</option>
+                                   <option value="parvulos">Párvulos</option>
+                                   <option value="maternos">Maternos</option>
+                                   <option value="pre-jardin">Pre-Jardín</option>
+                                   <option value="jardin" selected>Jardín</option>                      
+                                   <option value="primero">Primero</option>                      
+                               </select>
+                           </label>
+                           <label>
+                               <span>Mes:</span>
+                               <select id="select-mes">
+                                   <option value="01">Enero</option>
+                                   <option value="02" selected>Febrero</option>
+                                   <option value="03">Marzo</option>
+                                   <option value="04">Abril</option>                      
+                                   <option value="05">Mayo</option>                      
+                               </select>
+                           </label>
+                           <button class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>
+                           <button class="btn-generar-factura"><i class="fas fa-file-invoice"></i> Generar Facturas</button>               
+                       </div>         
+                   </section>
+                   
+                   <div class="table-container">
+                       <!-- Tabla de facturación aquí -->
+                   </div>
+               </div>
+               
+               <!-- Pestaña de Pagos Pendientes -->
+               <div class="tab-panel" id="pagos-pendientes">
+                   <section class="filter">         
+                       <div class="filter-content">
+                           <label>
+                               <span>Estado:</span>               
+                               <select id="select-estado-pendiente" name="estado">
+                                   <option value="pendiente" selected>Pendientes</option>
+                                   <option value="vencido">Vencidos</option>                     
+                               </select>
+                           </label>
+                           <label>
+                               <span>Antigüedad:</span>
+                               <select id="select-antiguedad">
+                                   <option value="todos">Todos</option>
+                                   <option value="30" selected>30 días</option>
+                                   <option value="60">60 días</option>
+                                   <option value="90">90 días</option>                      
+                                   <option value="120">120+ días</option>                      
+                               </select>
+                           </label>
+                           <button class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>
+                           <button class="btn-enviar-recordatorio"><i class="fas fa-envelope"></i> Enviar Recordatorios</button>               
+                       </div>         
+                   </section>
+                   
+                   <div class="table-container">
+                       <!-- Tabla de pagos pendientes aquí -->
+                   </div>
+               </div>
+           </div>
+       </div>
+  
+       <!-- Modal de Registrar Pago -->
+       <div id="modal-registrar-pago" class="modal">
+         <div class="modal-contenido">
+             <div class="modal-header">
+                 <h3>Registrar Nuevo Pago</h3>
+                 <button class="btn-cerrar" id="btn-cerrar-modal-pago"><i class="fas fa-times"></i></button>
+             </div>
+             <form id="form-pago"> 
+                 <div class="group-form">                 
+                     <label for="estudiante-pago">Estudiante:</label>
+                     <select id="estudiante-pago" required>
+                         <option value="">Seleccionar estudiante</option>
+                         <option value="20250001">Ana María López - 20250001</option>
+                         <option value="20250002">Carlos Rodríguez - 20250002</option>
+                         <option value="20250003">María Fernanda Torres - 20250003</option>
+                         <option value="20250004">Santiago Pérez - 20250004</option>
+                         <option value="20250005">Valentina Gómez - 20250005</option>
+                     </select>                 
+                 </div>
+                 
+                 <div class="group-form">                 
+                     <label for="concepto-pago">Concepto:</label>
+                     <select id="concepto-pago" required>
+                         <option value="">Seleccionar concepto</option>
+                         <option value="matricula">Matrícula</option>
+                         <option value="mensualidad">Mensualidad</option>
+                         <option value="transporte">Transporte</option>
+                         <option value="comedor">Comedor</option>
+                         <option value="uniformes">Uniformes</option>
+                         <option value="otro">Otro</option>
+                     </select>                 
+                 </div>
+                 
+                 <div class="group-form">                 
+                     <label for="monto-pago">Monto:</label>
+                     <input type="text" id="monto-pago" required placeholder="$0">                 
+                 </div>
+                 
+                 <div class="group-form">                 
+                     <label for="metodo-pago">Método de Pago:</label>
+                     <select id="metodo-pago" required>
+                         <option value="">Seleccionar método</option>
+                         <option value="efectivo">Efectivo</option>
+                         <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+                         <option value="transferencia">Transferencia Bancaria</option>
+                         <option value="cheque">Cheque</option>
+                     </select>                 
+                 </div>
+                 
+                 <div class="group-form">                 
+                     <label for="fecha-pago">Fecha de Pago:</label>
+                     <input type="date" id="fecha-pago" required value="2025-02-28">
+                 </div>

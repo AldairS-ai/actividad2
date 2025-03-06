@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Infojis - Mensajería</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/filters.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+  <link rel="stylesheet" href="../../styles/components/notifications.css">
+  <style>
+    /* Estilos específicos para el módulo de mensajería */
+    .message-tabs {
+      display: flex;
+      border-bottom: 1px solid #e0e0e0;
+      margin-bottom: 1rem;
+    }
+    
+    .message-tab {
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      font-weight: 500;
+    }
+    
+    .message-tab.active {
+      border-bottom: 3px solid #ff6600;
+      color: #ff6600;
+    }
+    
+    .message-container {
+      display: flex;
+      height: calc(100vh - 250px);
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .contacts-list {
+      width: 30%;
+      border-right: 1px solid #e0e0e0;
+      overflow-y: auto;
+    }
+    
+    .contact-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+    }
+    
+    .contact-item:hover {
+      background-color: #f9f9f9;
+    }
+    
+    .contact-item.active {
+      background-color: #fff8f4;
+      border-left: 3px solid #ff6600;
+    }
+    
+    .contact-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 1rem;
+    }
+    
+    .contact-info {
+      flex: 1;
+    }
+    
+    .contact-name {
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+    
+    .contact-preview {
+      font-size: 0.85rem;
+      color: #666;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
+    }
+    
+    .contact-meta {
+      text-align: right;
+      min-width: 50px;
+    }
+    
+    .contact-time {
+      font-size: 0.75rem;
+      color: #888;
+    }
+    
+    .contact-badge {
+      display: inline-block;
+      background-color: #ff6600;
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      text-align: center;
+      font-size: 0.7rem;
+      line-height: 18px;
+      margin-top: 5px;
+    }
+    
+    .chat-area {
+      width: 70%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .chat-header {
+      padding: 1rem;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      background-color: #f9f9f9;
+    }
+    
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      background-color: #f5f5f5;
+    }
+    
+    .message {
+      margin-bottom: 1rem;
+      max-width: 70%;
+    }
+    
+    .message-received {
+      margin-right: auto;
+    }
+    
+    .message-sent {
+      margin-left: auto;
+    }
+    
+    .message-bubble {
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+    }
+    
+    .message-received .message-bubble {
+      background-color: white;
+      border: 1px solid #e0e0e0;
+      border-bottom-left-radius: 0;
+    }
+    
+    .message-sent .message-bubble {
+      background-color: #ff6600;
+      color: white;
+      border-bottom-right-radius: 0;
+    }
+    
+    .message-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      color: #888;
+    }
+    
+    .chat-input {
+      padding: 1rem;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .chat-input textarea {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 0.75rem 1rem;
+      resize: none;
+      height: 45px;
+      font-family: inherit;
+    }
+    
+    .chat-input button {
+      background-color: #ff6600;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      margin-left: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .compose-message {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+    }
+    
+    .compose-header {
+      margin-bottom: 1rem;
+    }
+    
+    .compose-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .recipient-select {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 0.5rem;
+      min-height: 45px;
+    }
+    
+    .recipient-tag {
+      background-color: #f0f0f0;
+      padding: 0.25rem 0.5rem;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+    
+    .recipient-tag i {
+      margin-left: 0.5rem;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+    
+    .compose-subject {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: inherit;
+    }
+    
+    .compose-message textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      resize: vertical;
+      font-family: inherit;
+    }
+    
+    .compose-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #666;
+    }
+    
+    .empty-state i {
+      font-size: 4rem;
+      color: #ddd;
+      margin-bottom: 1rem;
+    }
+    
+    .notification-list {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+    }
+    
+    .notification-item {
+      padding: 1rem;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      align-items: flex-start;
+      transition: background-color 0.2s;
+    }
+    
+    .notification-item:hover {
+      background-color: #f9f9f9;
+    }
+    
+    .notification-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      flex-shrink: 0;
+    }
+    
+    .icon-attendance {
+      background-color: #e0f7fa;
+      color: #00acc1;
+    }
+    
+    .icon-grade {
+      background-color: #e8f5e9;
+      color: #43a047;
+    }
+    
+    .icon-message {
+      background-color: #fff8e1;
+      color: #ffb300;
+    }
+    
+    .icon-system {
+      background-color: #e8eaf6;
+      color: #3f51b5;
+    }
+    
+    .notification-content {
+      flex: 1;
+    }
+    
+    .notification-title {
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+    
+    .notification-text {
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+    
+    .notification-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .notification-time {
+      font-size: 0.75rem;
+      color: #888;
+    }
+    
+    .notification-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .notification-actions button {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    
+    .notification-actions button:hover {
+      color: #ff6600;
+    }
+    
+    .notification-status {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #ff6600;
+      margin-right: 0.5rem;
+    }
+    
+    .notification-read .notification-status {
+      display: none;
+    }
+    
+    .filter-notification {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .filter-notification button {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      background: white;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    
+    .filter-notification button.active {
+      background-color: #ff6600;
+      color: white;
+      border-color: #ff6600;
+    }
+    
+    /* Pestañas */
+    .message-content {
+      display: none;
+    }
+    
+    .message-content.active {
+      display: block;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="app-container">
+   <!-- Sidebar -->
+   <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Inicio</a></li>        
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="observaciones.html" class="nav-link"><i class="fas fa-comment-dots"></i> Observaciones</a></li>        
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+          <div class="sidebar-footer">
+              <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+          </div>
+      </ul>
+   </nav>
+
+   <!-- Overlay para cerrar sidebar en móviles -->
+   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+   <!-- Contenido Principal -->
+   <main class="main-content" id="main-content">
+       <!-- Encabezado -->
+       <header class="header">
+           <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+               <i class="fas fa-bars"></i>
+           </button>                  
+           <div class="user-profile" id="user-profile">
+               <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+               <div>
+                   <span class="user-name">Luz Ospino</span>
+                   <span class="user-role">Docente</span>
+               </div>
+           </div>
+       </header>
+
+       <!-- Pestañas de Mensajería -->
+       <div class="message-tabs">
+         <div class="message-tab active" data-tab="mensajes">
+           <i class="fas fa-comments"></i> Mensajes
+         </div>
+         <div class="message-tab" data-tab="notificaciones">
+           <i class="fas fa-bell"></i> Notificaciones
+         </div>
+       </div>
+       
+       <!-- Contenido de Mensajes -->
+       <div class="message-content active" id="mensajes-content">
+         <section class="filter">         
+           <div class="filter-content">
+             <button class="btn-filtrar" id="btn-new-message"><i class="fas fa-edit"></i> Nuevo Mensaje</button>                
+           </div>         
+         </section>
+         
+         <div class="message-container">
+           <div class="contacts-list">
+             <div class="contact-item active">
+               <img src="../../imagenes/user-fond.jpeg" alt="Foto de contacto" class="contact-avatar">
+               <div class="contact-info">
+                 <div class="contact-name">Carlos Martínez (Padre)</div>
+                 <div class="contact-preview">Gracias por la información...</div>
+               </div>
+               <div class="contact-meta">
+                 <div class="contact-time">10:25</div>
+               </div>
+             </div>
+             
+             <div class="contact-item">
+               <img src="../../imagenes/user-fond.jpeg" alt="Foto de contacto" class="contact-avatar">
+               <div class="contact-info">
+                 <div class="contact-name">Grupo Jardín - Padres</div>
+                 <div class="contact-preview">Le recordamos la reunión...</div>
+               </div>
+               <div class="contact-meta">
+                 <div class="contact-time">Ayer</div>
+                 <div class="contact-badge">3</div>
+               </div>
+             </div>
+             
+             <div class="contact-item">
+               <img src="../../imagenes/user-fond.jpeg" alt="Foto de contacto" class="contact-avatar">
+               <div class="contact-info">
+                 <div class="contact-name">María López (Directora)</div>
+                 <div class="contact-preview">Por favor, envíeme el...</div>
+               </div>
+               <div class="contact-meta">
+                 <div class="contact-time">24/02</div>
+               </div>
+             </div>
+             
+             <div class="contact-item">
+               <img src="../../imagenes/user-fond.jpeg" alt="Foto de contacto" class="contact-avatar">
+               <div class="contact-info">
+                 <div class="contact-name">Sandra Pérez (Madre)</div>
+                 <div class="contact-preview">¿Podría agendar una reunión?</div>
+               </div>
+               <div class="contact-meta">
+                 <div class="contact-time">23/02</div>
+               </div>
+             </div>
+             
+             <div class="contact-item">
+               <img src="../../imagenes/user-fond.jpeg" alt="Foto de contacto" class="contact-avatar">
+               <div class="contact-info">
+                 <div class="contact-name">Coordinación Académica</div>
+                 <div class="contact-preview">Documentos para el...</div>
+               </div>
+               <div class="contact-meta">
+                 <div class="contact-time">20/02</div>
+               </div>
+             </div>
+           </div>
+           
+           <div class="chat-area">
+             <div class="chat-header">
+               <img src="../../imagenes/user-fond.jpeg" alt="Foto de contacto" class="contact-avatar">
+               <div class="contact-info">
+                 <div class="contact-name">Carlos Martínez (Padre)</div>
+                 <div class="contact-preview">Padre de Ana Martínez • Jardín A</div>
+               </div>
+             </div>
+             
+             <div class="chat-messages">
+               <div class="message message-received">
+                 <div class="message-bubble">
+                   Buenos días profesora, quería preguntar sobre el avance de Ana en clases. Hemos notado que está muy entusiasmada con las actividades de arte.
+                 </div>
+                 <div class="message-info">
+                   <span>Carlos Martínez</span>
+                   <span>10:05 AM</span>
+                 </div>
+               </div>
+               
+               <div class="message message-sent">
+                 <div class="message-bubble">
+                   Buenos días Sr. Martínez. Me alegra mucho escuchar eso. Ana ha mostrado mucho interés y talento en las actividades artísticas. Esta semana realizó un trabajo excepcional con acuarelas.
+                 </div>
+                 <div class="message-info">
+                   <span>Visto</span>
+                   <span>10:12 AM</span>
+                 </div>
+               </div>
+               
+               <div class="message message-sent">
+                 <div class="message-bubble">
+                   Le adjunto una foto del trabajo realizado para que pueda apreciarlo. Estamos trabajando en desarrollar su creatividad y expresión artística.
+                 </div>
+                 <div class="message-info">
+                   <span>Visto</span>
+                   <span>10:15 AM</span>
+                 </div>
+               </div>
+               
+               <div class="message message-received">
+                 <div class="message-bubble">
+                   ¡Qué hermoso trabajo! Muchas gracias por la información y por fomentar su interés en el arte. Estamos muy contentos con su progreso.
+                 </div>
+                 <div class="message-info">
+                   <span>Carlos Martínez</span>
+                   <span>10:25 AM</span>
+                 </div>
+               </div>
+             </div>
+             
+             <div class="chat-input">
+               <textarea placeholder="Escribe un mensaje..."></textarea>
+               <button><i class="fas fa-paper-plane"></i></button>
+             </div>
+           </div>
+         </div>
+       </div>
+       
+       <!-- Contenido de Notificaciones -->
+       <div class="message-content" id="notificaciones-content">
+         <section class="filter">         
+           <div class="filter-notification">
+             <button class="active">Todas</button>
+             <button>Asistencia</button>
+             <button>Calificaciones</button>
+             <button>Sistema</button>
+             <button>No leídas</button>
+           </div>         
+         </section>
+         
+         <div class="notification-list">
+           <div class="notification-item">
+             <div class="notification-status"></div>
+             <div class="notification-icon icon-attendance">
+               <i class="fas fa-user-check"></i>
+             </div>
+             <div class="notification-content">
+               <div class="notification-title">Registro de Asistencia Completado</div>
+               <div class="notification-text">Has registrado correctamente la asistencia para la clase de Arte - Jardín A.</div>
+               <div class="notification-meta">
+                 <div class="notification-time">Hoy, 08:45 AM</div>
+                 <div class="notification-actions">
+                   <button><i class="fas fa-check"></i> Marcar como leída</button>
+                 </div>
+               </div>
+             </div>
+           </div>
+           
+           <div class="notification-item">
+             <div class="notification-status"></div>
+             <div class="notification-icon icon-grade">
+               <i class="fas fa-clipboard-check"></i>
+             </div>
+             <div class="notification-content">
+               <div class="notification-title">Calificaciones Pendientes</div>
+               <div class="notification-text">Tienes calificaciones pendientes para el curso Jardín A - Arte. La fecha límite es 01/03/2025.</div>
+               <div class="notification-meta">
+                 <div class="notification-time">Ayer, 15:30 PM</div>
+                 <div class="notification-actions">
+                   <button><i class="fas fa-check"></i> Marcar como leída</button>
+                   <button><i class="fas fa-external-link-alt"></i> Ir a calificaciones</button>
+                 </div>
+               </div>
+             </div>
+           </div>
+           
+           <div class="notification-item notification-read">
+             <div class="notification-status"></div>
+             <div class="notification-icon icon-message">
+               <i class="fas fa-envelope"></i>
+             </div>
+             <div class="notification-content">
+               <div class="notification-title">Nuevo Mensaje de Sandra Pérez</div>
+               <div class="notification-text">Has recibido un nuevo mensaje de Sandra Pérez (Madre de Valentina Gómez) solicitando una reunión.</div>
+               <div class="notification-meta">
+                 <div class="notification-time">23/02/2025, 09:15 AM</div>
+                 <div class="notification-actions">
+                   <button><i class="fas fa-external-link-alt"></i> Ver mensaje</button>
+                 </div>
+               </div>
+             </div>
+           </div>
+           
+           <div class="notification-item notification-read">
+             <div class="notification-status"></div>
+             <div class="notification-icon icon-system">
+               <i class="fas fa-cog"></i>
+             </div>
+             <div class="notification-content">
+               <div class="notification-title">Actualización del Sistema</div>
+               <div class="notification-text">Se han realizado actualizaciones al sistema. Revisa las nuevas funcionalidades en la sección de ayuda.</div>
+               <div class="notification-meta">
+                 <div class="notification-time">20/02/2025, 14:00 PM</div>
+                 <div class="notification-actions">
+                   <button><i class="fas fa-question-circle"></i> Ver ayuda</button>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+       
+       <!-- Modal de Nuevo Mensaje -->
+       <div id="modal-new-message" class="modal">
+         <div class="modal-contenido" style="width: 80%; max-width: 700px;">
+             <div class="modal-header">
+                 <h3>Nuevo Mensaje</h3>
+                 <button class="btn-cerrar" id="btn-cerrar-modal-mensaje"><i class="fas fa-times"></i></button>
+             </div>
+             <form id="form-mensaje"> 
+                 <div class="compose-message">
+                   <div class="compose-body">
+                     <div>
+                       <label>Para:</label>
+                       <div class="recipient-select">
+                         <div class="recipient-tag">
+                           Todos los padres - Jardín A <i class="fas fa-times"></i>
+                         </div>
+                       </div>
+                     </div>
+                     
+                     <div>
+                       <label>Asunto:</label>
+                       <input type="text" class="compose-subject" placeholder="Escribe el asunto...">
+                     </div>
+                     
+                     <div>
+                       <label>Mensaje:</label>
+                       <textarea placeholder="Escribe tu mensaje aquí..."></textarea>
+                     </div>
+                     
+                     <div class="compose-actions">
+                       <button type="button" class="btn-cancelar">Cancelar</button>
+                       <button type="submit" class="btn-guardar">Enviar Mensaje</button>
+                     </div>
+                   </div>
+                 </div>
+             </form>
+         </div>         
+       </div>
+
+       <!-- Notificación de éxito -->
+       <div class="notification" id="notification">
+           <i class="fas fa-check-circle"></i>
+           <span id="notification-message">Mensaje enviado correctamente</span>
+       </div>
+  </main>
+  </div>
+  <script>
+    // Toggle sidebar solo en móviles
+    document.getElementById('sidebar-toggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('sidebar-overlay').classList.toggle('active');
+        document.getElementById('main-content').classList.toggle('expanded');
+    });
+    
+    // Cerrar sidebar cuando se hace clic en el overlay
+    document.getElementById('sidebar-overlay').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('active');
+        document.getElementById('sidebar-overlay').classList.remove('active');
+    });
+    
+    // Cambiar entre pestañas
+    const messageTabs = document.querySelectorAll('.message-tab');
+    const messageContents = document.querySelectorAll('.message-content');
+    
+    messageTabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        // Desactivar todas las pestañas
+        messageTabs.forEach(t => t.classList.remove('active'));
+        messageContents.forEach(c => c.classList.remove('active'));
+        
+        // Activar la pestaña seleccionada
+        this.classList.add('active');
+        const tabId = this.getAttribute('data-tab');
+        document.getElementById(tabId + '-content').classList.add('active');
+      });
+    });
+    
+    // Abrir modal de nuevo mensaje
+    document.getElementById('btn-new-message').addEventListener('click', function() {
+      document.getElementById('modal-new-message').classList.add('active');
+    });
+    
+    // Cerrar modal de nuevo mensaje
+    document.getElementById('btn-cerrar-modal-mensaje').addEventListener('click', function() {
+      document.getElementById('modal-new-message').classList.remove('active');
+    });
+    
+    document.querySelectorAll('.btn-cancelar').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.getElementById('modal-new-message').classList.remove('active');
+      });
+    });
+    
+    // Enviar formulario de mensaje
+    document.getElementById('form-mensaje').addEventListener('submit', function(e) {
+      e.preventDefault();
+      document.getElementById('modal-new-message').classList.remove('active');
+      
+      // Mostrar notificación
+      const notification = document.getElementById('notification');
+      document.getElementById('notification-message').textContent = 'Mensaje enviado correctamente';
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    });
+    
+    // Toggle para mostrar contactos seleccionados en chats
+    document.querySelectorAll('.contact-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.contact-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+    
+    // Marcar notificaciones como leídas
+    document.querySelectorAll('.notification-actions button').forEach(btn => {
+      if (btn.innerHTML.includes('Marcar como leída')) {
+        btn.addEventListener('click', function() {
+          const notificationItem = this.closest('.notification-item');
+          notificationItem.classList.add('notification-read');
+          this.style.display = 'none';
+        });
+      }
+    });
+    
+    // Filtros de notificaciones
+    document.querySelectorAll('.filter-notification button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-notification button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

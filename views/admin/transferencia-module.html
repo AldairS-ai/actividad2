@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Infojis - Transferencia</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/filters.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+  <link rel="stylesheet" href="../../styles/components/notifications.css">
+  <style>
+    /* Estilos específicos para el módulo de transferencia */
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      flex: 1 1 300px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+    
+    .card-title {
+      font-size: 1.1rem;
+      color: #333;
+      margin: 0;
+    }
+    
+    .card-icon {
+      background-color: #f5f5f5;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #ff6600;
+    }
+    
+    .card-content {
+      color: #666;
+      margin-bottom: 15px;
+    }
+    
+    .card-footer {
+      text-align: right;
+    }
+    
+    .btn-card {
+      background-color: #ff6600;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    
+    .btn-card:hover {
+      background-color: #e55c00;
+    }
+    
+    .transfer-section {
+      margin-bottom: 30px;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .progress-container {
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      background-color: #f9f9f9;
+    }
+    
+    .progress-title {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    
+    .progress-bar {
+      height: 10px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    
+    .progress-value {
+      height: 100%;
+      background-color: #4caf50;
+      border-radius: 5px;
+      width: 75%;
+    }
+    
+    .filter-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    
+    .filter-badge {
+      background-color: #f0f0f0;
+      border-radius: 20px;
+      padding: 5px 15px;
+      font-size: 0.9rem;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .filter-badge i {
+      color: #ff6600;
+    }
+    
+    .modal-content-transfer {
+      max-width: 700px;
+    }
+    
+    .tab-container {
+      margin: 20px 0;
+    }
+    
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    
+    .tab.active {
+      border-bottom: 2px solid #ff6600;
+      color: #ff6600;
+      font-weight: 500;
+    }
+    
+    .tab-content {
+      padding: 20px 0;
+    }
+    
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin: 30px 0;
+      position: relative;
+    }
+    
+    .step-indicator::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #ddd;
+      z-index: 0;
+    }
+    
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .step-number {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background-color: #ddd;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+    
+    .step.active .step-number {
+      background-color: #ff6600;
+    }
+    
+    .step.completed .step-number {
+      background-color: #4caf50;
+    }
+    
+    .step-label {
+      font-size: 0.85rem;
+      color: #777;
+    }
+    
+    .step.active .step-label {
+      color: #ff6600;
+      font-weight: 500;
+    }
+    
+    .transfer-type-selection {
+      display: flex;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .transfer-option {
+      flex: 1;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .transfer-option:hover {
+      background-color: #f9f9f9;
+    }
+    
+    .transfer-option.selected {
+      border-color: #ff6600;
+      background-color: #fff5ee;
+    }
+    
+    .transfer-option i {
+      font-size: 2rem;
+      color: #777;
+      margin-bottom: 15px;
+      display: block;
+    }
+    
+    .transfer-option.selected i {
+      color: #ff6600;
+    }
+    
+    .transfer-option h4 {
+      margin: 0 0 10px 0;
+    }
+    
+    .step-content {
+      margin-top: 30px;
+    }
+    
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .checkbox-container input[type="checkbox"] {
+      margin-right: 10px;
+    }
+    
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+    
+    .summary-label {
+      font-weight: 500;
+    }
+    
+    .summary-value {
+      color: #666;
+    }
+    
+    .modal-navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+   <!-- Sidebar -->
+   <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Inicio</a></li>        
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="observaciones.html" class="nav-link"><i class="fas fa-comment-dots"></i> Observaciones</a></li>
+          <li><a href="transferencia.html" class="nav-link active"><i class="fas fa-exchange-alt"></i> Transferencia</a></li>        
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+          <div class="sidebar-footer">
+              <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+          </div>
+      </ul>
+   </nav>
+
+   <!-- Overlay para cerrar sidebar en móviles -->
+   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+   <!-- Contenido Principal -->
+   <main class="main-content" id="main-content">
+       <!-- Encabezado -->
+       <header class="header">
+           <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+               <i class="fas fa-bars"></i>
+           </button>                  
+           <div class="user-profile" id="user-profile">
+               <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+               <div>
+                   <span class="user-name">Luz Ospino</span>
+                   <span class="user-role">Docente</span>
+               </div>
+           </div>
+       </header>
+       
+       <!-- Encabezado de página -->
+       <div class="page-header">
+           <h2><i class="fas fa-exchange-alt"></i> Transferencia de Estudiantes</h2>
+           <p>Gestione la transferencia de estudiantes entre grados al finalizar el año académico</p>
+       </div>
+       
+       <!-- Tarjetas de resumen -->
+       <div class="card-container">
+           <div class="card">
+               <div class="card-header">
+                   <h3 class="card-title">Transferencias Pendientes</h3>
+                   <div class="card-icon">
+                       <i class="fas fa-clock"></i>
+                   </div>
+               </div>
+               <div class="card-content">
+                   <p>Estudiantes que aún no han sido asignados a un nuevo grado.</p>
+               </div>
+               <div class="progress-container">
+                   <div class="progress-title">
+                       <span>Progreso</span>
+                       <span>15/20 estudiantes</span>
+                   </div>
+                   <div class="progress-bar">
+                       <div class="progress-value" style="width: 75%"></div>
+                   </div>
+               </div>
+               <div class="card-footer">
+                   <button class="btn-card">Ver detalles</button>
+               </div>
+           </div>
+           
+           <div class="card">
+               <div class="card-header">
+                   <h3 class="card-title">Transferencias Completadas</h3>
+                   <div class="card-icon">
+                       <i class="fas fa-check-circle"></i>
+                   </div>
+               </div>
+               <div class="card-content">
+                   <p>Estudiantes que han sido transferidos exitosamente.</p>
+               </div>
+               <div class="progress-container">
+                   <div class="progress-title">
+                       <span>Completado</span>
+                       <span>75%</span>
+                   </div>
+                   <div class="progress-bar">
+                       <div class="progress-value" style="width: 75%"></div>
+                   </div>
+               </div>
+               <div class="card-footer">
+                   <button class="btn-card">Ver historial</button>
+               </div>
+           </div>
+           
+           <div class="card">
+               <div class="card-header">
+                   <h3 class="card-title">Grados Graduados</h3>
+                   <div class="card-icon">
+                       <i class="fas fa-graduation-cap"></i>
+                   </div>
+               </div>
+               <div class="card-content">
+                   <p>Grados que han completado el ciclo académico actual.</p>
+               </div>
+               <div class="card-footer">
+                   <button class="btn-card">Ver detalles</button>
+               </div>
+           </div>
+       </div>
+       
+       <!-- Filtros de transferencia -->
+       <section class="filter">         
+           <div class="filter-content">
+               <label>
+                   <span>Curso actual:</span>               
+                   <select id="select-curso-actual" name="cursos">
+                       <option value="">Todos los cursos</option>
+                       <option value="parvulos">Párvulos</option>
+                       <option value="maternos">Maternos</option>
+                       <option value="pre-jardin">Pre-Jardín</option>
+                       <option value="jardin" selected>Jardín</option>                      
+                       <option value="primero">Primero</option>                      
+                   </select>
+               </label>
+               <label>
+                   <span>Curso destino:</span>
+                   <select id="select-curso-destino">
+                       <option value="">Todos los destinos</option>
+                       <option value="maternos">Maternos</option>
+                       <option value="pre-jardin">Pre-Jardín</option>
+                       <option value="jardin">Jardín</option>
+                       <option value="primero" selected>Primero</option>                      
+                       <option value="segundo">Segundo</option>                      
+                   </select>
+               </label>
+               <label>
+                   <span>Estado:</span>
+                   <select id="select-estado">
+                       <option value="todos" selected>Todos</option>
+                       <option value="pendiente">Pendiente</option>
+                       <option value="completado">Completado</option>
+                       <option value="en-proceso">En proceso</option>
+                   </select>
+               </label>
+               <label>
+                   <span>Año académico:</span>
+                   <select id="select-ano">
+                       <option value="2025" selected>2025</option>
+                       <option value="2024">2024</option>
+                       <option value="2023">2023</option>
+                   </select>
+               </label>
+               <button class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>               
+           </div>
+       </section>
+       
+       <!-- Badges de filtros activos -->
+       <div class="filter-badges">
+           <div class="filter-badge">
+               <i class="fas fa-school"></i> Jardín
+           </div>
+           <div class="filter-badge">
+               <i class="fas fa-arrow-right"></i> Primero
+           </div>
+           <div class="filter-badge">
+               <i class="fas fa-calendar"></i> 2025
+           </div>
+       </div>
+       
+       <!-- Acciones principales -->
+       <div class="section-header">
+           <h3>Estudiantes por transferir</h3>
+           <div class="action">
+               <button class="btn-guardar" id="btn-nueva-transferencia"><i class="fas fa-plus"></i> Nueva transferencia</button>
+           </div>
+       </div>
+       
+       <!-- Lista de Estudiantes para Transferir -->
+       <section class="table-container"> 
+           <div class="table-responsive">
+               <table class="table-body">
+                   <thead>
+                       <tr>
+                           <th>#</th>
+                           <th>Foto</th>
+                           <th>Estudiante</th>
+                           <th>Curso actual</th>
+                           <th>Curso destino</th>
+                           <th>Estado</th>
+                           <th>Fecha</th>
+                           <th>Acciones</th>                     
+                       </tr>
+                   </thead>
+                   <tbody id="tabla-transferencias">
+                       <tr>
+                           <td>1</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">Ana María López</span>
+                               <span class="student-id">ID: 20250001</span>
+                           </td>
+                           <td>Jardín</td>
+                           <td>Primero</td>
+                           <td>
+                               <span class="badge badge-success">Completado</span>
+                           </td>
+                           <td>28/02/2025</td>
+                           <td>                         
+                               <button class="btn-ver" title="Ver detalle"><i class="fas fa-eye"></i></button>
+                               <button class="btn-editar" title="Editar"><i class="fas fa-edit"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>2</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">Carlos Rodríguez</span>
+                               <span class="student-id">ID: 20250002</span>
+                           </td>
+                           <td>Jardín</td>
+                           <td>Primero</td>
+                           <td>
+                               <span class="badge badge-warning">Pendiente</span>
+                           </td>
+                           <td>-</td>
+                           <td>                         
+                               <button class="btn-ver" title="Ver detalle"><i class="fas fa-eye"></i></button>
+                               <button class="btn-editar" title="Editar"><i class="fas fa-edit"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>3</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">María Fernanda Torres</span>
+                               <span class="student-id">ID: 20250003</span>
+                           </td>
+                           <td>Jardín</td>
+                           <td>Primero</td>
+                           <td>
+                               <span class="badge badge-success">Completado</span>
+                           </td>
+                           <td>28/02/2025</td>
+                           <td>                         
+                               <button class="btn-ver" title="Ver detalle"><i class="fas fa-eye"></i></button>
+                               <button class="btn-editar" title="Editar"><i class="fas fa-edit"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>4</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">Santiago Pérez</span>
+                               <span class="student-id">ID: 20250004</span>
+                           </td>
+                           <td>Jardín</td>
+                           <td>Primero</td>
+                           <td>
+                               <span class="badge badge-info">En proceso</span>
+                           </td>
+                           <td>-</td>
+                           <td>                         
+                               <button class="btn-ver" title="Ver detalle"><i class="fas fa-eye"></i></button>
+                               <button class="btn-editar" title="Editar"><i class="fas fa-edit"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>5</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">Valentina Gómez</span>
+                               <span class="student-id">ID: 20250005</span>
+                           </td>
+                           <td>Jardín</td>
+                           <td>Primero</td>
+                           <td>
+                               <span class="badge badge-success">Completado</span>
+                           </td>
+                           <td>26/02/2025</td>
+                           <td>                         
+                               <button class="btn-ver" title="Ver detalle"><i class="fas fa-eye"></i></button>
+                               <button class="btn-editar" title="Editar"><i class="fas fa-edit"></i></button>
+                           </td>                     
+                       </tr>
+                   </tbody>
+               </table>
+           </div>
+           
+           <div class="tabla-paginacion" role="navigation" aria-label="Paginación de resultados">
+               <button class="btn-pagina" aria-label="Página anterior" disabled>
+                   <i class="fas fa-chevron-left" aria-hidden="true"></i>
+               </button>
+               <span>Página 1 de 1</span>
+               <button class="btn-pagina" aria-label="Página siguiente" disabled>
+                   <i class="fas fa-chevron-right" aria-hidden="true"></i>
+               </button>
+           </div>         
+       </section>
+      
+       <!-- Modal de Nueva Transferencia -->
+       <div id="modal-transferencia" class="modal">
+           <div class="modal-contenido modal-content-transfer">
+               <div class="modal-header">
+                   <h3>Nueva Transferencia</h3>
+                   <button class="btn-cerrar" id="btn-cerrar-modal"><i class="fas fa-times"></i></button>
+               </div>
+               
+               <div class="step-indicator">
+                   <div class="step active">
+                       <div class="step-number">1</div>
+                       <div class="step-label">Tipo</div>
+                   </div>
+                   <div class="step">
+                       <div class="step-number">2</div>
+                       <div class="step-label">Selección</div>
+                   </div>
+                   <div class="step">
+                       <div class="step-number">3</div>
+                       <div class="step-label">Destino</div>
+                   </div>
+                   <div class="step">
+                       <div class="step-number">4</div>
+                       <div class="step-label">Confirmar</div>
+                   </div>
+               </div>
+               
+               <!-- Paso 1: Selección de tipo de transferencia -->
+               <div class="step-content" id="step-1">
+                   <h4>Seleccione el tipo de transferencia</h4>
+                   <p>Escoja si desea transferir estudiantes individuales o un grado completo.</p>
+                   
+                   <div class="transfer-type-selection">
+                       <div class="transfer-option selected" data-type="individual">
+                           <i class="fas fa-user-graduate"></i>
+                           <h4>Estudiante Individual</h4>
+                           <p>Transferir uno o varios estudiantes específicos</p>
+                       </div>
+                       <div class="transfer-option" data-type="grupo">
+                           <i class="fas fa-users"></i>
+                           <h4>Grado Completo</h4>
+                           <p>Transferir todos los estudiantes de un grado</p>
+                       </div>
+                   </div>
+               </div>
+               
+               <!-- Paso 2: Selección de estudiantes o grado -->
+               <div class="step-content" id="step-2" style="display: none;">
+                   <!-- Contenido para transferencia individual -->
+                   <div id="individual-selection">
+                       <h4>Seleccione los estudiantes a transferir</h4>
+                       <div class="filter-content">
+                           <label>
+                               <span>Curso:</span>               
+                               <select id="modal-select-curso">
+                                   <option value="jardin" selected>Jardín</option>
+                                   <option value="parvulos">Párvulos</option>
+                                   <option value="maternos">Maternos</option>
+                                   <option value="pre-jardin">Pre-Jardín</option>                      
+                                   <option value="primero">Primero</option>                      
+                               </select>
+                           </label>
+                           <label>
+                               <span>Grupo:</span>
+                               <select id="modal-select-grupo">
+                                   <option value="grupo-a" selected>Grupo A</option>
+                                   <option value="grupo-b">Grupo B</option>
+                                   <option value="grupo-c">Grupo C</option>
+                               </select>
+                           </label>
+                       </div>
+                       
+                       <div class="table-responsive">
+                           <table class="table-body">
+                               <thead>
+                                   <tr>
+                                       <th><input type="checkbox" id="select-all"></th>
+                                       <th>Foto</th>
+                                       <th>Estudiante</th>
+                                       <th>ID</th>
+                                       <th>Promedio</th>
+                                       <th>Estado</th>                   
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                   <tr>
+                                       <td><input type="checkbox" name="estudiante[]" value="1"></td>
+                                       <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                                       <td>Ana María López</td>
+                                       <td>20250001</td>
+                                       <td>4.8</td>
+                                       <td><span class="badge badge-success">Aprobado</span></td>                    
+                                   </tr>
+                                   <tr>
+                                       <td><input type="checkbox" name="estudiante[]" value="2"></td>
+                                       <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                                       <td>Carlos Rodríguez</td>
+                                       <td>20250002</td>
+                                       <td>4.5</td>
+                                       <td><span class="badge badge-success">Aprobado</span></td>                    
+                                   </tr>
+                                   <tr>
+                                       <td><input type="checkbox" name="estudiante[]" value="3"></td>
+                                       <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                                       <td>María Fernanda Torres</td>
+                                       <td>20250003</td>
+                                       <td>4.7</td>
+                                       <td><span class="badge badge-success">Aprobado</span></td>                    
+                                   </tr>
+                                   <tr>
+                                       <td><input type="checkbox" name="estudiante[]" value="4"></td>
+                                       <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                                       <td>Santiago Pérez</td>
+                                       <td>20250004</td>
+                                       <td>4.3</td>
+                                       <td><span class="badge badge-success">Aprobado</span></td>                    
+                                   </tr>
+                                   <tr>
+                                       <td><input type="checkbox" name="estudiante[]" value="5"></td>
+                                       <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                                       <td>Valentina Gómez</td>
+                                       <td>20250005</td>
+                                       <td>4.9</td>
+                                       <td><span class="badge badge-success">Aprobado</span></td>                    
+                                   </tr>
+                               </tbody>
+                           </table>
+                       </div>
+                   </div>
+                   
+                   <!-- Contenido para transferencia de grado -->
+                   <div id="grupo-selection" style="display: none;">
+                       <h4>Seleccione el grado a transferir</h4>
+                       <div class="filter-content">
+                           <label>
+                               <span>Curso:</span>               
+                               <select id="modal-select-curso-grupo">
+                                   <option value="jardin" selected>Jardín</option>
+                                   <option value="parvulos">Párvulos</option>
+                                   <option value

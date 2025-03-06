@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Infojis - Módulo de Inclusión</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/filters.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+  <link rel="stylesheet" href="../../styles/components/notifications.css">
+  <link rel="stylesheet" href="../../styles/components/tabs.css">
+  <style>
+    /* Estilos adicionales para el módulo de inclusión */
+    .inclusion-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 16px;
+      padding: 16px;
+    }
+    
+    .student-profile {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .student-profile img {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 16px;
+    }
+    
+    .student-details {
+      flex-grow: 1;
+    }
+    
+    .student-details h4 {
+      margin: 0 0 4px 0;
+      font-size: 18px;
+    }
+    
+    .student-details .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    
+    .tag {
+      background: #f0f0f0;
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .tag.need {
+      background: #ffe5e5;
+      color: #d32f2f;
+    }
+    
+    .tag.support {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+    
+    .tag.progress {
+      background: #e8f5e9;
+      color: #388e3c;
+    }
+    
+    .progress-section {
+      margin-top: 24px;
+    }
+    
+    .progress-card {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    
+    .progress-item {
+      flex: 1;
+      min-width: 200px;
+      padding: 16px;
+      border-radius: 8px;
+      background: #f9f9f9;
+    }
+    
+    .progress-chart {
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      margin-top: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .progress-chart .bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: #4caf50;
+      border-radius: 3px;
+    }
+    
+    .progress-value {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+    
+    .adaptation-item {
+      background: #fff;
+      border-left: 4px solid #673ab7;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      border-radius: 0 4px 4px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .adaptation-item h5 {
+      margin: 0 0 8px 0;
+      font-weight: 600;
+    }
+    
+    .support-team {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    
+    .support-person {
+      display: flex;
+      align-items: center;
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+    
+    .support-person img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    
+    .support-person .info {
+      line-height: 1.2;
+    }
+    
+    .support-person .info span {
+      display: block;
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 24px;
+    }
+    
+    .tab {
+      padding: 12px 24px;
+      cursor: pointer;
+      position: relative;
+      font-weight: 500;
+    }
+    
+    .tab.active {
+      color: #ff6600;
+    }
+    
+    .tab.active:after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: #ff6600;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .attachment {
+      display: flex;
+      align-items: center;
+      background: #f5f5f5;
+      padding: 10px 16px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    
+    .attachment i {
+      margin-right: 12px;
+      font-size: 20px;
+      color: #757575;
+    }
+    
+    .attachment .info {
+      flex-grow: 1;
+    }
+    
+    .attachment .actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .attachment .actions button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #666;
+      padding: 4px;
+      border-radius: 4px;
+    }
+    
+    .attachment .actions button:hover {
+      background: #e0e0e0;
+    }
+    
+    .observation-item {
+      padding: 12px 16px;
+      border-left: 3px solid #ffc107;
+      background: #fff;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .observation-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
+    .observation-author {
+      font-weight: 500;
+    }
+    
+    .observation-date {
+      font-size: 12px;
+      color: #757575;
+    }
+    
+    .student-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    
+    .student-card {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    
+    .student-card:hover {
+      transform: translateY(-4px);
+    }
+    
+    .student-card-header {
+      display: flex;
+      padding: 16px;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .student-card-info {
+      flex-grow: 1;
+      margin-left: 16px;
+    }
+    
+    .student-card-details {
+      padding: 16px;
+    }
+    
+    .student-card-footer {
+      padding: 12px 16px;
+      background: #f9f9f9;
+      text-align: right;
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #f44336;
+      color: white;
+      font-size: 12px;
+      margin-left: 8px;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .student-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+   <!-- Sidebar -->
+   <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="horario.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Horarios</a></li>
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="inclusion.html" class="nav-link active"><i class="fas fa-universal-access"></i> Inclusión</a></li>
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+     <div class="sidebar-footer">
+          <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+     </div>
+   </nav>
+
+   <!-- Overlay para cerrar sidebar en móviles -->
+   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+   <!-- Contenido Principal -->
+   <main class="main-content" id="main-content">
+       <!-- Encabezado -->
+       <header class="header">
+           <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+               <i class="fas fa-bars"></i>
+           </button>                  
+           <div class="user-profile" id="user-profile">
+               <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+               <div>
+                   <span class="user-name">Luz Ospino</span>
+                   <span class="user-role">Docente</span>
+               </div>
+           </div>
+       </header>
+       
+       <!-- Título y acciones principales -->
+       <section class="filter">
+           <div class="filter-title">
+               <h2><i class="fas fa-universal-access"></i> Módulo de Inclusión</h2>
+               <p>Gestión de estudiantes con necesidades educativas especiales</p>
+           </div>
+           <div class="filter-content">
+               <button class="btn-filtrar" id="btn-registro"><i class="fas fa-plus"></i> Nuevo registro</button>
+               <label>
+                   <span>Curso:</span>
+                   <select id="select-curso" name="cursos">
+                       <option value="">Todos los cursos</option>
+                       <option value="parvulos">Párvulos</option>
+                       <option value="maternos">Maternos</option>
+                       <option value="pre-jardin">Pre-Jardín</option>
+                       <option value="jardin" selected>Jardín</option>
+                       <option value="primero">Primero</option>
+                   </select>
+               </label>
+               <label>
+                   <span>Tipo de necesidad:</span>
+                   <select id="select-necesidad">
+                       <option value="">Todas</option>
+                       <option value="aprendizaje">Dificultades de aprendizaje</option>
+                       <option value="tdah">TDAH</option>
+                       <option value="tea">TEA</option>
+                       <option value="visual">Discapacidad visual</option>
+                       <option value="auditiva">Discapacidad auditiva</option>
+                       <option value="fisica">Discapacidad física</option>
+                       <option value="otros">Otras condiciones</option>
+                   </select>
+               </label>
+               <button class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>
+           </div>
+       </section>
+       
+       <!-- Lista de estudiantes con inclusión -->
+       <section class="student-list">
+           <!-- Estudiante 1 -->
+           <div class="student-card" data-student-id="20250003">
+               <div class="student-card-header">
+                   <img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar">
+                   <div class="student-card-info">
+                       <h4>María Fernanda Torres</h4>
+                       <span class="student-id">ID: 20250003</span> - <span>Jardín</span>
+                   </div>
+               </div>
+               <div class="student-card-details">
+                   <div class="tags">
+                       <span class="tag need">TDAH</span>
+                       <span class="tag support">Psicología</span>
+                       <span class="tag progress">Adaptación curricular</span>
+                   </div>
+                   <p class="mt-2"><strong>Apoyos activos:</strong> Terapia ocupacional, Psicología</p>
+                   <p><strong>Próxima evaluación:</strong> 15/03/2025</p>
+               </div>
+               <div class="student-card-footer">
+                   <button class="btn-observacion"><i class="fas fa-eye"></i> Ver detalles</button>
+                   <span class="badge">3</span>
+               </div>
+           </div>
+           
+           <!-- Estudiante 2 -->
+           <div class="student-card" data-student-id="20250010">
+               <div class="student-card-header">
+                   <img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar">
+                   <div class="student-card-info">
+                       <h4>Alejandro Mendoza</h4>
+                       <span class="student-id">ID: 20250010</span> - <span>Jardín</span>
+                   </div>
+               </div>
+               <div class="student-card-details">
+                   <div class="tags">
+                       <span class="tag need">TEA</span>
+                       <span class="tag support">Terapia del habla</span>
+                       <span class="tag progress">Modificación ambiental</span>
+                   </div>
+                   <p class="mt-2"><strong>Apoyos activos:</strong> Terapia del habla, Apoyo conductual</p>
+                   <p><strong>Próxima evaluación:</strong> 10/03/2025</p>
+               </div>
+               <div class="student-card-footer">
+                   <button class="btn-observacion"><i class="fas fa-eye"></i> Ver detalles</button>
+                   <span class="badge">1</span>
+               </div>
+           </div>
+           
+           <!-- Estudiante 3 -->
+           <div class="student-card" data-student-id="20250017">
+               <div class="student-card-header">
+                   <img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar">
+                   <div class="student-card-info">
+                       <h4>Sofía Gutiérrez</h4>
+                       <span class="student-id">ID: 20250017</span> - <span>Jardín</span>
+                   </div>
+               </div>
+               <div class="student-card-details">
+                   <div class="tags">
+                       <span class="tag need">Dificultad de aprendizaje</span>
+                       <span class="tag support">Refuerzo académico</span>
+                   </div>
+                   <p class="mt-2"><strong>Apoyos activos:</strong> Tutoría especializada, Psicopedagogía</p>
+                   <p><strong>Próxima evaluación:</strong> 20/03/2025</p>
+               </div>
+               <div class="student-card-footer">
+                   <button class="btn-observacion"><i class="fas fa-eye"></i> Ver detalles</button>
+               </div>
+           </div>
+           
+           <!-- Estudiante 4 -->
+           <div class="student-card" data-student-id="20250022">
+               <div class="student-card-header">
+                   <img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar">
+                   <div class="student-card-info">
+                       <h4>Carlos Ramírez</h4>
+                       <span class="student-id">ID: 20250022</span> - <span>Jardín</span>
+                   </div>
+               </div>
+               <div class="student-card-details">
+                   <div class="tags">
+                       <span class="tag need">Discapacidad visual parcial</span>
+                       <span class="tag support">Adaptación de materiales</span>
+                       <span class="tag progress">Ubicación preferencial</span>
+                   </div>
+                   <p class="mt-2"><strong>Apoyos activos:</strong> Material adaptado, Acompañamiento</p>
+                   <p><strong>Próxima evaluación:</strong> 12/03/2025</p>
+               </div>
+               <div class="student-card-footer">
+                   <button class="btn-observacion"><i class="fas fa-eye"></i> Ver detalles</button>
+                   <span class="badge">2</span>
+               </div>
+           </div>
+       </section>
+
+       <!-- Modal detalle de estudiante -->
+       <div id="modal-detalle-estudiante" class="modal">
+         <div class="modal-contenido modal-lg">
+             <div class="modal-header">
+                 <h3>Perfil de inclusión: <span id="detail-student-name">María Fernanda Torres</span></h3>
+                 <button class="btn-cerrar" id="btn-cerrar-detalle"><i class="fas fa-times"></i></button>
+             </div>
+             
+             <div class="tabs">
+                 <div class="tab active" data-tab="info-general">Información general</div>
+                 <div class="tab" data-tab="adaptaciones">Adaptaciones</div>
+                 <div class="tab" data-tab="equipo-apoyo">Equipo de apoyo</div>
+                 <div class="tab" data-tab="seguimiento">Seguimiento</div>
+                 <div class="tab" data-tab="documentos">Documentos</div>
+             </div>
+             
+             <!-- Tab: Información general -->
+             <div class="tab-content active" id="info-general">
+                 <div class="student-profile">
+                     <img src="../../imagenes/user-fond.jpeg" alt="Foto estudiante">
+                     <div class="student-details">
+                         <h4>María Fernanda Torres</h4>
+                         <p>ID: 20250003 | Jardín - Grupo A | 5 años</p>
+                         <div class="tags">
+                             <span class="tag need">TDAH</span>
+                             <span class="tag support">Psicología</span>
+                             <span class="tag progress">Adaptación curricular</span>
+                         </div>
+                     </div>
+                 </div>
+                 
+                 <div class="inclusion-card">
+                     <h4>Diagnóstico y necesidades</h4>
+                     <p><strong>Diagnóstico principal:</strong> Trastorno por Déficit de Atención e Hiperactividad (TDAH) - predominio combinado</p>
+                     <p><strong>Diagnóstico realizado por:</strong> Dr. Andrés Martínez - Neuropediatra</p>
+                     <p><strong>Fecha de diagnóstico:</strong> 12/10/2024</p>
+                     <p><strong>Características principales:</strong> Dificultad para mantener la atención en tareas, impulsividad al responder preguntas, inquietud motora, dificultad para esperar turnos durante actividades grupales.</p>
+                 </div>
+                 
+                 <div class="progress-section">
+                     <h4>Progreso académico</h4>
+                     <div class="progress-card">
+                         <div class="progress-item">
+                             <h5>Matemáticas</h5>
+                             <div class="progress-chart">
+                                 <div class="bar" style="width: 65%"></div>
+                             </div>
+                             <div class="progress-value">
+                                 <span>Inicial</span>
+                                 <span>65%</span>
+                                 <span>Meta</span>
+                             </div>
+                         </div>
+                         <div class="progress-item">
+                             <h5>Lenguaje</h5>
+                             <div class="progress-chart">
+                                 <div class="bar" style="width: 70%"></div>
+                             </div>
+                             <div class="progress-value">
+                                 <span>Inicial</span>
+                                 <span>70%</span>
+                                 <span>Meta</span>
+                             </div>
+                         </div>
+                         <div class="progress-item">
+                             <h5>Arte</h5>
+                             <div class="progress-chart">
+                                 <div class="bar" style="width: 90%"></div>
+                             </div>
+                             <div class="progress-value">
+                                 <span>Inicial</span>
+                                 <span>90%</span>
+                                 <span>Meta</span>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                 
+                 <div class="inclusion-card">
+                     <h4>Asistencia</h4>
+                     <p><strong>Asistencia general:</strong> 85%</p>
+                     <p><strong>Inasistencias justificadas:</strong> 10% (Principalmente por asistencia a terapias)</p>
+                     <p><strong>Inasistencias sin justificar:</strong> 5%</p>
+                 </div>
+             </div>
+             
+             <!-- Tab: Adaptaciones curriculares -->
+             <div class="tab-content" id="adaptaciones">
+                 <h4>Adaptaciones curriculares activas</h4>
+                 
+                 <div class="adaptation-item">
+                     <h5>Tiempo adicional para actividades</h5>
+                     <p><strong>Área:</strong> Todas las asignaturas</p>
+                     <p><strong>Descripción:</strong> Se le proporcionará un 50% más del tiempo establecido para completar actividades en clase y evaluaciones.</p>
+                     <p><strong>Fecha de implementación:</strong> 15/01/2025</p>
+                 </div>
+                 
+                 <div class="adaptation-item">
+                     <h5>Ubicación preferencial en el aula</h5>
+                     <p><strong>Área:</strong> Organización del aula</p>
+                     <p><strong>Descripción:</strong> Se ubicará en los primeros puestos, cerca del docente, alejada de elementos distractores como ventanas o puertas.</p>
+                     <p><strong>Fecha de implementación:</strong> 15/01/2025</p>
+                 </div>
+                 
+                 <div class="adaptation-item">
+                     <h5>Instrucciones segmentadas</h5>
+                     <p><strong>Área:</strong> Metodología de enseñanza</p>
+                     <p><strong>Descripción:</strong> Las instrucciones se entregarán en pasos secuenciales, verificando la comprensión de cada paso antes de continuar. Se utilizarán apoyos visuales cuando sea posible.</p>
+                     <p><strong>Fecha de implementación:</strong> 15/01/2025</p>
+                 </div>
+                 
+                 <div class="adaptation-item">
+                     <h5>Pausas activas</h5>
+                     <p><strong>Área:</strong> Gestión del comportamiento</p>
+                     <p><strong>Descripción:</strong> Se permitirán breves pausas activas (1-2 minutos) cada 20 minutos de trabajo continuo, con tareas específicas como entregar materiales o borrar el tablero.</p>
+                     <p><strong>Fecha de implementación:</strong> 05/02/2025</p>
+                 </div>
+                 
+                 <button class="btn-guardar mt-4"><i class="fas fa-plus"></i> Agregar adaptación</button>
+             </div>
+             
+             <!-- Tab: Equipo de apoyo -->
+             <div class="tab-content" id="equipo-apoyo">
+                 <h4>Equipo de apoyo especializado</h4>
+                 
+                 <div class="support-team">
+                     <div class="support-person">
+                         <img src="../../imagenes/user-fond.jpeg" alt="Terapeuta">
+                         <div class="info">
+                             <strong>Andrea Romero</strong>
+                             <span>Terapeuta Ocupacional</span>
+                         </div>
+                     </div>
+                     
+                     <div class="support-person">
+                         <img src="../../imagenes/user-fond.jpeg" alt="Psicóloga">
+                         <div class="info">
+                             <strong>Carlos Moreno</strong>
+                             <span>Psicólogo</span>
+                         </div>
+                     </div>
+                     
+                     <div class="support-person">
+                         <img src="../../imagenes/user-fond.jpeg" alt="Docente">
+                         <div class="info">
+                             <strong>Lucía Palacios</strong>
+                             <span>Docente de Apoyo</span>
+                         </div>
+                     </div>
+                 </div>
+                 
+                 <h4 class="mt-4">Cronograma de apoyos</h4>
+                 
+                 <table class="table-body mt-3">
+                     <thead>
+                         <tr>
+                             <th>Día</th>
+                             <th>Hora</th>
+                             <th>Tipo de apoyo</th>
+                             <th>Profesional</th>
+                             <th>Ubicación</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <tr>
+                             <td>Lunes</td>
+                             <td>2:00 PM - 2:45 PM</td>
+                             <td>Terapia Ocupacional</td>
+                             <td>Andrea Romero</td>
+                             <td>Sala de Terapias</td>
+                         </tr>
+                         <tr>
+                             <td>Miércoles</td>
+                             <td>3:00 PM - 3:45 PM</td>
+                             <td>Apoyo Psicológico</td>
+                             <td>Carlos Moreno</td>
+                             <td>Oficina de Psicología</td>
+                         </tr>
+                         <tr>
+                             <td>Viernes</td>
+                             <td>11:00 AM - 11:45 AM</td>
+                             <td>Refuerzo Académico</td>
+                             <td>Lucía Palacios</td>
+                             <td>Aula de Apoyo</td>
+                         </tr>
+                     </tbody>
+                 </table>
+                 
+                 <button class="btn-guardar mt-4"><i class="fas fa-plus"></i> Agregar profesional de apoyo</button>
+             </div>
+             
+             <!-- Tab: Seguimiento -->
+             <div class="tab-content" id="seguimiento">
+                 <div class="filter-content mb-4">
+                     <button class="btn-filtrar"><i class="fas fa-plus"></i> Nueva observación</button>
+                     <label>
+                         <span>Periodo:</span>
+                         <select>
+                             <option value="todos">Todos</option>
+                             <option value="actual" selected>Periodo actual</option>
+                             <option value="anterior">Periodo anterior</option>
+                         </select>
+                     </label>
+                     <label>
+                         <span>Tipo:</span>
+                         <select>
+                             <option value="todos" selected>Todos</option>
+                             <option value="academico">Académico</option>
+                             <option value="comportamiento">Comportamiento</option>
+                             <option value="terapia">Terapéutico</option>
+                         </select>
+                     </label>
+                 </div>
+                 
+                 <h4>Registro de observaciones y seguimiento</h4>
+                 
+                 <div class="observation-item">
+                     <div class

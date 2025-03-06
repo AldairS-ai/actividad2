@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INFOJIS - Sistema de Gestión Estudiantil</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="styles/index.css">
+  <style>
+      .hero::before {        
+         background-image: url('imagenes/fondo-index.jpg');        
+       }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">         
+        <h1>Gestiona el futuro de la educación con <span class="logotipo">INFO<span class="logo">JIS</span></span></h1>         
+        <p>Bienvenido a tu plataforma integral de gestión estudiantil. Simplifica tus tareas administrativas, da seguimiento al progreso de tus estudiantes y toma decisiones informadas con datos en tiempo real.</p>
+        <div class="hero-actions">
+          <a href="#" class="button button-primary" id="boton-ingresar">Ingresar</a>
+          <a href="#" class="button button-secondary" id="boton-registrar">Registrar</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Welcome Section -->
+  <div class="container">
+    <div class="welcome-section"> 
+      <h2>¡Tu pasión transforma vidas!</h2>
+      <p>En sonrisas, tu dedicación ilumina el camino de nuestros niños. Cada día que enseñas dejas una huella que perdura.<br> ¡Sigue inspirando, sigue creando, sigue haciendo la diferencia!</p>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Nuestras <span class="highlight">Características</span></h2>
+        <p>Todo lo que necesitas para una gestión educativa eficiente en un solo lugar</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card" style="--i:0">
+          <div class="feature-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3>Seguimiento en Tiempo Real</h3>
+          <p>Monitorea el progreso académico con datos actualizados</p>
+        </div>
+        <div class="feature-card" style="--i:1">
+          <div class="feature-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3>Gestión Integral</h3>
+          <p>Administra estudiantes, profesores y recursos en un solo lugar</p>
+        </div>
+        <div class="feature-card" style="--i:2">
+          <div class="feature-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3>Seguridad Garantizada</h3>
+          <p>Información protegida con los más altos estándares</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Login Form -->
+  <div class="overlay" id="overlay"></div>
+  <div class="login-form-container" id="login-form">
+    <button class="close-btn" id="close-login">&times;</button>
+    <form class="login-form">
+      <h2>Iniciar Sesión</h2>
+      <div class="form-group">
+        <label for="email">Usuario</label>
+        <input type="email" id="email" placeholder="Ingresa tu usuario" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+      </div>
+      <button type="submit" class="button button-submit">INICIAR SESIÓN</button>
+      <p class="form-footer">
+        ¿Olvidaste la contraseña? <a href="views/doc/view/contraseña.html">Recuperala</a>
+      </p>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>INFOJIS</h3>
+          <p>Sistema de gestión estudiantil diseñado para impulsar el éxito educativo de Jardín Infantil Sonrisas a través de herramientas digitales innovadoras.</p>
+        </div>
+        <div class="footer-column">
+          <h3>Recursos</h3>
+          <ul class="footer-links">              
+            <li><a href="views/doc/view/politicas-privacidad.html">Políticas y Privacidad</a></li>
+            <li><a href="views/doc/view/terminos-condiciones.html">Términos y Condiciones de Uso</a></li>
+            <li><a href="#">Manual de Usuario</a></li>              
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>Contacto</h3>
+          <div class="contact-info">
+            <div class="contact-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Centro Biotecnologico Del Caribe</span>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-envelope"></i>
+              <span>info@infojis.com</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; <span id="current-year">2024</span> INFOJIS. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="scripts/index.js"></script>
+</body>
+</html>

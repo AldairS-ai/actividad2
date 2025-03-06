@@ -1,0 +1,97 @@
+* Estilos específicos para el módulo de matrículas */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .status-active {
+      background-color: #e6f7e6;
+      color: #2e7d32;
+    }
+    .status-pending {
+      background-color: #fff8e1;
+      color: #ff8f00;
+    }
+    .status-inactive {
+      background-color: #ffebee;
+      color: #c62828;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-view, .btn-edit, .btn-delete {
+      background: none;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .btn-view {
+      color: #1976d2;
+    }
+    .btn-edit {
+      color: #ff9800;
+    }
+    .btn-delete {
+      color: #e53935;
+    }
+    .btn-view:hover, .btn-edit:hover, .btn-delete:hover {
+      opacity: 0.8;
+    }
+    .tab-container {
+      margin-bottom: 20px;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .tab {
+      padding: 12px 16px;
+      cursor: pointer;
+      margin-right: 8px;
+      border-bottom: 2px solid transparent;
+    }
+    .tab.active {
+      border-bottom: 2px solid #ff6600;
+      color: #ff6600;
+      font-weight: 500;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .form-section {
+      margin-bottom: 24px;
+    }
+    .form-section h4 {
+      margin-bottom: 16px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 8px;
+    }
+    .form-row {
+      margin-bottom: 16px;
+    }
+    .file-upload {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .photo-preview {
+      width: 120px;
+      height: 120px;
+      border: 1px dashed #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f9f9f9;
+      margin-bottom: 8px;
+    }
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }

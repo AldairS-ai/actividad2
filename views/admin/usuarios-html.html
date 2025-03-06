@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Infojis - Gestión de Usuarios</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/filters.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+  <link rel="stylesheet" href="../../styles/components/notifications.css">
+  <link rel="stylesheet" href="../../styles/admin/usuarios.css">
+</head>
+<body>
+  <div class="app"-container>
+   <!-- Sidebar -->
+   <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="horario.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Horarios</a></li>
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="usuarios.html" class="nav-link active"><i class="fas fa-users-cog"></i> Usuarios</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+      </ul>
+      <div class="sidebar-footer">
+          <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+      </div>
+   </nav>
+
+   <!-- Overlay para cerrar sidebar en móviles -->
+   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+   <!-- Contenido Principal -->
+   <main class="main-content" id="main-content">
+       <!-- Encabezado -->
+       <header class="header">
+           <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+               <i class="fas fa-bars"></i>
+           </button>                  
+           <div class="user-profile" id="user-profile">
+               <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+               <div>
+                   <span class="user-name">Admin Sistema</span>
+                   <span class="user-role">Administrador</span>
+               </div>
+           </div>
+       </header>
+
+       <!-- Filtros de Usuarios -->
+       <section class="filter">         
+           <div class="filter-content">
+               <label>
+                   <span>Rol:</span>               
+                   <select id="select-rol" name="roles">
+                       <option value="">Todos los roles</option>
+                       <option value="administrador">Administrador</option>
+                       <option value="docente" selected>Docente</option>
+                       <option value="estudiante">Estudiante</option>
+                       <option value="acudiente">Acudiente</option>
+                   </select>
+               </label>
+               <label>
+                   <span>Estado:</span>
+                   <select id="select-estado">
+                       <option value="">Todos</option>
+                       <option value="activo" selected>Activo</option>
+                       <option value="inactivo">Inactivo</option>
+                   </select>
+               </label>
+               <label>
+                   <span>Buscar:</span>
+                   <input type="text" id="buscar-usuario" placeholder="Nombre o ID">
+               </label>
+               <button class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>               
+           </div>         
+       </section>
+       
+       <!-- Lista de Usuarios -->
+       <section class="table-container"> 
+           <div class="table-header">
+               <div class="table-info">
+                   <h3>Gestión de Usuarios</h3>
+                   <div class="table-details">
+                       <span><i class="fas fa-users"></i> 86 usuarios registrados</span>
+                       <span><i class="fas fa-user-shield"></i> 42 docentes activos</span>
+                   </div>               
+               </div>             
+               <div class="action">
+                   <button class="btn-exportar"><i class="fas fa-file-export"></i> Exportar</button>
+                   <button class="btn-nuevo" id="btn-nuevo-usuario"><i class="fas fa-user-plus"></i> Nuevo Usuario</button>
+               </div>
+           </div>         
+           
+           <div class="table-responsive">
+               <table class="table-body">
+                   <thead>
+                       <tr>
+                           <th>ID</th>
+                           <th>Foto</th>
+                           <th>Nombre</th>
+                           <th>Correo</th>
+                           <th>Rol</th>
+                           <th>Estado</th>
+                           <th>Acciones</th>                    
+                       </tr>
+                   </thead>
+                   <tbody id="tabla-usuarios">
+                       <tr>
+                           <td>2025001</td>
+                           <td><img src="../../imagenes/perfil-foto.jpg" alt="Foto" class="student-avatar"></td>
+                           <td class="user-info">
+                               <span class="user-name">Luz Marina Ospino Diaz</span>
+                               <span class="user-since">Desde: 15/01/2023</span>
+                           </td>
+                           <td>luzospino@infojis.edu.co</td>
+                           <td><span class="badge badge-docente">Docente</span></td>
+                           <td><span class="badge badge-activo">Activo</span></td>
+                           <td class="acciones-btns">                         
+                             <button class="btn-editar" data-id="2025001"><i class="fas fa-edit"></i></button>
+                             <button class="btn-resetear" data-id="2025001"><i class="fas fa-key"></i></button>
+                             <button class="btn-deshabilitar" data-id="2025001"><i class="fas fa-user-slash"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>2025002</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="user-info">
+                               <span class="user-name">Carlos Rodriguez Mendez</span>
+                               <span class="user-since">Desde: 10/02/2023</span>
+                           </td>
+                           <td>carlosrm@infojis.edu.co</td>
+                           <td><span class="badge badge-docente">Docente</span></td>
+                           <td><span class="badge badge-activo">Activo</span></td>
+                           <td class="acciones-btns">                         
+                             <button class="btn-editar" data-id="2025002"><i class="fas fa-edit"></i></button>
+                             <button class="btn-resetear" data-id="2025002"><i class="fas fa-key"></i></button>
+                             <button class="btn-deshabilitar" data-id="2025002"><i class="fas fa-user-slash"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>2025003</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="user-info">
+                               <span class="user-name">María Fernanda Torres</span>
+                               <span class="user-since">Desde: 05/03/2023</span>
+                           </td>
+                           <td>mftorres@infojis.edu.co</td>
+                           <td><span class="badge badge-docente">Docente</span></td>
+                           <td><span class="badge badge-inactivo">Inactivo</span></td>
+                           <td class="acciones-btns">                         
+                             <button class="btn-editar" data-id="2025003"><i class="fas fa-edit"></i></button>
+                             <button class="btn-resetear" data-id="2025003"><i class="fas fa-key"></i></button>
+                             <button class="btn-habilitar" data-id="2025003"><i class="fas fa-user-check"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>2025004</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="user-info">
+                               <span class="user-name">Pedro Sánchez Ortiz</span>
+                               <span class="user-since">Desde: 20/01/2023</span>
+                           </td>
+                           <td>psanchez@infojis.edu.co</td>
+                           <td><span class="badge badge-docente">Docente</span></td>
+                           <td><span class="badge badge-activo">Activo</span></td>
+                           <td class="acciones-btns">                         
+                             <button class="btn-editar" data-id="2025004"><i class="fas fa-edit"></i></button>
+                             <button class="btn-resetear" data-id="2025004"><i class="fas fa-key"></i></button>
+                             <button class="btn-deshabilitar" data-id="2025004"><i class="fas fa-user-slash"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>2025005</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="user-info">
+                               <span class="user-name">Valentina Gómez Rey</span>
+                               <span class="user-since">Desde: 14/02/2023</span>
+                           </td>
+                           <td>vgomezr@infojis.edu.co</td>
+                           <td><span class="badge badge-docente">Docente</span></td>
+                           <td><span class="badge badge-activo">Activo</span></td>
+                           <td class="acciones-btns">                         
+                             <button class="btn-editar" data-id="2025005"><i class="fas fa-edit"></i></button>
+                             <button class="btn-resetear" data-id="2025005"><i class="fas fa-key"></i></button>
+                             <button class="btn-deshabilitar" data-id="2025005"><i class="fas fa-user-slash"></i></button>
+                           </td>                     
+                       </tr>
+                   </tbody>
+               </table>
+           </div>
+           
+           <div class="tabla-paginacion" role="navigation" aria-label="Paginación de resultados">
+               <button class="btn-pagina" aria-label="Página anterior">
+                   <i class="fas fa-chevron-left" aria-hidden="true"></i>
+               </button>
+               <span>Página 1 de 9</span>
+               <button class="btn-pagina" aria-label="Página siguiente">
+                   <i class="fas fa-chevron-right" aria-hidden="true"></i>
+               </button>
+           </div>         
+       </section>
+  
+       <!-- Modal de nuevo usuario -->
+       <div id="modal-usuario" class="modal">
+         <div class="modal-contenido">
+             <div class="modal-header">
+                 <h3>Nuevo Usuario</h3>
+                 <button class="btn-cerrar" id="btn-cerrar-modal"><i class="fas fa-times"></i></button>
+             </div>
+             <form id="form-usuario"> 
+                 <div class="group-form">
+                     <div class="form-row">
+                         <div class="form-column">                
+                             <label for="nombre">Nombre completo:</label>
+                             <input type="text" id="nombre" placeholder="Nombre y apellidos" required>
+                         </div>
+                         <div class="form-column">
+                             <label for="email">Correo electrónico:</label>
+                             <input type="email" id="email" placeholder="correo@infojis.edu.co" required>
+                         </div>
+                     </div>
+                     
+                     <div class="form-row">
+                         <div class="form-column">                
+                             <label for="rol">Rol:</label>
+                             <select id="rol" required>
+                                 <option value="">Seleccionar rol</option>
+                                 <option value="administrador">Administrador</option>
+                                 <option value="docente">Docente</option>
+                                 <option value="estudiante">Estudiante</option>
+                                 <option value="acudiente">Acudiente</option>
+                             </select>
+                         </div>
+                         <div class="form-column">
+                             <label for="estado">Estado:</label>
+                             <select id="estado" required>
+                                 <option value="activo" selected>Activo</option>
+                                 <option value="inactivo">Inactivo</option>
+                             </select>
+                         </div>
+                     </div>
+                     
+                     <div class="form-row">
+                         <div class="form-column">                
+                             <label for="id-usuario">ID de Usuario:</label>
+                             <input type="text" id="id-usuario" placeholder="Generado automáticamente" readonly>
+                         </div>
+                         <div class="form-column">
+                             <label for="contraseña">Contraseña:</label>
+                             <input type="password" id="contraseña" placeholder="Generada automáticamente" readonly>
+                             <small>Se enviará al correo electrónico del usuario</small>
+                         </div>
+                     </div>
+                     
+                     <div class="form-row">
+                         <div class="form-column full-width">
+                             <label for="foto">Foto de perfil:</label>
+                             <input type="file" id="foto" accept="image/*">
+                         </div>
+                     </div>
+                     
+                     <div id="campos-adicionales">
+                         <!-- Campos adicionales según el rol seleccionado -->
+                     </div>
+                 </div>
+                 <div class="form-acciones">                              
+                     <button type="button" class="btn-cancelar">Cancelar</button>
+                     <button type="submit" class="btn-guardar">Guardar</button>                              
+                 </div>                
+             </form>
+         </div>         
+       </div>
+       
+       <!-- Modal de editar usuario -->
+       <div id="modal-editar" class="modal">
+         <div class="modal-contenido">
+             <div class="modal-header">
+                 <h3>Editar Usuario</h3>
+                 <button class="btn-cerrar" id="btn-cerrar-modal-editar"><i class="fas fa-times"></i></button>
+             </div>
+             <form id="form-editar-usuario"> 
+                 <input type="hidden" id="editar-id">
+                 <div class="group-form">
+                     <div class="form-row">
+                         <div class="form-column">                
+                             <label for="editar-nombre">Nombre completo:</label>
+                             <input type="text" id="editar-nombre" placeholder="Nombre y apellidos" required>
+                         </div>
+                         <div class="form-column">
+                             <label for="editar-email">Correo electrónico:</label>
+                             <input type="email" id="editar-email" placeholder="correo@infojis.edu.co" required>
+                         </div>
+                     </div>
+                     
+                     <div class="form-row">
+                         <div class="form-column">                
+                             <label for="editar-rol">Rol:</label>
+                             <select id="editar-rol" required>
+                                 <option value="">Seleccionar rol</option>
+                                 <option value="administrador">Administrador</option>
+                                 <option value="docente">Docente</option>
+                                 <option value="estudiante">Estudiante</option>
+                                 <option value="acudiente">Acudiente</option>
+                             </select>
+                         </div>
+                         <div class="form-column">
+                             <label for="editar-estado">Estado:</label>
+                             <select id="editar-estado" required>
+                                 <option value="activo">Activo</option>
+                                 <option value="inactivo">Inactivo</option>
+                             </select>
+                         </div>
+                     </div>
+                     
+                     <div class="form-row">
+                         <div class="form-column full-width">
+                             <label for="editar-foto">Foto de perfil:</label>
+                             <input type="file" id="editar-foto" accept="image/*">
+                         </div>
+                     </div>
+                 </div>
+                 <div class="form-acciones">                              
+                     <button type="button" class="btn-cancelar-editar">Cancelar</button>
+                     <button type="submit" class="btn-guardar-editar">Guardar cambios</button>                              
+                 </div>                
+             </form>
+         </div>         
+       </div>
+       
+       <!-- Modal de restablecer contraseña -->
+       <div id="modal-resetear" class="modal">
+         <div class="modal-contenido">
+             <div class="modal-header">
+                 <h3>Restablecer Contraseña</h3>
+                 <button class="btn-cerrar" id="btn-cerrar-modal-resetear"><i class="fas fa-times"></i></button>
+             </div>
+             <form id="form-resetear"> 
+                 <input type="hidden" id="reset-id">
+                 <div class="group-form">
+                     <div class="form-row">
+                         <div class="form-column full-width">                
+                             <p>¿Está seguro que desea restablecer la contraseña para el usuario <strong id="reset-nombre"></strong>?</p>
+                             <p>Se enviará una nueva contraseña temporal al correo electrónico registrado.</p>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="form-acciones">                              
+                     <button type="button" class="btn-cancelar-reset">Cancelar</button>
+                     <button type="submit" class="btn-confirmar">Confirmar</button>                              
+                 </div>                
+             </form>
+         </div>         
+       </div>
+
+       <!-- Notificación de éxito -->
+       <div class="notification" id="notification">
+           <i class="fas fa-check-circle"></i>
+           <span id="notification-message">Acción completada con éxito</span>
+       </div>
+  </main>
+  </div>
+
+  <script>
+    // Toggle sidebar solo en móviles
+    document.getElementById('sidebar-toggle').addEventListener('click', function() {
+        if (window.innerWidth <= 992) { // Solo ejecutar en pantallas pequeñas
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+            document.getElementById('main-content').classList.toggle('expanded');
+        }
+    });
+    
+    // Cerrar sidebar cuando se hace clic en el overlay
+    document.getElementById('sidebar-overlay').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('active');
+        document.getElementById('sidebar-overlay').classList.remove('active');
+    });
+    
+    // Abrir modal de nuevo usuario
+    document.getElementById('btn-nuevo-usuario').addEventListener('click', function() {
+        document.getElementById('modal-usuario').classList.add('active');
+    });
+    
+    // Cerrar modales
+    document.getElementById('btn-cerrar-modal').addEventListener('click', function() {
+        document.getElementById('modal-usuario').classList.remove('active');
+    });
+    
+    document.getElementById('btn-cerrar-modal-editar').addEventListener('click', function() {
+        document.getElementById('modal-editar').classList.remove('active');
+    });
+    
+    document.getElementById('btn-cerrar-modal-resetear').addEventListener('click', function() {
+        document.getElementById('modal-resetear').classList.remove('active');
+    });
+    
+    document.querySelectorAll('.btn-cancelar, .btn-cancelar-editar, .btn-cancelar-reset').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('active');
+            });
+        });
+    });
+    
+    // Mostrar campos adicionales según el rol seleccionado
+    document.getElementById('rol').addEventListener('change', function() {
+        const camposAdicionales = document.getElementById('campos-adicionales');
+        camposAdicionales.innerHTML = '';
+        
+        if (this.value === 'docente') {
+            camposAdicionales.innerHTML = `
+                <div class="form-row">
+                    <div class="form-column">                
+                        <label for="especialidad">Especialidad:</label>
+                        <input type="text" id="especialidad" placeholder="Ej: Matemáticas">
+                    </div>
+                    <div class="form-column">
+                        <label for="jornada">Jornada:</label>
+                        <select id="jornada">
+                            <option value="manana">Mañana</option>
+                            <option value="tarde">Tarde</option>
+                            <option value="completa">Completa</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+        } else if (this.value === 'estudiante') {
+            camposAdicionales.innerHTML = `
+                <div class="form-row">
+                    <div class="form-column">                
+                        <label for="grado">Grado:</label>
+                        <select id="grado">
+                            <option value="parvulos">Párvulos</option>
+                            <option value="maternos">Maternos</option>
+                            <option value="pre-jardin">Pre-Jardín</option>
+                            <option value="jardin">Jardín</option>                      
+                            <option value="primero">Primero</option>
+                        </select>
+                    </div>
+                    <div class="form-column">
+                        <label for="grupo">Grupo:</label>
+                        <select id="grupo">
+                            <option value="a">A</option>
+                            <option value="b">B</option>
+                            <option value="c">C</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+        } else if (this.value === 'acudiente') {
+            camposAdicionales.innerHTML = `
+                <div class="form-row">
+                    <div class="form-column">                
+                        <label for="telefono">Teléfono de contacto:</label>
+                        <input type="tel" id="telefono" placeholder="Ej: 300 123 4567">
+                    </div>
+                    <div class="form-column">
+                        <label for="estudiantes-asociados">Estudiantes asociados:</label>
+                        <select id="estudiantes-asociados" multiple>
+                            <option value="2025001">Ana María López</option>
+                            <option value="2025002">Carlos Rodríguez</option>
+                            <option value="2025003">María Fernanda Torres</option>
+                        </select>
+                        <small>Mantenga presionado Ctrl para seleccionar varios</small>
+                    </div>
+                </div>
+            `;
+        }
+    });
+    
+    // Abrir modal de editar usuario
+    document.querySelectorAll('.btn-editar').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const userId = this.getAttribute('data-id');
+            const userName = this.closest('tr').querySelector('.user-name').textContent;
+            const userEmail = this.closest('tr').querySelector('td:nth-child(4)').textContent;
+            const userRol = this.closest('tr').querySelector('.badge').textContent.toLowerCase();
+            const userEstado = this.closest('tr').querySelector('td:nth-child(6) .badge').classList.contains('badge-activo') ? 'activo' : 'inactivo';
+            
+            document.getElementById('editar-id').value = userId;
+            document.getElementById('editar-nombre').value = userName;
+            document.getElementById('editar-email').value = userEmail;
+            document.getElementById('editar-rol').value = userRol;
+            document.getElementById('editar-estado').value = userEstado;
+            
+            document.getElementById('modal-editar').classList.add('active');
+        });
+    });
+    
+    // Abrir modal de restablecer contraseña
+    document.querySelectorAll('.btn-resetear').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const userId = this.getAttribute('data-id');
+            const userName = this.closest('tr').querySelector('.user-name').textContent;
+            
+            document.getElementById('reset-id').value = userId;
+            document.getElementById('reset-nombre').textContent = userName;
+            
+            document.getElementById('modal-resetear').classList.add('active');
+        });
+    });
+    
+    // Habilitar/Deshabilitar usuario
+    document.querySelectorAll('.btn-deshabilitar, .btn-habilitar').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const userId = this.getAttribute('data-id');
+            const isDisabling = this.classList.contains('btn-deshabilitar');
+            const action = isDisabling ? 'deshabilitado' : 'habilitado';
+            
+            // Aquí iría la lógica para habilitar/deshabilitar al usuario
+            
+            // Mostrar notificación
+            const notification = document.getElementById('notification');
+            document.getElementById('notification-message').textContent = `Usuario ${action} correctamente`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                
+                // Actualizar la interfaz (simulado)
+                if (isDisabling) {
+                    this.closest('tr').querySelector('td:nth-child(6) .badge').classList.remove('badge-activo');
+                    this.closest('tr').querySelector('td:nth-child(6) .badge').classList.add('badge-inactivo');
+                    this.closest('tr').querySelector('td:nth-child(6) .badge').textContent = 'Inactivo';
+                    
+                    this.innerHTML = '<i class="fas fa-user-check"></i>';
+                    this.classList.remove('btn-deshabilitar');
+                    this.classList.add('btn-habilitar');
+                } else {
+                    this.closest('tr').querySelector('td:nth-child(6) .badge').classList.remove('badge-inactivo');
+                    this.closest('tr').querySelector('td:nth-child(6) .badge').classList.add('badge-activo');
+                    this.closest('tr').querySelector('td:nth-child(6) .badge').textContent = 'Activo';
+                    
+                    this.innerHTML = '<i class="fas fa-user-slash"></i>';
+                    this.classList.remove('btn-habilitar');
+                    this.classList.add('btn-deshabilitar');
+                }
+            }, 1500);
+        });
+    });
+    
+    // Enviar formularios
+    const forms = ['form-usuario', 'form-editar-usuario', 'form-resetear'];
+    forms.forEach(formId => {
+        document.getElementById(formId).addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Cerrar el modal
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('active');
+            });
+            
+            // Mostrar notificación
+            const notification = document.getElementById('notification');
+            let message = 'Usuario guardado correctamente';
+            
+            if (formId === 'form-editar-usuario') {
+                message = 'Usuario actualizado correctamente';
+            } else if (formId === 'form-resetear') {
+                message = 'Contraseña restablecida correctamente';
+            }
+            
+            document.getElementById('notification-message').textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        });
+    });
+  </script>
+    <script src"../../scripts/admin/usuarios.js"></script>
+</body>
+</html>

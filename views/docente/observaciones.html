@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Educativo - Módulo de Observaciones</title>
+    <link rel="stylesheet" href="../../styles/docente/main.css">
+    <link rel="stylesheet" href="../../styles/components/table.css">
+    <link rel="stylesheet" href="../../styles/components/filters.css">
+    <link rel="stylesheet" href="../../styles/components/modal.css">
+    <link rel="stylesheet" href="../../styles/components/notifications.css">  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos específicos para el módulo de observaciones */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card-stats {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .card-stats-title {
+            font-size: 16px;
+            color: #666666;
+            margin-bottom: 5px;
+        }
+        
+        .card-stats-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333333;
+            margin-bottom: 5px;
+        }
+        
+        .card-stats-info {
+            font-size: 14px;
+            color: #666666;
+        }
+        
+        .card-stats-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .icon-positivas {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+        
+        .icon-mejora {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+        
+        .icon-academicas {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+        
+        .icon-disciplinares {
+            background-color: rgba(255, 150, 0, 0.1);
+            color: #ff8c00;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-value {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .progress-positivas {
+            background-color: #27ae60;
+        }
+        
+        .progress-mejora {
+            background-color: #e74c3c;
+        }
+        
+        .progress-academicas {
+            background-color: #3498db;
+        }
+        
+        .progress-disciplinares {
+            background-color: #ff8c00;
+        }
+        
+        .chart-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333333;
+        }
+        
+        .chart-period {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chart-period select {
+            padding: 8px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+        }
+        
+        .chart-content {
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Simulación de gráficos para el prototipo */
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #666666;
+            font-style: italic;
+        }
+        
+        /* Estilo para insignias de categoría */
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .badge-positiva {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+        
+        .badge-mejora {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+        
+        .badge-academica {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+        
+        .badge-disciplinar {
+            background-color: rgba(255, 150, 0, 0.1);
+            color: #ff8c00;
+        }
+        
+        /* Estilos para la lista de observaciones */
+        .observation-list {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        
+        .observation-item {
+            padding: 20px;
+            border-bottom: 1px solid #f1f1f1;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .observation-item:last-child {
+            border-bottom: none;
+        }
+        
+        .observation-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .observation-content {
+            flex: 1;
+        }
+        
+        .observation-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .observation-student {
+            font-weight: 600;
+            color: #333333;
+        }
+        
+        .observation-date {
+            font-size: 13px;
+            color: #666666;
+        }
+        
+        .observation-text {
+            color: #333333;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .observation-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .observation-teacher {
+            font-size: 13px;
+            color: #666666;
+        }
+        
+        .observation-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .observation-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666666;
+            transition: color 0.2s;
+        }
+        
+        .observation-actions button:hover {
+            color: #ff6600;
+        }
+        
+        /* Estilos para el formulario de nueva observación */
+        .new-observation {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .form-header {
+            margin-bottom: 20px;
+        }
+        
+        .form-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 5px;
+        }
+        
+        .form-subtitle {
+            font-size: 14px;
+            color: #666666;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333333;
+        }
+        
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            padding: 10px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .btn-cancelar {
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666666;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-guardar {
+            padding: 10px 20px;
+            background-color: #ff6600;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-cancelar:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .btn-guardar:hover {
+            background-color: #e55c00;
+        }
+        
+        /* Estilos para reportes exportables */
+        .report-types {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .report-type {
+            flex: 1;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 10px;
+            border: 2px solid #f1f1f1;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .report-type:hover, .report-type.active {
+            border-color: #ff6600;
+            background-color: #fff6f0;
+        }
+        
+        .report-type i {
+            font-size: 24px;
+            color: #ff6600;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .report-type h4 {
+            margin-bottom: 5px;
+            color: #333333;
+        }
+        
+        .report-type p {
+            font-size: 14px;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <img src="/api/placeholder/160/60" alt="Logo Sistema Educativo" class="logo">
+        </div>
+        <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Inicio</a></li>        
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="observaciones.html" class="nav-link active"><i class="fas fa-comment-dots"></i> Observaciones</a></li>        
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+          <div class="sidebar-footer">
+              <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+          </div>
+      </ul>
+    </div>
+    
+    <!-- Overlay para móviles -->
+    <div class="sidebar-overlay"></div>
+    
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <button class="header-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-profile">
+                <img src="/api/placeholder/40/40" alt="Foto de perfil" class="user-avatar">
+                <div>
+                    <span class="user-name">Ana García</span>
+                    <span class="user-role">Coordinadora</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filtros -->
+        <div class="filter">
+            <div class="filter-content">
+                <label>
+                    <span>Curso</span>
+                    <select>
+                        <option value="">Todos los cursos</option>
+                        <option value="1A">1° Año A</option>
+                        <option value="1B">1° Año B</option>
+                        <option value="2A">2° Año A</option>
+                        <option value="2B">2° Año B</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Estudiante</span>
+                    <select>
+                        <option value="">Todos los estudiantes</option>
+                        <option value="1">Martín Rodríguez</option>
+                        <option value="2">Lucía Martínez</option>
+                        <option value="3">Gabriel López</option>
+                        <option value="4">Valentina Sánchez</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Categoría</span>
+                    <select>
+                        <option value="">Todas las categorías</option>
+                        <option value="positiva">Positivas</option>
+                        <option value="mejora">Áreas de mejora</option>
+                        <option value="academica">Académicas</option>
+                        <option value="disciplinar">Disciplinares</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Desde</span>
+                    <input type="date" value="2023-03-01">
+                </label>
+                <label>
+                    <span>Hasta</span>
+                    <input type="date" value="2023-06-30">
+                </label>
+                <button class="btn-filtrar">
+                    <i class="fas fa-filter"></i>
+                    Filtrar
+                </button>
+            </div>
+        </div>
+        
+        <!-- Acciones principales -->
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+            <button class="btn-guardar">
+                <i class="fas fa-plus"></i>
+                Nueva observación
+            </button>
+        </div>
+        
+        <!-- Tarjetas estadísticas -->
+        <div class="cards-container">
+            <div class="card-stats">
+                <div class="card-stats-header">
+                    <div>
+                        <div class="card-stats-title">Observaciones positivas</div>
+                        <div class="card-stats-number">45</div>
+                        <div class="card-stats-info">+15% vs. período anterior</div>
+                    </div>
+                    <div class="card-stats-icon icon-positivas">
+                        <i class="fas fa-thumbs-up"></i>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value progress-positivas" style="width: 36%"></div>
+                </div>
+            </div>
+            
+            <div class="card-stats">
+                <div class="card-stats-header">
+                    <div>
+                        <div class="card-stats-title">Áreas de mejora</div>
+                        <div class="card-stats-number">28</div>
+                        <div class="card-stats-info">-5% vs. período anterior</div>
+                    </div>
+                    <div class="card-stats-icon icon-mejora">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value progress-mejora" style="width: 22.4%"></div>
+                </div>
+            </div>
+            
+            <div class="card-stats">
+                <div class="card-stats-header">
+                    <div>
+                        <div class="card-stats-title">Académicas</div>
+                        <div class="card-stats-number">35</div>
+                        <div class="card-stats-info">+8% vs. período anterior</div>
+                    </div>
+                    <div class="card-stats-icon icon-academicas">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value progress-academicas" style="width: 28%"></div>
+                </div>
+            </div>
+            
+            <div class="card-stats">
+                <div class="card-stats-header">
+                    <div>
+                        <div class="card-stats-title">Disciplinares</div>
+                        <div class="card-stats-number">17</div>
+                        <div class="card-stats-info">-12% vs. período anterior</div>
+                    </div>
+                    <div class="card-stats-icon icon-disciplinares">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value progress-disciplinares" style="width: 13.6%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Formulario de nueva observación (normalmente estaría oculto y se mostraría al hacer clic en "Nueva observación") -->
+        <div class="new-observation">
+            <div class="form-header">
+                <h3 class="form-title">Nueva observación</h3>
+                <p class="form-subtitle">Completa el formulario para registrar una nueva observación sobre el estudiante.</p>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="curso">Curso</label>
+                    <select id="curso">
+                        <option value="">Selecciona un curso</option>
+                        <option value="1A">1° Año A</option>
+                        <option value="1B">1° Año B</option>
+                        <option value="2A">2° Año A</option>
+                        <option value="2B">2° Año B</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="estudiante">Estudiante</label>
+                    <select id="estudiante">
+                        <option value="">Selecciona un estudiante</option>
+                        <option value="1">Martín Rodríguez</option>
+                        <option value="2">Lucía Martínez</option>
+                        <option value="3">Gabriel López</option>
+                        <option value="4">Valentina Sánchez</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="categoria">Categoría</label>
+                    <select id="categoria">
+                        <option value="">Selecciona una categoría</option>
+                        <option value="positiva">Positiva</option>
+                        <option value="mejora">Área de mejora</option>
+                        <option value="academica">Académica</option>
+                        <option value="disciplinar">Disciplinar</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="observacion">Observación</label>
+                <textarea id="observacion" placeholder="Escribe aquí tu observación sobre el estudiante..."></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="visibilidad">Visibilidad</label>
+                    <select id="visibilidad">
+                        <option value="todos">Todos (Docentes, Directivos y Padres)</option>
+                        <option value="escuela">Solo personal de la escuela</option>
+                        <option value="docentes">Solo docentes</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fecha">Fecha de la observación</label>
+                    <input type="date" id="fecha" value="2023-06-15">
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="btn-cancelar">Cancelar</button>
+                <button class="btn-guardar">Guardar observación</button>
+            </div>
+        </div>
+        
+        <!-- Gráficos -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3 class="chart-title">Tendencia de Observaciones por Mes</h3>
+                <div class="chart-period">
+                    <select>
+                        <option value="mensual">Mensual</option>
+                        <option value="trimestral">Trimestral</option>
+                        <option value="anual">Anual</option>
+                    </select>
+                </div>
+            </div>
+            <div class="chart-content">
+                <div class="chart-placeholder">
+                    <i class="fas fa-chart-line fa-3x"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gráficos en fila -->
+        <div class="cards-container">
+            <div class="chart-container" style="margin-bottom: 0;">
+                <div class="chart-header">
+                    <h3 class="chart-title">Distribución por Categoría</h3>
+                </div>
+                <div class="chart-content" style="height: 250px;">
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-pie fa-3x"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-container" style="margin-bottom: 0;">
+                <div class="chart-header">
+                    <h3 class="chart-title">Observaciones por Curso</h3>
+                </div>
+                <div class="chart-content" style="height: 250px;">
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-bar fa-3x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lista de observaciones recientes -->
+        <div class="table-container" style="margin-top: 30px;">
+            <div class="table-header">
+                <div class="table-info">
+                    <h3>Observaciones Recientes</h3>
+                    <div class="table-details">
+                        <span><i class="fas fa-calendar"></i> Últimos 30 días</span>
+                        <span><i class="fas fa-filter"></i> Todos los cursos</span>
+                    </div>
+                </div>
+                <div class="action">
+                    <button class="btn-exportar">
+                        <i class="fas fa-file-export"></i>
+                        Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lista de observaciones -->
+        <div class="observation-list">
+            <div class="observation-item">
+                <img src="/api/placeholder/50/50" alt="Avatar del estudiante" class="observation-avatar">
+                <div class="observation-content">
+                    <div class="observation-header">
+                        <span class="observation-student">Martín Rodríguez - 1° Año A</span>
+                        <span class="observation-date">15 de junio, 2023</span>
+                    </div>
+                    <p class="observation-text">
+                        Ha mostrado una notable mejora en su participación en clase durante las últimas semanas. Se ofrece voluntariamente para responder preguntas y está apoyando a sus compañeros que tienen dificultades con los ejercicios de matemáticas.
+                    </p>
+                    <div class="observation-meta">
+                        <span class="observation-teacher">
+                            <i class="fas fa-user-tie"></i> Prof. Carlos Vega - Matemáticas
+                        </span>
+                        <div class="observation-category">
+                            <span class="badge badge-positiva">Positiva</span>
+                            <span class="badge badge-academica">Académica</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="observation-item">
+                <img src="/api/placeholder/50/50" alt="Avatar del estudiante" class="observation-avatar">
+                <div class="observation-content">
+                    <div class="observation-header">
+                        <span class="observation-student">Lucía Martínez - 2° Año B</span>
+                        <span class="observation-date">12 de junio, 2023</span>
+                    </div>
+                    <p class="observation-text">
+                        Presenta dificultades para entregar sus tareas a tiempo, especialmente en los trabajos de investigación. Se recomienda un seguimiento más cercano y posiblemente una reunión con sus padres para establecer estrategias de apoyo en casa.
+                    </p>
+                    <div class="observation-meta">
+                        <span class="observation-teacher">
+                            <i class="fas fa-user-tie"></i> Prof. María López - Historia
+                        </span>
+                        <div class="observation-category">
+                            <span class="badge badge-mejora">Área de mejora</span>
+                            <span class="badge badge-academica">Académica</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="observation-item">
+                <img src="/api/placeholder/50/50" alt="Avatar del estudiante" class="observation-avatar">
+                <div class="observation-content">
+                    <div class="observation-header">
+                        <span class="observation-student">Gabriel López - 1° Año B</span>
+                        <span class="observation-date">10 de junio, 2023</span>
+                    </div>
+                    <p class="observation-text">
+                        Durante el recreo tuvo un altercado con un compañero de clase. Se conversó con ambos estudiantes y reconocieron su error. Gabriel se comprometió a mejorar su comunicación y resolver conflictos de manera pacífica en el futuro.
+                    </p>
+                    <div class="observation-meta">
+                        <span class="observation-teacher">
+                            <i class="fas fa-user-tie"></i> Prof. Laura Gómez - Tutora
+                        </span>
+                        <div class="observation-category">
+                            <span class="badge badge-disciplinar">Disciplinar</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="observation-item">
+                <img src="/api/placeholder/50/50" alt="Avatar del estudiante" class="observation-avatar">
+                <div class="observation-content">
+                    <div class="observation-header">
+                        <span class="observation-student">Valentina Sánchez - 2° Año A</span>
+                        <span class="observation-date">8 de junio, 2023</span>
+                    </div>
+                    <p class="observation-text">
+                        Ha demostrado un excelente desempeño en el proyecto de ciencias. Su experimento fue muy original y bien ejecutado, mostrando una comprensión profunda de los conceptos estudiados. Felicitaciones por su dedicación y creatividad.
+                    </p>
+                    <div class="observation-meta">
+                        <span class="observation-teacher">
+                            <i class="fas fa-user-tie"></i> Prof. Roberto Méndez - Ciencias
+                        </span>
+                        <div class="observation-category">
+                            <span class="badge badge-positiva">Positiva</span>
+                            <span class="badge badge-academica">Académica</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="observation-item">
+                <img src="/api/placeholder/50/50" alt="Avatar del estudiante" class="observation-avatar">
+                <div class="observation-content">
+                    <div class="observation-header">
+                        <span class="observation-student">Mateo González - 1° Año A</span>
+                        <span class="observation-date">5 de junio, 2023</span
+                        <span class="observation-date">5 de junio, 2023</span>
+                    </div>
+                    <p class="observation-text">
+                        Se ha notado que llega constantemente tarde a las clases de la primera hora. Ya se ha conversado con él sobre la importancia de la puntualidad, pero no se observan mejoras. Se sugiere contactar a los padres para abordar esta situación.
+                    </p>
+                    <div class="observation-meta">
+                        <span class="observation-teacher">
+                            <i class="fas fa-user-tie"></i> Prof. Ana García - Coordinadora
+                        </span>
+                        <div class="observation-category">
+                            <span class="badge badge-mejora">Área de mejora</span>
+                            <span class="badge badge-disciplinar">Disciplinar</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Paginación -->
+        <div class="pagination">
+            <button class="pagination-button"><i class="fas fa-angle-left"></i></button>
+            <button class="pagination-button active">1</button>
+            <button class="pagination-button">2</button>
+            <button class="pagination-button">3</button>
+            <span class="pagination-ellipsis">...</span>
+            <button class="pagination-button">10</button>
+            <button class="pagination-button"><i class="fas fa-angle-right"></i></button>
+        </div>
+        
+        <!-- Sección de reportes exportables (normalmente estaría oculta) -->
+        <div class="section-exportar" style="margin-top: 30px; display: none;">
+            <h3 class="section-title">Exportar Reportes de Observaciones</h3>
+            <p class="section-subtitle">Selecciona el tipo de reporte que deseas generar:</p>
+            
+            <div class="report-types">
+                <div class="report-type active">
+                    <i class="fas fa-user"></i>
+                    <h4>Por Estudiante</h4>
+                    <p>Genera un reporte detallado de observaciones para un estudiante específico</p>
+                </div>
+                
+                <div class="report-type">
+                    <i class="fas fa-users"></i>
+                    <h4>Por Curso</h4>
+                    <p>Reporte completo de observaciones para todos los estudiantes de un curso</p>
+                </div>
+                
+                <div class="report-type">
+                    <i class="fas fa-chart-pie"></i>
+                    <h4>Estadístico</h4>
+                    <p>Reporte con estadísticas y gráficos de todas las observaciones</p>
+                </div>
+            </div>
+            
+            <div class="filter-content" style="margin-top: 20px;">
+                <label>
+                    <span>Formato</span>
+                    <select>
+                        <option value="pdf">PDF</option>
+                        <option value="excel">Excel</option>
+                        <option value="csv">CSV</option>
+                    </select>
+                </label>
+                
+                <label>
+                    <span>Período</span>
+                    <select>
+                        <option value="mes-actual">Mes actual</option>
+                        <option value="trimestre">Trimestre actual</option>
+                        <option value="anio">Año escolar completo</option>
+                        <option value="personalizado">Período personalizado</option>
+                    </select>
+                </label>
+                
+                <button class="btn-exportar" style="margin-left: auto;">
+                    <i class="fas fa-download"></i>
+                    Generar y Descargar
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Script para interactividad -->
+    <script>
+        // Toggle del sidebar en móviles
+        document.querySelector('.header-menu-toggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('active');
+            document.querySelector('.sidebar-overlay').classList.toggle('active');
+        });
+        
+        document.querySelector('.sidebar-overlay').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.remove('active');
+            document.querySelector('.sidebar-overlay').classList.remove('active');
+        });
+        
+        // Simulación de botones y acciones
+        document.querySelector('.btn-filtrar').addEventListener('click', function() {
+            alert('Filtros aplicados');
+        });
+        
+        // Evento para mostrar/ocultar formulario de nueva observación
+        const btnNuevaObservacion = document.querySelector('.btn-guardar');
+        const formObservacion = document.querySelector('.new-observation');
+        
+        btnNuevaObservacion.addEventListener('click', function() {
+            formObservacion.style.display = formObservacion.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        // Eventos para formulario de observación
+        document.querySelector('.btn-cancelar').addEventListener('click', function() {
+            formObservacion.style.display = 'none';
+        });
+        
+        document.querySelector('.btn-guardar').addEventListener('click', function() {
+            // En un caso real, aquí se enviaría el formulario
+            alert('Observación guardada correctamente');
+            formObservacion.style.display = 'none';
+        });
+        
+        // Evento para botón de exportar
+        document.querySelector('.btn-exportar').addEventListener('click', function() {
+            // En un caso real, aquí se generaría el archivo de exportación
+            alert('Reporte exportado correctamente');
+        });
+    </script>
+</body>
+</html>

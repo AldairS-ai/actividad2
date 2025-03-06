@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Infojis - Matrículas</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/filters.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+  <link rel="stylesheet" href="../../styles/components/notifications.css">
+  <link rel="stylesheet" href="../../styles/admin/matriculas.css">
+    
+  </head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="horario.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Horarios</a></li>
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="matriculas.html" class="nav-link active"><i class="fas fa-user-graduate"></i> Matrículas</a></li>
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+      </ul>
+      <div class="sidebar-footer">
+          <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+      </div>
+    </nav>
+
+    <!-- Overlay para cerrar sidebar en móviles -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Contenido Principal -->
+    <main class="main-content" id="main-content">
+      <!-- Encabezado -->
+      <header class="header">
+        <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="user-profile" id="user-profile">
+          <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+          <div>
+            <span class="user-name">Luz Ospino</span>
+            <span class="user-role">Administrador</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Navegación por pestañas -->
+      <div class="tab-container">
+        <div class="tabs">
+          <div class="tab active" data-tab="estudiantes">Estudiantes Matriculados</div>
+          <div class="tab" data-tab="registro">Registrar Estudiante</div>
+        </div>
+      </div>
+
+      <!-- Contenido Tab: Estudiantes Matriculados -->
+      <div id="tab-estudiantes" class="tab-content active">
+        <!-- Filtros de Estudiantes -->
+        <section class="filter">         
+          <div class="filter-content">
+            <label>
+              <span>Curso:</span>               
+              <select id="select-curso" name="cursos">
+                <option value="">Todos los cursos</option>
+                <option value="parvulos">Párvulos</option>
+                <option value="maternos">Maternos</option>
+                <option value="pre-jardin">Pre-Jardín</option>
+                <option value="jardin">Jardín</option>                      
+                <option value="primero">Primero</option>                      
+              </select>
+            </label>
+            <label>
+              <span>Estado:</span>
+              <select id="select-estado">
+                <option value="">Todos los estados</option>
+                <option value="activo">Activo</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="inactivo">Inactivo</option>
+              </select>
+            </label>
+            <label>
+              <span>Buscar:</span>
+              <input type="text" id="buscar-estudiante" placeholder="Nombre o ID">
+            </label>
+            <button class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>               
+          </div>         
+        </section>
+
+        <!-- Lista de Estudiantes -->
+        <section class="table-container"> 
+          <div class="table-header">
+            <div class="table-info">
+              <h3>Estudiantes Matriculados</h3>
+              <div class="table-details">
+                <span><i class="fas fa-users"></i> 156 estudiantes</span>
+              </div>               
+            </div>             
+            <div class="action">
+              <button class="btn-exportar"><i class="fas fa-file-export"></i> Exportar</button>
+              <button class="btn-agregar" id="btn-nuevo-estudiante"><i class="fas fa-plus"></i> Nuevo Estudiante</button>
+            </div>
+          </div>         
+          
+          <div class="table-responsive">
+            <table class="table-body">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Foto</th>
+                  <th>Nombre Completo</th>
+                  <th>Curso</th>
+                  <th>Grupo</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>                     
+                </tr>
+              </thead>
+              <tbody id="tabla-estudiantes">
+                <tr>
+                  <td>20250001</td>
+                  <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                  <td class="student-info">
+                    <span class="student-name">Ana María López Díaz</span>
+                    <span class="student-id">Ingreso: 01/02/2025</span>
+                  </td>
+                  <td>Jardín</td>
+                  <td>A</td>
+                  <td><span class="status-badge status-active">Activo</span></td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn-view" title="Ver detalles"><i class="fas fa-eye"></i></button>
+                      <button class="btn-edit" title="Editar"><i class="fas fa-edit"></i></button>
+                      <button class="btn-delete" title="Eliminar"><i class="fas fa-trash"></i></button>
+                    </div>
+                  </td>                     
+                </tr>
+                <tr>
+                  <td>20250002</td>
+                  <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                  <td class="student-info">
+                    <span class="student-name">Carlos Rodríguez Pérez</span>
+                    <span class="student-id">Ingreso: 01/02/2025</span>
+                  </td>
+                  <td>Jardín</td>
+                  <td>A</td>
+                  <td><span class="status-badge status-active">Activo</span></td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn-view" title="Ver detalles"><i class="fas fa-eye"></i></button>
+                      <button class="btn-edit" title="Editar"><i class="fas fa-edit"></i></button>
+                      <button class="btn-delete" title="Eliminar"><i class="fas fa-trash"></i></button>
+                    </div>
+                  </td>                     
+                </tr>
+                <tr>
+                  <td>20250003</td>
+                  <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                  <td class="student-info">
+                    <span class="student-name">María Fernanda Torres</span>
+                    <span class="student-id">Ingreso: 01/02/2025</span>
+                  </td>
+                  <td>Jardín</td>
+                  <td>A</td>
+                  <td><span class="status-badge status-pending">Pendiente</span></td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn-view" title="Ver detalles"><i class="fas fa-eye"></i></button>
+                      <button class="btn-edit" title="Editar"><i class="fas fa-edit"></i></button>
+                      <button class="btn-delete" title="Eliminar"><i class="fas fa-trash"></i></button>
+                    </div>
+                  </td>                     
+                </tr>
+                <tr>
+                  <td>20250004</td>
+                  <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                  <td class="student-info">
+                    <span class="student-name">Santiago Pérez Gómez</span>
+                    <span class="student-id">Ingreso: 01/02/2025</span>
+                  </td>
+                  <td>Jardín</td>
+                  <td>A</td>
+                  <td><span class="status-badge status-active">Activo</span></td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn-view" title="Ver detalles"><i class="fas fa-eye"></i></button>
+                      <button class="btn-edit" title="Editar"><i class="fas fa-edit"></i></button>
+                      <button class="btn-delete" title="Eliminar"><i class="fas fa-trash"></i></button>
+                    </div>
+                  </td>                     
+                </tr>
+                <tr>
+                  <td>20250005</td>
+                  <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                  <td class="student-info">
+                    <span class="student-name">Valentina Gómez Ruiz</span>
+                    <span class="student-id">Ingreso: 01/02/2025</span>
+                  </td>
+                  <td>Jardín</td>
+                  <td>A</td>
+                  <td><span class="status-badge status-inactive">Inactivo</span></td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn-view" title="Ver detalles"><i class="fas fa-eye"></i></button>
+                      <button class="btn-edit" title="Editar"><i class="fas fa-edit"></i></button>
+                      <button class="btn-delete" title="Eliminar"><i class="fas fa-trash"></i></button>
+                    </div>
+                  </td>                     
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="tabla-paginacion" role="navigation" aria-label="Paginación de resultados">
+            <button class="btn-pagina" aria-label="Página anterior">
+              <i class="fas fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <span>Página 1 de 32</span>
+            <button class="btn-pagina" aria-label="Página siguiente">
+              <i class="fas fa-chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>         
+        </section>
+      </div>
+
+      <!-- Contenido Tab: Registro de Estudiante -->
+      <div id="tab-registro" class="tab-content" style="display: none;">
+        <section class="form-container">
+          <div class="form-header">
+            <h3>Registro de Nuevo Estudiante</h3>
+            <p>Complete todos los campos obligatorios marcados con *</p>
+          </div>
+
+          <form id="form-matricula">
+            <!-- Datos Personales -->
+            <div class="form-section">
+              <h4><i class="fas fa-user"></i> Datos Personales</h4>
+              <div class="form-grid">
+                <div class="form-row">
+                  <label for="nombres">Nombres *</label>
+                  <input type="text" id="nombres" name="nombres" required>
+                </div>
+                <div class="form-row">
+                  <label for="apellidos">Apellidos *</label>
+                  <input type="text" id="apellidos" name="apellidos" required>
+                </div>
+                <div class="form-row">
+                  <label for="tipo-documento">Tipo de Documento *</label>
+                  <select id="tipo-documento" name="tipo-documento" required>
+                    <option value="">Seleccionar</option>
+                    <option value="registro-civil">Registro Civil</option>
+                    <option value="tarjeta-identidad">Tarjeta de Identidad</option>
+                    <option value="cedula">Cédula de Ciudadanía</option>
+                    <option value="pasaporte">Pasaporte</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label for="documento">Número de Documento *</label>
+                  <input type="text" id="documento" name="documento" required>
+                </div>
+                <div class="form-row">
+                  <label for="fecha-nacimiento">Fecha de Nacimiento *</label>
+                  <input type="date" id="fecha-nacimiento" name="fecha-nacimiento" required>
+                </div>
+                <div class="form-row">
+                  <label for="genero">Género *</label>
+                  <select id="genero" name="genero" required>
+                    <option value="">Seleccionar</option>
+                    <option value="femenino">Femenino</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="otro">Otro</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label for="foto">Fotografía</label>
+                  <div class="file-upload">
+                    <div class="photo-preview">
+                      <i class="fas fa-user fa-2x"></i>
+                    </div>
+                    <input type="file" id="foto" name="foto" accept="image/*">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Datos de Contacto -->
+            <div class="form-section">
+              <h4><i class="fas fa-address-book"></i> Datos de Contacto</h4>
+              <div class="form-grid">
+                <div class="form-row">
+                  <label for="direccion">Dirección *</label>
+                  <input type="text" id="direccion" name="direccion" required>
+                </div>
+                <div class="form-row">
+                  <label for="telefono">Teléfono Principal *</label>
+                  <input type="tel" id="telefono" name="telefono" required>
+                </div>
+                <div class="form-row">
+                  <label for="telefono-alt">Teléfono Alternativo</label>
+                  <input type="tel" id="telefono-alt" name="telefono-alt">
+                </div>
+                <div class="form-row">
+                  <label for="email">Correo Electrónico</label>
+                  <input type="email" id="email" name="email">
+                </div>
+              </div>
+            </div>
+
+            <!-- Datos Académicos -->
+            <div class="form-section">
+              <h4><i class="fas fa-graduation-cap"></i> Datos Académicos</h4>
+              <div class="form-grid">
+                <div class="form-row">
+                  <label for="grado">Grado a Cursar *</label>
+                  <select id="grado" name="grado" required>
+                    <option value="">Seleccionar</option>
+                    <option value="parvulos">Párvulos</option>
+                    <option value="maternos">Maternos</option>
+                    <option value="pre-jardin">Pre-Jardín</option>
+                    <option value="jardin">Jardín</option>
+                    <option value="primero">Primero</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label for="grupo">Grupo *</label>
+                  <select id="grupo" name="grupo" required>
+                    <option value="">Seleccionar</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label for="jornada">Jornada *</label>
+                  <select id="jornada" name="jornada" required>
+                    <option value="">Seleccionar</option>
+                    <option value="manana">Mañana</option>
+                    <option value="tarde">Tarde</option>
+                    <option value="completa">Completa</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label for="fecha-ingreso">Fecha de Ingreso *</label>
+                  <input type="date" id="fecha-ingreso" name="fecha-ingreso" required>
+                </div>
+                <div class="form-row">
+                  <label for="estado">Estado *</label>
+                  <select id="estado" name="estado" required>
+                    <option value="activo">Activo</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="inactivo">Inactivo</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Datos de Acudiente -->
+            <div class="form-section">
+              <h4><i class="fas fa-user-friends"></i> Datos del Acudiente</h4>
+              <div class="form-grid">
+                <div class="form-row">
+                  <label for="nombre-acudiente">Nombre Completo *</label>
+                  <input type="text" id="nombre-acudiente" name="nombre-acudiente" required>
+                </div>
+                <div class="form-row">
+                  <label for="parentesco">Parentesco *</label>
+                  <select id="parentesco" name="parentesco" required>
+                    <option value="">Seleccionar</option>
+                    <option value="padre">Padre</option>
+                    <option value="madre">Madre</option>
+                    <option value="abuelo">Abuelo(a)</option>
+                    <option value="tio">Tío(a)</option>
+                    <option value="otro">Otro</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label for="documento-acudiente">Número de Documento *</label>
+                  <input type="text" id="documento-acudiente" name="documento-acudiente" required>
+                </div>
+                <div class="form-row">
+                  <label for="telefono-acudiente">Teléfono *</label>
+                  <input type="tel" id="telefono-acudiente" name="telefono-acudiente" required>
+                </div>
+                <div class="form-row">
+                  <label for="email-acudiente">Correo Electrónico</label>
+                  <input type="email" id="email-acudiente" name="email-acudiente">
+                </div>
+                <div class="form-row">
+                  <label for="ocupacion">Ocupación</label>
+                  <input type="text" id="ocupacion" name="ocupacion">
+                </div>
+              </div>
+            </div>
+
+            <!-- Documentos -->
+            <div class="form-section">
+              <h4><i class="fas fa-file-alt"></i> Documentos Requeridos</h4>
+              <div class="form-grid">
+                <div class="form-row">
+                  <label for="doc-identidad">Documento de Identidad *</label>
+                  <input type="file" id="doc-identidad" name="doc-identidad" required>
+                </div>
+                <div class="form-row">
+                  <label for="doc-certificado">Certificado de Estudio Anterior</label>
+                  <input type="file" id="doc-certificado" name="doc-certificado">
+                </div>
+                <div class="form-row">
+                  <label for="doc-eps">Certificado EPS *</label>
+                  <input type="file" id="doc-eps" name="doc-eps" required>
+                </div>
+                <div class="form-row">
+                  <label for="doc-adicional">Documentos Adicionales</label>
+                  <input type="file" id="doc-adicional" name="doc-adicional" multiple>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-cancelar">Cancelar</button>
+              <button type="submit" class="btn-guardar">Guardar Matrícula</button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <!-- Modal de Confirmación Eliminar -->
+      <div id="modal-eliminar" class="modal">
+        <div class="modal-contenido">
+          <div class="modal-header">
+            <h3>Confirmar Eliminación</h3>
+            <button class="btn-cerrar" id="btn-cerrar-modal-eliminar"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Está seguro que desea eliminar la matrícula de <span id="estudiante-eliminar"></span>?</p>
+            <p>Esta acción no se puede deshacer.</p>
+          </div>
+          <div class="form-acciones">                              
+            <button type="button" class="btn-cancelar">Cancelar</button>
+            <button type="button" class="btn-guardar btn-eliminar-confirmar">Sí, Eliminar</button>                              
+          </div>
+        </div>         
+      </div>
+
+      <!-- Modal de Ver Detalles -->
+      <div id="modal-detalles" class="modal">
+        <div class="modal-contenido modal-lg">
+          <div class="modal-header">
+            <h3>Detalles del Estudiante</h3>
+            <button class="btn-cerrar" id="btn-cerrar-modal-detalles"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="modal-body" id="detalles-estudiante">
+            <!-- El contenido se cargará dinámicamente -->
+          </div>
+          <div class="form-acciones">                              
+            <button type="button" class="btn-cancelar">Cerrar</button>
+            <button type="button" class="btn-edit-modal">Editar Información</button>                              
+          </div>
+        </div>         
+      </div>
+
+      <!-- Notificación de éxito -->
+      <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-message">Cambios guardados con éxito</span>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../scripts/admin/matriculas.js"></script>
+ </body>
+  </html>

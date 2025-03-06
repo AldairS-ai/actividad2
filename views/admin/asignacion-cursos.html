@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Infojis - Asignación de Cursos</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/filters.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+  <link rel="stylesheet" href="../../styles/components/notifications.css">
+</head>
+<body>
+  <div class="app-container">
+   <!-- Sidebar -->
+   <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="horario.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Horarios</a></li>
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="asignacion.html" class="nav-link active"><i class="fas fa-chalkboard-teacher"></i> Asignación</a></li>
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+      </ul>
+      <div class="sidebar-footer">
+          <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+      </div>
+   </nav>
+
+   <!-- Overlay para cerrar sidebar en móviles -->
+   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+   <!-- Contenido Principal -->
+   <main class="main-content" id="main-content">
+       <!-- Encabezado -->
+       <header class="header">
+           <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+               <i class="fas fa-bars"></i>
+           </button>                  
+           <div class="user-profile" id="user-profile">
+               <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+               <div>
+                   <span class="user-name">Administrador</span>
+                   <span class="user-role">Coordinador Académico</span>
+               </div>
+           </div>
+       </header>     
+
+       <!-- Filtros de Asignación -->
+       <section class="filter">         
+           <div class="filter-content">
+               <label>
+                   <span>Departamento:</span>               
+                   <select id="select-departamento" name="departamento">
+                       <option value="">Todos los departamentos</option>
+                       <option value="ciencias">Ciencias</option>
+                       <option value="humanidades">Humanidades</option>
+                       <option value="artes">Artes</option>
+                       <option value="deportes">Deportes</option>                      
+                       <option value="preescolar" selected>Preescolar</option>                      
+                   </select>
+               </label>
+               <label>
+                   <span>Periodo Académico:</span>
+                   <select id="select-periodo">
+                       <option value="2025-1" selected>2025-1</option>
+                       <option value="2024-2">2024-2</option>
+                       <option value="2024-1">2024-1</option>                      
+                   </select>
+               </label>
+               <button class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>   
+               <button class="btn-asignar" id="btn-nueva-asignacion"><i class="fas fa-plus-circle"></i> Nueva Asignación</button>            
+           </div>         
+       </section>
+       
+       <!-- Lista de Asignaciones -->
+       <section class="table-container"> 
+           <div class="table-header">
+               <div class="table-info">
+                   <h3>Asignación de Cursos</h3>
+                   <div class="table-details">
+                       <span><i class="fas fa-users"></i> 12 docentes</span>
+                       <span><i class="fas fa-book"></i> 28 asignaciones</span>
+                   </div>               
+               </div>             
+               <div class="action">
+                   <button class="btn-exportar"><i class="fas fa-file-export"></i> Exportar</button>
+               </div>
+           </div>         
+           
+           <div class="table-responsive">
+               <table class="table-body">
+                   <thead>
+                       <tr>
+                           <th>#</th>
+                           <th>Docente</th>
+                           <th>Asignatura</th>
+                           <th>Curso</th>
+                           <th>Horas</th>
+                           <th>Estado</th>
+                           <th>Acciones</th>                     
+                       </tr>
+                   </thead>
+                   <tbody id="tabla-asignaciones">
+                       <tr>
+                           <td>1</td>
+                           <td class="docente-info">
+                               <img src="../../imagenes/perfil-foto.jpg" alt="Foto" class="student-avatar">
+                               <div>
+                                 <span class="docente-name">Luz Marina Ospino Diaz</span>
+                                 <span class="docente-id">ID: D-20250001</span>
+                               </div>
+                           </td>
+                           <td>Arte</td>
+                           <td>Jardín - Grupo A</td>
+                           <td>4</td>
+                           <td><span class="estado activo">Activo</span></td>
+                           <td class="acciones">                         
+                             <button class="btn-editar" data-docente="Luz Marina Ospino Diaz"><i class="fas fa-edit"></i></button>
+                             <button class="btn-eliminar" data-docente="Luz Marina Ospino Diaz"><i class="fas fa-trash-alt"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>2</td>
+                           <td class="docente-info">
+                               <img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar">
+                               <div>
+                                 <span class="docente-name">Carlos Jiménez Soto</span>
+                                 <span class="docente-id">ID: D-20250002</span>
+                               </div>
+                           </td>
+                           <td>Matemáticas</td>
+                           <td>Primero - Grupo B</td>
+                           <td>6</td>
+                           <td><span class="estado activo">Activo</span></td>
+                           <td class="acciones">                         
+                             <button class="btn-editar" data-docente="Carlos Jiménez Soto"><i class="fas fa-edit"></i></button>
+                             <button class="btn-eliminar" data-docente="Carlos Jiménez Soto"><i class="fas fa-trash-alt"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>3</td>
+                           <td class="docente-info">
+                               <img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar">
+                               <div>
+                                 <span class="docente-name">Ana María Rodríguez</span>
+                                 <span class="docente-id">ID: D-20250003</span>
+                               </div>
+                           </td>
+                           <td>Idioma</td>
+                           <td>Pre-Jardín - Grupo A</td>
+                           <td>5</td>
+                           <td><span class="estado inactivo">Inactivo</span></td>
+                           <td class="acciones">                         
+                             <button class="btn-editar" data-docente="Ana María Rodríguez"><i class="fas fa-edit"></i></button>
+                             <button class="btn-eliminar" data-docente="Ana María Rodríguez"><i class="fas fa-trash-alt"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>4</td>
+                           <td class="docente-info">
+                               <img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar">
+                               <div>
+                                 <span class="docente-name">Pedro Martínez Gómez</span>
+                                 <span class="docente-id">ID: D-20250004</span>
+                               </div>
+                           </td>
+                           <td>E. Física</td>
+                           <td>Jardín - Grupo B</td>
+                           <td>3</td>
+                           <td><span class="estado activo">Activo</span></td>
+                           <td class="acciones">                         
+                             <button class="btn-editar" data-docente="Pedro Martínez Gómez"><i class="fas fa-edit"></i></button>
+                             <button class="btn-eliminar" data-docente="Pedro Martínez Gómez"><i class="fas fa-trash-alt"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>5</td>
+                           <td class="docente-info">
+                               <img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar">
+                               <div>
+                                 <span class="docente-name">Luz Marina Ospino Diaz</span>
+                                 <span class="docente-id">ID: D-20250001</span>
+                               </div>
+                           </td>
+                           <td>Arte</td>
+                           <td>Pre-Jardín - Grupo B</td>
+                           <td>4</td>
+                           <td><span class="estado activo">Activo</span></td>
+                           <td class="acciones">                         
+                             <button class="btn-editar" data-docente="Luz Marina Ospino Diaz"><i class="fas fa-edit"></i></button>
+                             <button class="btn-eliminar" data-docente="Luz Marina Ospino Diaz"><i class="fas fa-trash-alt"></i></button>
+                           </td>                     
+                       </tr>
+                   </tbody>
+               </table>
+           </div>
+           
+           <div class="tabla-paginacion" role="navigation" aria-label="Paginación de resultados">
+               <button class="btn-pagina" aria-label="Página anterior" disabled>
+                   <i class="fas fa-chevron-left" aria-hidden="true"></i>
+               </button>
+               <span>Página 1 de 3</span>
+               <button class="btn-pagina" aria-label="Página siguiente">
+                   <i class="fas fa-chevron-right" aria-hidden="true"></i>
+               </button>
+           </div>         
+       </section>
+  
+       <!-- Modal de nueva asignación -->
+       <div id="modal-asignacion" class="modal">
+         <div class="modal-contenido">
+             <div class="modal-header">
+                 <h3>Nueva Asignación de Curso</h3>
+                 <button class="btn-cerrar" id="btn-cerrar-modal"><i class="fas fa-times"></i></button>
+             </div>
+             <form id="form-asignacion"> 
+                 <div class="group-form">                 
+                     <label for="select-docente">Docente:</label>
+                     <select id="select-docente" required>
+                         <option value="">Seleccionar docente</option>
+                         <option value="D-20250001">Luz Marina Ospino Diaz</option>
+                         <option value="D-20250002">Carlos Jiménez Soto</option>
+                         <option value="D-20250003">Ana María Rodríguez</option>
+                         <option value="D-20250004">Pedro Martínez Gómez</option>
+                         <option value="D-20250005">Sofía López Torres</option>
+                     </select>              
+                 </div>
+                 
+                 <div class="group-form">                 
+                     <label for="select-materia">Asignatura:</label>
+                     <select id="select-materia" required>
+                         <option value="">Seleccionar asignatura</option>
+                         <option value="matematicas">Matemáticas</option>
+                         <option value="arte">Arte</option>
+                         <option value="idioma">Idioma</option>
+                         <option value="efisica">E. Física</option>                      
+                         <option value="religion">Religión</option>
+                     </select>              
+                 </div>
+                 
+                 <div class="group-form">                 
+                     <label for="select-curso">Curso:</label>
+                     <select id="select-curso" required>
+                         <option value="">Seleccionar curso</option>
+                         <option value="parvulos-a">Párvulos - Grupo A</option>
+                         <option value="parvulos-b">Párvulos - Grupo B</option>
+                         <option value="maternos-a">Maternos - Grupo A</option>
+                         <option value="prejardin-a">Pre-Jardín - Grupo A</option>
+                         <option value="prejardin-b">Pre-Jardín - Grupo B</option>
+                         <option value="jardin-a">Jardín - Grupo A</option>
+                         <option value="jardin-b">Jardín - Grupo B</option>
+                         <option value="primero-a">Primero - Grupo A</option>
+                         <option value="primero-b">Primero - Grupo B</option>
+                     </select>              
+                 </div>
+                 
+                 <div class="group-form">                 
+                     <label for="horas-semanales">Horas semanales:</label>
+                     <input type="number" id="horas-semanales" min="1" max="20" value="4" required>              
+                 </div>
+                 
+                 <div class="group-form">                 
+                     <label for="select-estado">Estado:</label>
+                     <select id="select-estado" required>
+                         <option value="activo" selected>Activo</option>
+                         <option value="inactivo">Inactivo</option>
+                     </select>              
+                 </div>
+                 
+                 <div class="group-form">                 
+                     <label for="observaciones">Observaciones:</label>
+                     <textarea id="observaciones" placeholder="Observaciones adicionales sobre la asignación..."></textarea>              
+                 </div>
+                 
+                 <div class="form-acciones">                              
+                     <button type="button" class="btn-cancelar">Cancelar</button>
+                     <button type="submit" class="btn-guardar">Guardar</button>                              
+                 </div>                
+             </form>
+         </div>         
+       </div>
+
+       <!-- Modal de confirmación para eliminar -->
+       <div id="modal-confirmacion" class="modal">
+         <div class="modal-contenido">
+             <div class="modal-header">
+                 <h3>Confirmar Eliminación</h3>
+                 <button class="btn-cerrar" id="btn-cerrar-confirmacion"><i class="fas fa-times"></i></button>
+             </div>
+             <div class="modal-body">
+                 <p>¿Está seguro que desea eliminar la asignación de <strong id="nombre-docente-eliminar"></strong>?</p>
+                 <p>Esta acción no se puede deshacer.</p>
+             </div>
+             <div class="form-acciones">                              
+                 <button type="button" class="btn-cancelar" id="btn-cancelar-eliminar">Cancelar</button>
+                 <button type="button" class="btn-eliminar-confirm">Eliminar</button>                              
+             </div>
+         </div>         
+       </div>
+
+       <!-- Notificación de éxito -->
+       <div class="notification" id="notification">
+           <i class="fas fa-check-circle"></i>
+           <span id="notification-message">Operación realizada con éxito</span>
+       </div>
+  </main>
+  </div>
+  <script>
+    // Toggle sidebar solo en móviles
+    document.getElementById('sidebar-toggle').addEventListener('click', function() {
+        if (window.innerWidth <= 992) { // Solo ejecutar en pantallas pequeñas
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+            document.getElementById('main-content').classList.toggle('expanded');
+        }
+    });
+    
+    // Cerrar sidebar cuando se hace clic en el overlay
+    document.getElementById('sidebar-overlay').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('active');
+        document.getElementById('sidebar-overlay').classList.remove('active');
+    });
+    
+    // Abrir modal de nueva asignación
+    document.getElementById('btn-nueva-asignacion').addEventListener('click', function() {
+        document.getElementById('modal-asignacion').classList.add('active');
+    });
+    
+    // Abrir modal de edición
+    const botonesEditar = document.querySelectorAll('.btn-editar');
+    
+    botonesEditar.forEach(boton => {
+        boton.addEventListener('click', function() {
+            const docenteName = this.getAttribute('data-docente');
+            // Aquí se cargarían los datos del docente para editar
+            document.getElementById('modal-asignacion').classList.add('active');
+        });
+    });
+    
+    // Abrir modal de confirmación para eliminar
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar');
+    
+    botonesEliminar.forEach(boton => {
+        boton.addEventListener('click', function() {
+            const docenteName = this.getAttribute('data-docente');
+            document.getElementById('nombre-docente-eliminar').textContent = docenteName;
+            document.getElementById('modal-confirmacion').classList.add('active');
+        });
+    });
+    
+    // Cerrar modales
+    document.getElementById('btn-cerrar-modal').addEventListener('click', function() {
+        document.getElementById('modal-asignacion').classList.remove('active');
+    });
+    
+    document.getElementById('btn-cerrar-confirmacion').addEventListener('click', function() {
+        document.getElementById('modal-confirmacion').classList.remove('active');
+    });
+    
+    document.querySelectorAll('.btn-cancelar').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('modal-asignacion').classList.remove('active');
+            document.getElementById('modal-confirmacion').classList.remove('active');
+        });
+    });
+    
+    document.getElementById('btn-cancelar-eliminar').addEventListener('click', function() {
+        document.getElementById('modal-confirmacion').classList.remove('active');
+    });
+    
+    // Guardar formulario de asignación
+    document.getElementById('form-asignacion').addEventListener('submit', function(e) {
+        e.preventDefault();
+        document.getElementById('modal-asignacion').classList.remove('active');
+        
+        // Mostrar notificación
+        const notification = document.getElementById('notification');
+        document.getElementById('notification-message').textContent = 'Asignación guardada correctamente';
+        notification.classList.add('show');
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    });
+    
+    // Confirmar eliminación
+    document.querySelector('.btn-eliminar-confirm').addEventListener('click', function() {
+        document.getElementById('modal-confirmacion').classList.remove('active');
+        
+        // Mostrar notificación
+        const notification = document.getElementById('notification');
+        document.getElementById('notification-message').textContent = 'Asignación eliminada correctamente';
+        notification.classList.add('show');
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    });
+    
+    // Agregar estilos CSS adicionales
+    document.head.insertAdjacentHTML('beforeend', `
+    <style>
+        .estado {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .estado.activo {
+            background-color: #e6f7e6;
+            color: #28a745;
+        }
+        
+        .estado.inactivo {
+            background-color: #f8d7da;
+            color: #dc3545;
+        }
+        
+        .acciones {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .btn-editar, .btn-eliminar {
+            border: none;
+            background: none;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .btn-editar {
+            color: #0d6efd;
+            background-color: #e7f1ff;
+        }
+        
+        .btn-eliminar {
+            color: #dc3545;
+            background-color: #f8d7da;
+        }
+        
+        .btn-editar:hover {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .btn-eliminar:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .btn-asignar {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-asignar:hover {
+            background-color: #218838;
+        }
+        
+        .docente-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .docente-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .docente-name {
+            font-weight: 500;
+            display: block;
+        }
+        
+        .docente-id {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .btn-eliminar-confirm {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .btn-eliminar-confirm:hover {
+            background-color: #c82333;
+        }
+        
+        .group-form {
+            margin-bottom: 16px;
+        }
+        
+        .group-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .group-form select,
+        .group-form input,
+        .group-form textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .group-form textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+    </style>
+    `);
+  </script>
+</body>
+</html>

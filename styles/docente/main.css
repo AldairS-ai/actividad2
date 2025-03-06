@@ -1,0 +1,254 @@
+/* Reset y estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #fff9f5;
+    color: #333;
+    min-height: 100vh;
+    position: relative;
+}
+
+.app-container {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: none;
+}
+
+
+/* Sidebar - estructura principal */
+.sidebar {
+    position: fixed;
+    width: 280px;
+    height: 100vh;
+    background-color: #1e293b;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Header del sidebar */
+.logo-container {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0; /* Evita que se encoja */
+}
+
+ul{
+    list-style: none
+}
+
+.logo-container h1{
+    font-size: 36px;
+    filter: drop-shadow(1px 3px 1px #000);
+}
+
+.logo {
+    color: #ff6600; 
+}
+
+/* Contenido central del sidebar (menú de navegación) */
+.nav-menu {
+    list-style: none;
+    padding: 20px 0;
+    overflow-y: auto; /* Permite desplazamiento cuando hay muchos elementos */
+    flex-grow: 1; /* Toma el espacio disponible */
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    color: #ecf0f1;
+    transition: all 0.2s;
+    font-size: 16px;
+    border-left: 4px solid transparent;
+}
+
+.nav-link i {
+    margin-right: 15px;
+    font-size: 18px;
+    width: 20px;
+    text-align: center;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left-color: #ff6600;
+}
+
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-left-color: #ff6600;
+    color: #ff6600;
+    font-weight: 600;
+}
+
+
+/* Sidebar Footer */
+.sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    padding: 5px;
+    margin: 0.75rem;
+    width: 90%;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    flex-shrink: 0; /* Evita que se encoja */
+}
+
+.sidebar-footer a{
+    color: #ff6600;
+}
+
+/* Overlay para móviles */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* Contenido principal */
+.main-content {
+    margin-left: 280px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    background-color: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+
+.header-menu-toggle {
+    font-size: 22px;
+    color: #333333;
+    display: none;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    border: 2px solid #ff6600;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 16px;
+    color: #333333;
+    display: block;
+}
+
+.user-role {
+    font-size: 14px;
+    color: #666666;
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: /*992px*/ 767px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .header-menu-toggle {
+        display: block;
+    }
+    
+    header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        border-radius: 0;
+    }
+    
+}
+
+/* Asegurar que la barra lateral esté siempre visible en pantallas grandes */
+@media (min-width: 993px) {
+    .sidebar {
+        transform: translateX(0) !important;
+    }
+    
+    .main-content {
+        margin-left: 280px; /* Ajustar el espacio del contenido */
+    }
+    
+    .header-menu-toggle {
+        display: none; /* Ocultar botón de menú */
+    }
+}
+
+
+
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+

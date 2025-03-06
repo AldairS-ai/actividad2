@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Infojis</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">  
+  <link rel="stylesheet" href="../../styles/components/filters.css">  
+  <link rel="stylesheet" href="../../styles/docente/inicio.css">  
+</head>
+<body>
+  <div class="app"-container>
+   <!-- Sidebar -->
+   <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link active"><i class="fas fa-home"></i> Inicio</a></li>        
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="observaciones.html" class="nav-link"><i class="fas fa-comment-dots"></i> Observaciones</a></li>        
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+          <div class="sidebar-footer">
+              <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+          </div>
+      </ul>
+   </nav>
+
+   <!-- Overlay para cerrar sidebar en móviles -->
+   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+   <!-- Contenido Principal -->
+   <main class="main-content" id="main-content">
+       <!-- Encabezado -->
+       <header class="header">
+           <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+               <i class="fas fa-bars"></i>
+           </button>                  
+           <div class="user-profile" id="user-profile">
+               <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+               <div>
+                   <span class="user-name">Luz Ospino</span>
+                   <span class="user-role">Docente</span>
+               </div>
+           </div>
+       </header>
+
+       <!-- Saludo y fecha -->
+       <section class="filter">
+           <div class="filter-content">
+               <h2>¡Buenos días, Luz!</h2>
+               <p>Miércoles, 26 de febrero de 2025</p>
+           </div>
+       </section>
+
+       <!-- Widgets del Dashboard -->
+       <div class="dashboard-widgets">
+           <!-- Widget de Estadísticas -->
+           <div class="widget">
+               <div class="widget-header">
+                   <h3 class="widget-title">Estadísticas</h3>
+                   <div class="widget-icon bg-blue">
+                       <i class="fas fa-chart-pie"></i>
+                   </div>
+               </div>
+               <div class="widget-content">
+                   <div class="stats-container">
+                       <div class="stat-item">
+                           <span class="stat-value">95%</span>
+                           <span class="stat-label">Asistencia</span>
+                       </div>
+                       <div class="stat-item">
+                           <span class="stat-value">87%</span>
+                           <span class="stat-label">Promedio</span>
+                       </div>
+                       <div class="stat-item">
+                           <span class="stat-value">4</span>
+                           <span class="stat-label">Pendientes</span>
+                       </div>
+                   </div>
+               </div>
+           </div>
+
+           <!-- Widget de Accesos Directos -->
+           <div class="widget">
+               <div class="widget-header">
+                   <h3 class="widget-title">Accesos Directos</h3>
+                   <div class="widget-icon bg-green">
+                       <i class="fas fa-th-large"></i>
+                   </div>
+               </div>
+               <div class="widget-content">
+                   <div class="shortcuts-container">
+                       <a href="asistencias.html" class="shortcut-item">
+                           <div class="shortcut-icon bg-blue">
+                               <i class="fas fa-user-check"></i>
+                           </div>
+                           <span class="shortcut-label">Asistencias</span>
+                       </a>
+                       <a href="calificaciones.html" class="shortcut-item">
+                           <div class="shortcut-icon bg-green">
+                               <i class="fas fa-clipboard-list"></i>
+                           </div>
+                           <span class="shortcut-label">Calificaciones</span>
+                       </a>
+                       <a href="reportes.html" class="shortcut-item">
+                           <div class="shortcut-icon bg-orange">
+                               <i class="fas fa-chart-bar"></i>
+                           </div>
+                           <span class="shortcut-label">Reportes</span>
+                       </a>
+                       <a href="horario.html" class="shortcut-item">
+                           <div class="shortcut-icon bg-purple">
+                               <i class="fas fa-calendar-alt"></i>
+                           </div>
+                           <span class="shortcut-label">Horario</span>
+                       </a>
+                   </div>
+               </div>
+           </div>
+
+           <!-- Widget de Próximas Clases -->
+           <div class="widget">
+               <div class="widget-header">
+                   <h3 class="widget-title">Próximas Clases</h3>
+                   <div class="widget-icon bg-purple">
+                       <i class="fas fa-clock"></i>
+                   </div>
+               </div>
+               <div class="widget-content">
+                   <ul class="activity-list">
+                       <li class="activity-item">
+                           <div class="activity-icon bg-green">
+                               <i class="fas fa-book"></i>
+                           </div>
+                           <div class="activity-details">
+                               <div>Arte - Jardín A</div>
+                               <div class="activity-time">Hoy, 10:30 - 11:15</div>
+                           </div>
+                       </li>
+                       <li class="activity-item">
+                           <div class="activity-icon bg-blue">
+                               <i class="fas fa-book"></i>
+                           </div>
+                           <div class="activity-details">
+                               <div>Arte - Primero B</div>
+                               <div class="activity-time">Hoy, 12:00 - 12:45</div>
+                           </div>
+                       </li>
+                       <li class="activity-item">
+                           <div class="activity-icon bg-orange">
+                               <i class="fas fa-book"></i>
+                           </div>
+                           <div class="activity-details">
+                               <div>Arte - Pre-Jardín</div>
+                               <div class="activity-time">Mañana, 09:15 - 10:00</div>
+                           </div>
+                       </li>
+                   </ul>
+               </div>
+           </div>
+
+           <!-- Widget de Notificaciones -->
+           <div class="widget">
+               <div class="widget-header">
+                   <h3 class="widget-title">Notificaciones</h3>
+                   <div class="widget-icon bg-red">
+                       <i class="fas fa-bell"></i>
+                   </div>
+               </div>
+               <div class="widget-content">
+                   <ul class="notification-list">
+                       <li class="notification-item">
+                           <div class="notification-icon bg-red">
+                               <i class="fas fa-exclamation-circle"></i>
+                           </div>
+                           <div class="notification-details">
+                               <div>Reunión de docentes programada</div>
+                               <div class="notification-time">Viernes, 28 de febrero - 15:30</div>
+                           </div>
+                       </li>
+                       <li class="notification-item">
+                           <div class="notification-icon bg-orange">
+                               <i class="fas fa-clipboard-check"></i>
+                           </div>
+                           <div class="notification-details">
+                               <div>Pendiente calificar evaluación de Arte</div>
+                               <div class="notification-time">Vence en 2 días</div>
+                           </div>
+                       </li>
+                       <li class="notification-item">
+                           <div class="notification-icon bg-blue">
+                               <i class="fas fa-info-circle"></i>
+                           </div>
+                           <div class="notification-details">
+                               <div>Nueva estudiante asignada a Jardín A</div>
+                               <div class="notification-time">Hace 1 día</div>
+                           </div>
+                       </li>
+                   </ul>
+               </div>
+           </div>
+
+           <!-- Widget de Calendario -->
+           <div class="widget">
+               <div class="widget-header">
+                   <h3 class="widget-title">Calendario</h3>
+                   <div class="widget-icon bg-orange">
+                       <i class="fas fa-calendar"></i>
+                   </div>
+               </div>
+               <div class="widget-content">
+                   <div class="calendar-header">
+                       <div class="calendar-title">Febrero 2025</div>
+                       <div class="calendar-nav">
+                           <button><i class="fas fa-chevron-left"></i></button>
+                           <button><i class="fas fa-chevron-right"></i></button>
+                       </div>
+                   </div>
+                   <div class="calendar-container">
+                       <div class="calendar-day">D</div>
+                       <div class="calendar-day">L</div>
+                       <div class="calendar-day">M</div>
+                       <div class="calendar-day">M</div>
+                       <div class="calendar-day">J</div>
+                       <div class="calendar-day">V</div>
+                       <div class="calendar-day">S</div>
+                       
+                       <!-- Primera semana (vacía al principio) -->
+                       <div class="calendar-date"></div>
+                       <div class="calendar-date"></div>
+                       <div class="calendar-date"></div>
+                       <div class="calendar-date"></div>
+                       <div class="calendar-date"></div>
+                       <div class="calendar-date">1</div>
+                       <div class="calendar-date">2</div>
+                       
+                       <!-- Segunda semana -->
+                       <div class="calendar-date">3</div>
+                       <div class="calendar-date has-event">4</div>
+                       <div class="calendar-date">5</div>
+                       <div class="calendar-date">6</div>
+                       <div class="calendar-date">7</div>
+                       <div class="calendar-date">8</div>
+                       <div class="calendar-date">9</div>
+                       
+                       <!-- Tercera semana -->
+                       <div class="calendar-date">10</div>
+                       <div class="calendar-date">11</div>
+                       <div class="calendar-date">12</div>
+                       <div class="calendar-date has-event">13</div>
+                       <div class="calendar-date">14</div>
+                       <div class="calendar-date">15</div>
+                       <div class="calendar-date">16</div>
+                       
+                       <!-- Cuarta semana -->
+                       <div class="calendar-date">17</div>
+                       <div class="calendar-date has-event">18</div>
+                       <div class="calendar-date">19</div>
+                       <div class="calendar-date">20</div>
+                       <div class="calendar-date">21</div>
+                       <div class="calendar-date">22</div>
+                       <div class="calendar-date">23</div>
+                       
+                       <!-- Quinta semana -->
+                       <div class="calendar-date">24</div>
+                       <div class="calendar-date">25</div>
+                       <div class="calendar-date today">26</div>
+                       <div class="calendar-date">27</div>
+                       <div class="calendar-date has-event">28</div>
+                   </div>
+               </div>
+           </div>
+
+           <!-- Widget de Actividades Recientes -->
+           <div class="widget">
+               <div class="widget-header">
+                   <h3 class="widget-title">Actividades Recientes</h3>
+                   <div class="widget-icon bg-blue">
+                       <i class="fas fa-history"></i>
+                   </div>
+               </div>
+               <div class="widget-content">
+                   <ul class="activity-list">
+                       <li class="activity-item">
+                           <div class="activity-icon bg-green">
+                               <i class="fas fa-user-check"></i>
+                           </div>
+                           <div class="activity-details">
+                               <div>Registro de asistencia - Jardín A</div>
+                               <div class="activity-time">Hoy, 08:45</div>
+                           </div>
+                       </li>
+                       <li class="activity-item">
+                           <div class="activity-icon bg-orange">
+                               <i class="fas fa-clipboard-list"></i>
+                           </div>
+                           <div class="activity-details">
+                               <div>Calificación de trabajos - Pre-Jardín</div>
+                               <div class="activity-time">Ayer, 16:20</div>
+                           </div>
+                       </li>
+                       <li class="activity-item">
+                           <div class="activity-icon bg-purple">
+                               <i class="fas fa-file-alt"></i>
+                           </div>
+                           <div class="activity-details">
+                               <div>Generado reporte bimestral - Primero B</div>
+                               <div class="activity-time">24/02/2025, 11:30</div>
+                           </div>
+                       </li>
+                   </ul>
+               </div>
+           </div>
+       </div>
+  </main>
+  </div>
+  <script src="../../scripts/docente/modules/inicio.js"></script>
+  <script src="../../scripts/docente/sidebar.js"></script>     
+</body>
+</html>

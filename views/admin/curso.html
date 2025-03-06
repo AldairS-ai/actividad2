@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gestión de Cursos - INFOJIS">
+  <meta name="theme-color" content="#ff6600">
+  <title>Gestión de Cursos - Infojis</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>
+      </div>
+      <ul class="nav-menu">
+          <li><a href="inicio.html"><i class="fas fa-home"></i> Inicio</a></li>
+          <li><a href="asistencias.html"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="cursos.html" class="nav-link active"><i class="fas fa-book"></i> Cursos</a></li>
+          <li><a href="calificaciones.html"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="configuracion.html"><i class="fas fa-cog"></i> Configuración</a></li>
+          <div class="sidebar-footer">
+              <li><a href="../../index.html"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
+          </div>
+      </ul>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+      <header class="header">
+        <button id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+        <h2>Gestión de Cursos</h2>
+      </header>
+
+      <!-- Formulario para agregar curso -->
+      <section class="form-container">
+        <h3>Crear Nuevo Curso</h3>
+        <form id="form-curso">
+          <label>Nombre del Curso:</label>
+          <input type="text" id="nombre-curso" required>
+          
+          <label>Grado:</label>
+          <select id="grado-curso">
+            <option value="">Seleccionar grado</option>
+            <option value="parvulos">Párvulos</option>
+            <option value="maternos">Maternos</option>
+            <option value="pre-jardin">Pre-Jardín</option>
+            <option value="jardin">Jardín</option>
+            <option value="primero">Primero</option>
+          </select>
+
+          <label>Profesor Asignado:</label>
+          <input type="text" id="profesor-curso" required>
+
+          <button type="submit" class="btn-guardar"><i class="fas fa-save"></i> Guardar Curso</button>
+        </form>
+      </section>
+
+      <!-- Tabla de cursos existentes -->
+      <section class="table-container">
+        <h3>Cursos Registrados</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Grado</th>
+              <th>Profesor</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-cursos">
+            <!-- Aquí se insertarán los cursos dinámicamente -->
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const formCurso = document.getElementById("form-curso");
+    const tablaCursos = document.getElementById("tabla-cursos");
+
+    let cursos = JSON.parse(localStorage.getItem("cursos")) || [];
+
+    function renderCursos() {
+        tablaCursos.innerHTML = "";
+        cursos.forEach((curso, index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${curso.nombre}</td>
+                <td>${curso.grado}</td>
+                <td>${curso.profesor}</td>
+                <td>
+                    <button class="btn-editar" onclick="editarCurso(${index})"><i class="fas fa-edit"></i></button>
+                    <button class="btn-eliminar" onclick="eliminarCurso(${index})"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            tablaCursos.appendChild(row);
+        });
+    }
+
+    formCurso.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const nombreCurso = document.getElementById("nombre-curso").value;
+        const gradoCurso = document.getElementById("grado-curso").value;
+        const profesorCurso = document.getElementById("profesor-curso").value;
+
+        if (!nombreCurso || !gradoCurso || !profesorCurso) {
+            alert("Todos los campos son obligatorios.");
+            return;
+        }
+
+        const nuevoCurso = {
+            nombre: nombreCurso,
+            grado: gradoCurso,
+            profesor: profesorCurso,
+        };
+
+        cursos.push(nuevoCurso);
+        localStorage.setItem("cursos", JSON.stringify(cursos));
+
+        formCurso.reset();
+        renderCursos();
+    });
+
+    window.eliminarCurso = function (index) {
+        if (confirm("¿Seguro que deseas eliminar este curso?")) {
+            cursos.splice(index, 1);
+            localStorage.setItem("cursos", JSON.stringify(cursos));
+            renderCursos();
+        }
+    };
+
+    window.editarCurso = function (index) {
+        const curso = cursos[index];
+        document.getElementById("nombre-curso").value = curso.nombre;
+        document.getElementById("grado-curso").value = curso.grado;
+        document.getElementById("profesor-curso").value = curso.profesor;
+
+        cursos.splice(index, 1);
+        localStorage.setItem("cursos", JSON.stringify(cursos));
+        renderCursos();
+    };
+
+    renderCursos();
+});
+    </script>
+</body>
+</html>

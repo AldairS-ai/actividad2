@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Infojis - Cursos</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/filters.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+  <link rel="stylesheet" href="../../styles/components/notifications.css">
+</head>
+<body>
+  <div class="app-container">
+   <!-- Sidebar -->
+   <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="horario.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Horarios</a></li>
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="cursos.html" class="nav-link active"><i class="fas fa-chalkboard"></i> Cursos</a></li>
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+      </ul>
+      <div class="sidebar-footer">
+          <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+      </div>
+   </nav>
+
+   <!-- Overlay para cerrar sidebar en móviles -->
+   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+   <!-- Contenido Principal -->
+   <main class="main-content" id="main-content">
+       <!-- Encabezado -->
+       <header class="header">
+           <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+               <i class="fas fa-bars"></i>
+           </button>                  
+           <div class="user-profile" id="user-profile">
+               <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+               <div>
+                   <span class="user-name">Luz Ospino</span>
+                   <span class="user-role">Docente</span>
+               </div>
+           </div>
+       </header>     
+
+       <!-- Filtros de Cursos -->
+       <section class="filter">         
+           <div class="filter-content">
+               <label>
+                   <span>Año lectivo:</span>               
+                   <select id="select-anio" name="anioLectivo">
+                       <option value="2025" selected>2025</option>
+                       <option value="2024">2024</option>
+                       <option value="2023">2023</option>
+                   </select>
+               </label>
+               <label>
+                   <span>Nivel:</span>
+                   <select id="select-nivel">
+                       <option value="">Todos los niveles</option>
+                       <option value="preescolar">Preescolar</option>
+                       <option value="primaria">Primaria</option>
+                       <option value="secundaria">Secundaria</option>
+                   </select>
+               </label>
+               <label>
+                   <span>Estado:</span>
+                   <select id="select-estado">
+                       <option value="">Todos</option>
+                       <option value="activo" selected>Activo</option>
+                       <option value="inactivo">Inactivo</option>
+                   </select>
+               </label>
+               <button class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>               
+           </div>         
+       </section>
+       
+
+       <!-- Lista de Cursos -->
+       <section class="table-container"> 
+           <div class="table-header">
+               <div class="table-info">
+                   <h3>Gestión de Cursos</h3>
+                   <div class="table-details">
+                       <span><i class="fas fa-chalkboard"></i> 12 cursos</span>
+                       <span><i class="fas fa-calendar-alt"></i><strong>Año lectivo:</strong> 2025</span>
+                   </div>               
+               </div>             
+               <div class="action">
+                   <button class="btn-exportar"><i class="fas fa-file-export"></i> Exportar</button>
+                   <button class="btn-agregar" id="btn-nuevo-curso"><i class="fas fa-plus"></i> Nuevo Curso</button>
+               </div>
+           </div>         
+           
+           <div class="table-responsive">
+               <table class="table-body">
+                   <thead>
+                       <tr>
+                           <th>#</th>
+                           <th>Código</th>
+                           <th>Nombre</th>
+                           <th>Nivel</th>
+                           <th>Estudiantes</th>
+                           <th>Director</th>
+                           <th>Estado</th>
+                           <th>Acciones</th>
+                       </tr>
+                   </thead>
+                   <tbody id="tabla-cursos">
+                       <tr>
+                           <td>1</td>
+                           <td>PAR-A</td>
+                           <td>Párvulos - Grupo A</td>
+                           <td>Preescolar</td>
+                           <td>18</td>
+                           <td>María Rodríguez</td>
+                           <td><span class="estado-activo">Activo</span></td>
+                           <td class="acciones">                         
+                             <button class="btn-editar" data-id="1" title="Editar"><i class="fas fa-edit"></i></button>
+                             <button class="btn-ver" data-id="1" title="Ver detalles"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>2</td>
+                           <td>MAT-A</td>
+                           <td>Maternos - Grupo A</td>
+                           <td>Preescolar</td>
+                           <td>20</td>
+                           <td>Carlos Gómez</td>
+                           <td><span class="estado-activo">Activo</span></td>
+                           <td class="acciones">                         
+                             <button class="btn-editar" data-id="2" title="Editar"><i class="fas fa-edit"></i></button>
+                             <button class="btn-ver" data-id="2" title="Ver detalles"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>3</td>
+                           <td>PJ-A</td>
+                           <td>Pre-Jardín - Grupo A</td>
+                           <td>Preescolar</td>
+                           <td>22</td>
+                           <td>Ana Torres</td>
+                           <td><span class="estado-activo">Activo</span></td>
+                           <td class="acciones">                         
+                             <button class="btn-editar" data-id="3" title="Editar"><i class="fas fa-edit"></i></button>
+                             <button class="btn-ver" data-id="3" title="Ver detalles"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>4</td>
+                           <td>JAR-A</td>
+                           <td>Jardín - Grupo A</td>
+                           <td>Preescolar</td>
+                           <td>26</td>
+                           <td>Luz Marina Ospino</td>
+                           <td><span class="estado-activo">Activo</span></td>
+                           <td class="acciones">                         
+                             <button class="btn-editar" data-id="4" title="Editar"><i class="fas fa-edit"></i></button>
+                             <button class="btn-ver" data-id="4" title="Ver detalles"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>5</td>
+                           <td>PRI-1A</td>
+                           <td>Primero - Grupo A</td>
+                           <td>Primaria</td>
+                           <td>30</td>
+                           <td>Pedro Martínez</td>
+                           <td><span class="estado-activo">Activo</span></td>
+                           <td class="acciones">                         
+                             <button class="btn-editar" data-id="5" title="Editar"><i class="fas fa-edit"></i></button>
+                             <button class="btn-ver" data-id="5" title="Ver detalles"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                   </tbody>
+               </table>
+           </div>
+           
+           <div class="tabla-paginacion" role="navigation" aria-label="Paginación de resultados">
+               <button class="btn-pagina" aria-label="Página anterior" disabled>
+                   <i class="fas fa-chevron-left" aria-hidden="true"></i>
+               </button>
+               <span>Página 1 de 2</span>
+               <button class="btn-pagina" aria-label="Página siguiente">
+                   <i class="fas fa-chevron-right" aria-hidden="true"></i>
+               </button>
+           </div>         
+       </section>
+  
+       <!-- Modal de Creación/Edición de Curso -->
+       <div id="modal-curso" class="modal">
+         <div class="modal-contenido">
+             <div class="modal-header">
+                 <h3 id="modal-titulo">Nuevo Curso</h3>
+                 <button class="btn-cerrar" id="btn-cerrar-modal"><i class="fas fa-times"></i></button>
+             </div>
+             <form id="form-curso"> 
+                 <div class="form-grid">
+                     <div class="group-form">                 
+                         <label for="curso-codigo">Código:</label>
+                         <input type="text" id="curso-codigo" placeholder="Ej. PRI-1A" required>                 
+                     </div>
+                     <div class="group-form">                 
+                         <label for="curso-nombre">Nombre del curso:</label>
+                         <input type="text" id="curso-nombre" placeholder="Ej. Primero - Grupo A" required>                 
+                     </div>
+                     <div class="group-form">                 
+                         <label for="curso-nivel">Nivel:</label>
+                         <select id="curso-nivel" required>
+                             <option value="">Seleccionar nivel</option>
+                             <option value="preescolar">Preescolar</option>
+                             <option value="primaria">Primaria</option>
+                             <option value="secundaria">Secundaria</option>
+                         </select>                 
+                     </div>
+                     <div class="group-form">                 
+                         <label for="curso-anio">Año lectivo:</label>
+                         <select id="curso-anio" required>
+                             <option value="2025" selected>2025</option>
+                             <option value="2024">2024</option>
+                         </select>                 
+                     </div>
+                     <div class="group-form">                 
+                         <label for="curso-capacidad">Capacidad máxima:</label>
+                         <input type="number" id="curso-capacidad" placeholder="Ej. 30" min="1" max="50" required>                 
+                     </div>
+                     <div class="group-form">                 
+                         <label for="curso-director">Director de grupo:</label>
+                         <select id="curso-director" required>
+                             <option value="">Seleccionar docente</option>
+                             <option value="1">María Rodríguez</option>
+                             <option value="2">Carlos Gómez</option>
+                             <option value="3">Ana Torres</option>
+                             <option value="4">Luz Marina Ospino</option>
+                             <option value="5">Pedro Martínez</option>
+                         </select>                 
+                     </div>
+                     <div class="group-form">                 
+                         <label for="curso-estado">Estado:</label>
+                         <select id="curso-estado" required>
+                             <option value="activo" selected>Activo</option>
+                             <option value="inactivo">Inactivo</option>
+                         </select>                 
+                     </div>
+                 </div>
+                 <div class="group-form">                 
+                     <label for="curso-descripcion">Descripción:</label>
+                     <textarea id="curso-descripcion" placeholder="Descripción o información adicional del curso"></textarea>                 
+                 </div>
+                 <div class="form-acciones">                              
+                     <button type="button" class="btn-cancelar">Cancelar</button>
+                     <button type="submit" class="btn-guardar">Guardar</button>                              
+                 </div>                
+             </form>
+         </div>         
+       </div>
+
+       <!-- Notificación de éxito -->
+       <div class="notification" id="notification">
+           <i class="fas fa-check-circle"></i>
+           <span id="notification-message">Operación completada con éxito</span>
+       </div>
+  </main>
+  </div>
+  <script>
+    // Toggle sidebar solo en móviles
+    document.getElementById('sidebar-toggle').addEventListener('click', function() {
+        if (window.innerWidth <= 992) { // Solo ejecutar en pantallas pequeñas
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+            document.getElementById('main-content').classList.toggle('expanded');
+        }
+    });
+    
+    // Cerrar sidebar cuando se hace clic en el overlay
+    document.getElementById('sidebar-overlay').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('active');
+        document.getElementById('sidebar-overlay').classList.remove('active');
+    });
+    
+    // Abrir modal para nuevo curso
+    document.getElementById('btn-nuevo-curso').addEventListener('click', function() {
+        document.getElementById('modal-titulo').textContent = 'Nuevo Curso';
+        document.getElementById('form-curso').reset();
+        document.getElementById('modal-curso').classList.add('active');
+    });
+    
+    // Abrir modal para editar curso
+    const botonesEditar = document.querySelectorAll('.btn-editar');
+    botonesEditar.forEach(boton => {
+        boton.addEventListener('click', function() {
+            const cursoId = this.getAttribute('data-id');
+            document.getElementById('modal-titulo').textContent = 'Editar Curso';
+            
+            // Aquí se cargarían los datos del curso según su ID
+            // Este es solo un ejemplo simulado
+            if (cursoId === '4') {
+                document.getElementById('curso-codigo').value = 'JAR-A';
+                document.getElementById('curso-nombre').value = 'Jardín - Grupo A';
+                document.getElementById('curso-nivel').value = 'preescolar';
+                document.getElementById('curso-capacidad').value = '30';
+                document.getElementById('curso-director').value = '4';
+                document.getElementById('curso-estado').value = 'activo';
+                document.getElementById('curso-descripcion').value = 'Curso de nivel jardín para niños de 5 años.';
+            }
+            
+            document.getElementById('modal-curso').classList.add('active');
+        });
+    });
+    
+    // Cerrar modal
+    document.getElementById('btn-cerrar-modal').addEventListener('click', function() {
+        document.getElementById('modal-curso').classList.remove('active');
+    });
+    
+    document.querySelectorAll('.btn-cancelar').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('modal-curso').classList.remove('active');
+        });
+    });
+    
+    // Guardar formulario de curso
+    document.getElementById('form-curso').addEventListener('submit', function(e) {
+        e.preventDefault();
+        document.getElementById('modal-curso').classList.remove('active');
+        
+        // Mostrar notificación
+        const notification = document.getElementById('notification');
+        document.getElementById('notification-message').textContent = 'Curso guardado correctamente';
+        notification.classList.add('show');
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    });
+    
+  </script>
+</body>
+</html>

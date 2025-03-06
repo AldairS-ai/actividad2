@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Infojis - Gestión de Usuarios</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/filters.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+  <link rel="stylesheet" href="../../styles/components/notifications.css">
+  <link rel="stylesheet" href="../../styles/admin/usuarios.css">
+</head>
+<body>
+  <div class="app-container">
+   <!-- Sidebar -->
+   <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Inicio</a></li>        
+          <li><a href="usuarios.html" class="nav-link active"><i class="fas fa-users-cog"></i> Usuarios</a></li>
+          <li><a href="cursos.html" class="nav-link"><i class="fas fa-chalkboard"></i> Cursos</a></li>
+          <li><a href="asignaturas.html" class="nav-link"><i class="fas fa-book"></i> Asignaturas</a></li>        
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+          <div class="sidebar-footer">
+              <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+          </div>
+      </ul>
+   </nav>
+
+   <!-- Overlay para cerrar sidebar en móviles -->
+   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+   <!-- Contenido Principal -->
+   <main class="main-content" id="main-content">
+       <!-- Encabezado -->
+       <header class="header">
+           <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+               <i class="fas fa-bars"></i>
+           </button>                  
+           <div class="user-profile" id="user-profile">
+               <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+               <div>
+                   <span class="user-name">Admin Principal</span>
+                   <span class="user-role">Administrador</span>
+               </div>
+           </div>
+       </header>     
+
+       <!-- Título y Botón de Nuevo Usuario -->
+       <section class="section-header">
+           <h2><i class="fas fa-users-cog"></i> Gestión de Usuarios</h2>
+           <button id="btn-nuevo-usuario" class="btn-primario">
+               <i class="fas fa-user-plus"></i> Nuevo Usuario
+           </button>
+       </section>
+
+       <!-- Filtros de Usuarios -->
+       <section class="filter">         
+           <div class="filter-content">
+               <label>
+                   <span>Rol:</span>               
+                   <select id="select-rol" name="roles">
+                       <option value="todos" selected>Todos</option>
+                       <option value="administrador">Administrador</option>
+                       <option value="docente">Docente</option>                      
+                   </select>
+               </label>
+               <label>
+                   <span>Estado:</span>
+                   <select id="select-estado">
+                       <option value="todos" selected>Todos</option>
+                       <option value="activo">Activo</option>
+                       <option value="inactivo">Inactivo</option>
+                   </select>
+               </label>
+               <label>
+                   <span>Búsqueda:</span>
+                   <div class="search-container">
+                       <input type="text" id="busqueda-usuario" placeholder="Buscar por nombre o ID...">
+                       <i class="fas fa-search"></i>
+                   </div>
+               </label>
+               <button class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>               
+           </div>         
+       </section>
+       
+
+       <!-- Lista de Usuarios -->
+       <section class="table-container"> 
+           <div class="table-header">
+               <div class="table-info">
+                   <h3>Usuarios del Sistema</h3>
+                   <div class="table-details">
+                       <span><i class="fas fa-users"></i> <span id="total-usuarios">8</span> usuarios</span>
+                       <span><i class="fas fa-user-shield"></i> <span id="total-admin">3</span> administradores</span>
+                       <span><i class="fas fa-chalkboard-teacher"></i> <span id="total-docentes">5</span> docentes</span>
+                   </div>               
+               </div>             
+               <div class="action">
+                   <button class="btn-exportar"><i class="fas fa-file-export"></i> Exportar</button>
+               </div>
+           </div>         
+           
+           <div class="table-responsive">
+               <table class="table-body">
+                   <thead>
+                       <tr>
+                           <th>ID</th>
+                           <th>Foto</th>
+                           <th>Nombre</th>
+                           <th>Email</th>
+                           <th>Rol</th>
+                           <th>Estado</th>
+                           <th>Acciones</th>                     
+                       </tr>
+                   </thead>
+                   <tbody id="tabla-usuarios">
+                       <tr>
+                           <td>U001</td>
+                           <td><img src="../../imagenes/perfil-foto.jpg" alt="Foto" class="user-avatar-small"></td>
+                           <td class="user-info">
+                               <span class="user-name">Luz Marina Ospino Díaz</span>
+                               <span class="user-since">Desde: 15/01/2025</span>
+                           </td>
+                           <td>luz.ospino@infojis.edu</td>
+                           <td><span class="badge-rol docente">Docente</span></td>
+                           <td><span class="badge-estado activo">Activo</span></td>
+                           <td class="acciones">                         
+                             <button class="btn-editar" data-id="U001" title="Editar usuario"><i class="fas fa-edit"></i></button>
+                             <button class="btn-eliminar" data-id="U001" title="Eliminar usuario"><i class="fas fa-trash-alt"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>U002</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="user-avatar-small"></td>
+                           <td class="user-info">
+                               <span class="user-name">Carlos Martínez Rojas</span>
+                               <span class="user-since">Desde: 20/01/2025</span>
+                           </td>
+                           <td>carlos.martinez@infojis.edu</td>
+                           <td><span class="badge-rol administrador">Administrador</span></td>
+                           <td><span class="badge-estado activo">Activo</span></td>
+                           <td class="acciones">                         
+                             <button class="btn-editar" data-id="U002" title="Editar usuario"><i class="fas fa-edit"></i></button>
+                             <button class="btn-eliminar" data-id="U002" title="Eliminar usuario"><i class="fas fa-trash-alt"></i></button>
+                           </td>                      
+                       </tr>
+                       <tr>
+                           <td>U003</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="user-avatar-small"></td>
+                           <td class="user-info">
+                               <span class="user-name">María Fernanda Torres</span>
+                               <span class="user-since">Desde: 25/01/2025</span>
+                           </td>
+                           <td>maria.torres@infojis.edu</td>
+                           <td><span class="badge-rol docente">Docente</span></td>
+                           <td><span class="badge-estado inactivo">Inactivo</span></td>
+                           <td class="acciones">                         
+                             <button class="btn-editar" data-id="U003" title="Editar usuario"><i class="fas fa-edit"></i></button>
+                             <button class="btn-eliminar" data-id="U003" title="Eliminar usuario"><i class="fas fa-trash-alt"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>U004</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="user-avatar-small"></td>
+                           <td class="user-info">
+                               <span class="user-name">Santiago Pérez Gómez</span>
+                               <span class="user-since">Desde: 01/02/2025</span>
+                           </td>
+                           <td>santiago.perez@infojis.edu</td>
+                           <td><span class="badge-rol docente">Docente</span></td>
+                           <td><span class="badge-estado activo">Activo</span></td>
+                           <td class="acciones">                         
+                             <button class="btn-editar" data-id="U004" title="Editar usuario"><i class="fas fa-edit"></i></button>
+                             <button class="btn-eliminar" data-id="U004" title="Eliminar usuario"><i class="fas fa-trash-alt"></i></button>
+                           </td>                     
+                       </tr>
+                   </tbody>
+               </table>
+           </div>
+           
+           <div class="tabla-paginacion" role="navigation" aria-label="Paginación de resultados">
+               <button class="btn-pagina" aria-label="Página anterior" disabled>
+                   <i class="fas fa-chevron-left" aria-hidden="true"></i>
+               </button>
+               <span>Página 1 de 2</span>
+               <button class="btn-pagina" aria-label="Página siguiente">
+                   <i class="fas fa-chevron-right" aria-hidden="true"></i>
+               </button>
+           </div>         
+       </section>
+  
+       <!-- Modal para Crear/Editar Usuario -->
+       <div id="modal-usuario" class="modal">
+         <div class="modal-contenido">
+             <div class="modal-header">
+                 <h3 id="modal-titulo">Nuevo Usuario</h3>
+                 <button class="btn-cerrar" id="btn-cerrar-modal"><i class="fas fa-times"></i></button>
+             </div>
+             <form id="form-usuario"> 
+                 <input type="hidden" id="usuario-id" value="">
+                 
+                 <div class="foto-upload">
+                     <div class="foto-preview">
+                         <img id="foto-preview" src="../../imagenes/user-fond.jpeg" alt="Vista previa">
+                     </div>
+                     <div class="foto-controls">
+                         <label for="foto-input" class="btn-foto">
+                             <i class="fas fa-camera"></i> Cambiar foto
+                         </label>
+                         <input type="file" id="foto-input" accept="image/*" style="display: none;">
+                     </div>
+                 </div>
+                 
+                 <div class="form-grid">
+                     <div class="group-form">                 
+                         <label for="usuario-nombre">Nombre completo:</label>
+                         <input type="text" id="usuario-nombre" placeholder="Ej: Juan Carlos Pérez" required>                 
+                     </div>
+                     
+                     <div class="group-form">                 
+                         <label for="usuario-email">Email:</label>
+                         <input type="email" id="usuario-email" placeholder="Ej: juan.perez@infojis.edu" required>                 
+                     </div>
+                     
+                     <div class="group-form">                 
+                         <label for="usuario-rol">Rol:</label>
+                         <select id="usuario-rol" required>
+                             <option value="">Seleccione un rol</option>
+                             <option value="docente">Docente</option>
+                             <option value="administrador">Administrador</option>
+                         </select>                
+                     </div>
+                     
+                     <div class="group-form">                 
+                         <label for="usuario-estado">Estado:</label>
+                         <select id="usuario-estado" required>
+                             <option value="activo">Activo</option>
+                             <option value="inactivo">Inactivo</option>
+                         </select>                
+                     </div>
+                     
+                     <div class="group-form">                 
+                         <label for="usuario-password">Contraseña:</label>
+                         <div class="password-field">
+                             <input type="password" id="usuario-password" placeholder="Ingrese contraseña" required>
+                             <button type="button" class="toggle-password" title="Mostrar contraseña">
+                                 <i class="fas fa-eye"></i>
+                             </button>
+                         </div>                
+                     </div>
+                     
+                     <div class="group-form">                 
+                         <label for="usuario-password-confirm">Confirmar contraseña:</label>
+                         <div class="password-field">
+                             <input type="password" id="usuario-password-confirm" placeholder="Confirme contraseña" required>
+                             <button type="button" class="toggle-password" title="Mostrar contraseña">
+                                 <i class="fas fa-eye"></i>
+                             </button>
+                         </div>                
+                     </div>
+                 </div>
+                 
+                 <div class="form-acciones">                              
+                     <button type="button" class="btn-cancelar">Cancelar</button>
+                     <button type="submit" class="btn-guardar">Guardar</button>                              
+                 </div>                
+             </form>
+         </div>         
+       </div>
+       
+       <!-- Modal de Confirmación para Eliminar -->
+       <div id="modal-confirmar" class="modal">
+           <div class="modal-contenido modal-small">
+               <div class="modal-header">
+                   <h3>Confirmar Eliminación</h3>
+                   <button class="btn-cerrar" id="btn-cerrar-confirmacion"><i class="fas fa-times"></i></button>
+               </div>
+               <div class="modal-body">
+                   <p class="confirmacion-mensaje">¿Está seguro que desea eliminar al usuario <strong id="nombre-usuario-eliminar">Nombre Usuario</strong>?</p>
+                   <p class="confirmacion-advertencia">Esta acción no se puede deshacer.</p>
+               </div>
+               <div class="form-acciones">                              
+                   <button type="button" class="btn-cancelar" id="btn-cancelar-eliminar">Cancelar</button>
+                   <button type="button" class="btn-eliminar-confirmar" id="btn-confirmar-eliminar">Eliminar</button>                              
+               </div>
+           </div>
+       </div>
+       
+       <!-- Notificación -->
+       <div class="notification" id="notification">
+           <i class="fas fa-check-circle"></i>
+           <span id="notification-message">Operación realizada con éxito</span>
+       </div>
+  </main>
+  </div>
+     <script src="../../scripts/admin/sidebar.js"></script>
+     <script src="../../scripts/admin/modules/usuarios.js"></script>          
+</body>
+</html>

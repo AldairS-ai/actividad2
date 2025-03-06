@@ -1,0 +1,279 @@
+/* Variables globales */
+:root {
+  --primary-color: #ff6600; /* Naranja */
+  --accent-color: #ff6600; /* Naranja más claro */
+  --secondary-color: #cc4400; /* Rojo oscuro */
+  --success-color: #33cc66; /* Verde vibrante */
+  --light-color: #fff4e6; /* Beige claro */
+  --dark-color: #552200; /* Marrón oscuro */
+  --gray-color: #bfbfbf; /* Gris neutro */
+  --border-radius: 8px;
+  --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* Estilos generales */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--dark-color);
+  background-color: var(--light-color);
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+a {
+  text-decoration: none;
+  color: var(--accent-color);
+  transition: var(--transition);
+}
+
+a:hover {
+  color: var(--primary-color);
+}
+
+.button {
+  display: inline-block;
+  padding: 12px 25px;
+  font-weight: 600;
+  text-align: center;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 16px;
+}
+
+.button-primary {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.button-primary:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+
+.header-content {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.back-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.back-link i {
+  font-size: 18px;
+}
+
+
+
+/* Sección de recuperación */
+.recovery-section {
+  padding: 60px 0;
+  min-height: calc(100vh - 70px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recovery-card {
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 40px;
+  max-width: 550px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.recovery-card h1 {
+  margin-bottom: 30px;
+  color: var(--primary-color);
+  font-size: 28px;
+}
+
+/* Indicador de pasos */
+.step-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.indicator {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: var(--gray-color);
+  position: relative;
+  transition: var(--transition);
+}
+
+.indicator::before {
+  content: attr(data-step);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 600;
+  color: #666;
+}
+
+.indicator.active {
+  background-color: var(--accent-color);
+}
+
+.indicator.active::before {
+  color: white;
+}
+
+.indicator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 2px;
+  background-color: var(--gray-color);
+}
+
+.indicator:last-child::after {
+  display: none;
+}
+
+/* Pasos de recuperación */
+.recovery-steps {
+  position: relative;
+}
+
+.step {
+  display: none;
+}
+
+.step.active {
+  display: block;
+  animation: fadeIn 0.5s ease;
+}
+
+.instructions {
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.instructions p {
+  color: #663300;
+  line-height: 1.8;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--dark-color);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--gray-color);
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  transition: var(--transition);
+}
+
+.form-group input:focus {
+  border-color: var(--accent-color);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.2);
+}
+
+/* Mensaje de éxito */
+.success-message {
+  display: none;
+  text-align: center;
+  animation: fadeIn 0.5s ease;
+}
+
+.success-message i {
+  font-size: 60px;
+  color: var(--success-color);
+  margin-bottom: 20px;
+}
+
+.success-message h3 {
+  font-size: 24px;
+  color: var(--dark-color);
+  margin-bottom: 15px;
+}
+
+.success-message p {
+  color: #663300;
+  margin-bottom: 25px;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Media queries */
+@media (max-width: 768px) {
+  .recovery-card {
+    padding: 30px 20px;
+  }
+
+  .recovery-section {
+    padding: 40px 0;
+  }
+
+  .button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .step-indicator {
+    gap: 10px;
+  }
+
+  .indicator {
+    width: 30px;
+    height: 30px;
+  }
+  
+}

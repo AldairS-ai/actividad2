@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Usuario - INFOJIS</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../styles/registro-usuario.css">
+</head>
+<body>  
+  <!-- Formulario de Registro -->
+  <div class="registro-container">    
+    <div class="registro-form-container">
+        <div class="header">
+            <a href="../../../index.html" class="btn-volver">
+               <i class="fas fa-arrow-left"></i> Volver
+            </a>      
+        </div>
+        <div class="registro-form-title">
+            <h2>Crear una nueva cuenta</h2>
+            <p>Complete el formulario para registrarse en el sistema INFOJIS</p>
+       </div>
+      <form id="registro-form">
+        <div class="form-grid">
+          <!-- Información Personal -->
+          <div class="form-group">
+            <label for="nombre">Nombre <span class="required">*</span></label>
+            <input type="text" id="nombre" name="nombre" required>
+          </div>
+
+          <div class="form-group">
+            <label for="apellido">Apellido <span class="required">*</span></label>
+            <input type="text" id="apellido" name="apellido" required>
+          </div>
+
+          <div class="form-group">
+            <label for="tipo-documento">Tipo de Documento <span class="required">*</span></label>
+            <select id="tipo-documento" name="tipo-documento" required>
+              <option value="">Seleccione</option>
+              <option value="cc">Cédula de Ciudadanía</option>
+              <option value="ti">Tarjeta de Identidad</option>
+              <option value="ce">Cédula de Extranjería</option>
+              <option value="pasaporte">Pasaporte</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="documento">Número de Documento <span class="required">*</span></label>
+            <input type="text" id="documento" name="documento" required>
+          </div>
+
+          <div class="form-group">
+            <label for="fecha-nacimiento">Fecha de Nacimiento <span class="required">*</span></label>
+            <input type="date" id="fecha-nacimiento" name="fecha-nacimiento" required>
+          </div>
+
+          <div class="form-group">
+            <label for="genero">Género</label>
+            <select id="genero" name="genero">
+              <option value="">Seleccione</option>
+              <option value="masculino">Masculino</option>
+              <option value="femenino">Femenino</option>
+              <option value="otro">Otro</option>
+              <option value="no-especificar">Prefiero no especificar</option>
+            </select>
+          </div>
+
+          <!-- Información de Contacto -->
+          <div class="form-group">
+            <label for="telefono">Teléfono <span class="required">*</span></label>
+            <input type="tel" id="telefono" name="telefono" required>
+          </div>
+
+          <div class="form-group">
+            <label for="correo">Correo Electrónico <span class="required">*</span></label>
+            <input type="email" id="correo" name="correo" required>
+          </div>
+
+          <div class="form-group">
+            <label for="direccion">Dirección</label>
+            <input type="text" id="direccion" name="direccion">
+          </div>
+
+          <div class="form-group">
+            <label for="ciudad">Ciudad</label>
+            <input type="text" id="ciudad" name="ciudad">
+          </div>
+
+          <!-- Información de Cuenta -->
+          <div class="form-group">
+            <label for="usuario">Nombre de Usuario <span class="required">*</span></label>
+            <input type="text" id="usuario" name="usuario" required>
+          </div>
+
+          <div class="form-group">
+            <label for="rol">Rol en el Sistema <span class="required">*</span></label>
+            <select id="rol" name="rol" required>
+              <option value="">Seleccione</option>
+              <option value="profesor">Profesor</option>
+              <option value="administrativo">Administrativo</option>
+              <option value="acudiente">Acudiente</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="contraseña">Contraseña <span class="required">*</span></label>
+            <input type="password" id="contraseña" name="contraseña" required>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmar-contraseña">Confirmar Contraseña <span class="required">*</span></label>
+            <input type="password" id="confirmar-contraseña" name="confirmar-contraseña" required>
+          </div>
+
+          <!-- Términos y Condiciones -->
+          <div class="form-group full-width">
+            <div class="terms-checkbox">
+              <input type="checkbox" id="terminos" name="terminos" required>
+              <label for="terminos">
+                He leído y acepto los <a href="../view/terminos-condiciones.html" target="_blank">Términos y Condiciones</a> y las <a href="../view/politicas-privacidad.html" target="_blank">Políticas de Privacidad</a> de INFOJIS.
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="button button-primary">Registrarse</button>
+          <button type="reset" class="button button-secondary">Limpiar Formulario</button>
+        </div>
+      </form>
+    </div>
+  </div>  
+
+  <script>
+    // Validación del formulario
+    document.getElementById('registro-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      const password = document.getElementById('contraseña').value;
+      const confirmPassword = document.getElementById('confirmar-contraseña').value;
+      
+      if (password !== confirmPassword) {
+        alert('Las contraseñas no coinciden. Por favor, inténtelo de nuevo.');
+        return;
+      }
+      
+      alert('Formulario enviado correctamente. Pronto recibirá un correo de confirmación.');
+      // Aquí iría el código para enviar el formulario al servidor
+    });
+  </script>
+</body>
+</html>

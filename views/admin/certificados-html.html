@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Certificados y Constancias - Infojis</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/filters.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+  <link rel="stylesheet" href="../../styles/components/notifications.css">
+  <style>
+    .certificate-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .certificate-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .certificate-title {
+      font-size: 18px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .certificate-title i {
+      color: #ff6600;
+    }
+    
+    .certificate-description {
+      color: #666;
+      margin: 5px 0 15px;
+    }
+    
+    .certificate-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .certificate-action {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    
+    .preview-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .preview-document {
+      width: 100%;
+      max-width: 700px;
+      background-color: white;
+      border: 1px solid #ddd;
+      padding: 40px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .preview-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .preview-header img {
+      max-width: 180px;
+      margin-bottom: 10px;
+    }
+    
+    .preview-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 10px 0;
+      text-transform: uppercase;
+    }
+    
+    .preview-content {
+      text-align: justify;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+    
+    .preview-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 60px;
+    }
+    
+    .preview-signature {
+      text-align: center;
+    }
+    
+    .preview-qr {
+      border: 1px solid #ddd;
+      padding: 10px;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: auto;
+    }
+    
+    .btn-action {
+      background-color: #ff6600;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 15px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background-color 0.3s;
+    }
+    
+    .btn-action:hover {
+      background-color: #e55c00;
+    }
+    
+    .btn-action.secondary {
+      background-color: #f0f0f0;
+      color: #444;
+    }
+    
+    .btn-action.secondary:hover {
+      background-color: #e0e0e0;
+    }
+    
+    .grid-certificates {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .grid-certificates {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app"-container>
+   <!-- Sidebar -->
+   <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="horario.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Horarios</a></li>
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="certificados.html" class="nav-link active"><i class="fas fa-certificate"></i> Certificados</a></li>
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+     <div class="sidebar-footer">
+          <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+     </div>
+   </nav>
+
+   <!-- Overlay para cerrar sidebar en móviles -->
+   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+   <!-- Contenido Principal -->
+   <main class="main-content" id="main-content">
+       <!-- Encabezado -->
+       <header class="header">
+           <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+               <i class="fas fa-bars"></i>
+           </button>                  
+           <div class="user-profile" id="user-profile">
+               <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+               <div>
+                   <span class="user-name">Luz Ospino</span>
+                   <span class="user-role">Docente</span>
+               </div>
+           </div>
+       </header>     
+
+       <!-- Título de la página -->
+       <section class="page-header">
+           <h2><i class="fas fa-certificate"></i> Certificados y Constancias Académicas</h2>
+           <p>Genere y gestione certificados y constancias oficiales para estudiantes y padres de familia.</p>
+       </section>
+
+       <!-- Filtros de Certificados -->
+       <section class="filter">         
+           <div class="filter-content">
+               <label>
+                   <span>Curso:</span>               
+                   <select id="select-curso" name="cursos">
+                       <option value="">Todos los cursos</option>
+                       <option value="parvulos">Párvulos</option>
+                       <option value="maternos">Maternos</option>
+                       <option value="pre-jardin">Pre-Jardín</option>
+                       <option value="jardin" selected>Jardín</option>                      
+                       <option value="primero">Primero</option>                      
+                   </select>
+               </label>
+               <label>
+                   <span>Estudiante:</span>
+                   <select id="select-estudiante">
+                       <option value="">Todos los estudiantes</option>
+                       <option value="20250001">Ana María López</option>
+                       <option value="20250002">Carlos Rodríguez</option>
+                       <option value="20250003">María Fernanda Torres</option>
+                       <option value="20250004">Santiago Pérez</option>                      
+                       <option value="20250005">Valentina Gómez</option>                      
+                   </select>
+               </label>
+               <label>
+                   <span>Período:</span>
+                   <select id="select-periodo">
+                       <option value="">Todos los períodos</option>
+                       <option value="2025-1" selected>2025-1</option>
+                       <option value="2024-4">2024-4</option>
+                       <option value="2024-3">2024-3</option>
+                       <option value="2024-2">2024-2</option>                      
+                       <option value="2024-1">2024-1</option>                      
+                   </select>
+               </label>
+               <button class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>               
+           </div>         
+       </section>
+       
+       <!-- Tipos de Certificados -->
+       <section class="grid-certificates">
+           <!-- Certificado de Estudio -->
+           <div class="certificate-card">
+               <div class="certificate-header">
+                   <h3 class="certificate-title"><i class="fas fa-file-alt"></i> Certificado de Estudio</h3>
+               </div>
+               <p class="certificate-description">Documento oficial que certifica la matrícula y asistencia del estudiante en la institución.</p>
+               <div class="certificate-options">
+                   <label>
+                       <span>Estudiante:</span>
+                       <select>
+                           <option value="">Seleccionar estudiante</option>
+                           <option value="20250001">Ana María López</option>
+                           <option value="20250002">Carlos Rodríguez</option>
+                           <option value="20250003">María Fernanda Torres</option>
+                           <option value="20250004">Santiago Pérez</option>                      
+                           <option value="20250005">Valentina Gómez</option>
+                       </select>
+                   </label>
+               </div>
+               <div class="certificate-action">
+                   <button class="btn-action secondary" data-modal="preview-cert-estudio">
+                       <i class="fas fa-eye"></i> Previsualizar
+                   </button>
+                   <button class="btn-action">
+                       <i class="fas fa-file-pdf"></i> Generar PDF
+                   </button>
+               </div>
+           </div>
+           
+           <!-- Constancia de Notas -->
+           <div class="certificate-card">
+               <div class="certificate-header">
+                   <h3 class="certificate-title"><i class="fas fa-clipboard-check"></i> Constancia de Notas</h3>
+               </div>
+               <p class="certificate-description">Documento oficial con el reporte detallado de calificaciones por asignatura.</p>
+               <div class="certificate-options">
+                   <label>
+                       <span>Estudiante:</span>
+                       <select>
+                           <option value="">Seleccionar estudiante</option>
+                           <option value="20250001">Ana María López</option>
+                           <option value="20250002">Carlos Rodríguez</option>
+                           <option value="20250003">María Fernanda Torres</option>
+                           <option value="20250004">Santiago Pérez</option>                      
+                           <option value="20250005">Valentina Gómez</option>
+                       </select>
+                   </label>
+                   <label>
+                       <span>Período:</span>
+                       <select>
+                           <option value="2025-1" selected>2025-1</option>
+                           <option value="2024-4">2024-4</option>
+                           <option value="2024-3">2024-3</option>
+                           <option value="2024-2">2024-2</option>                      
+                           <option value="2024-1">2024-1</option>
+                       </select>
+                   </label>
+               </div>
+               <div class="certificate-action">
+                   <button class="btn-action secondary" data-modal="preview-cert-notas">
+                       <i class="fas fa-eye"></i> Previsualizar
+                   </button>
+                   <button class="btn-action">
+                       <i class="fas fa-file-pdf"></i> Generar PDF
+                   </button>
+               </div>
+           </div>
+           
+           <!-- Paz y Salvo -->
+           <div class="certificate-card">
+               <div class="certificate-header">
+                   <h3 class="certificate-title"><i class="fas fa-check-circle"></i> Paz y Salvo</h3>
+               </div>
+               <p class="certificate-description">Certifica que el estudiante no tiene obligaciones pendientes con la institución.</p>
+               <div class="certificate-options">
+                   <label>
+                       <span>Estudiante:</span>
+                       <select>
+                           <option value="">Seleccionar estudiante</option>
+                           <option value="20250001">Ana María López</option>
+                           <option value="20250002">Carlos Rodríguez</option>
+                           <option value="20250003">María Fernanda Torres</option>
+                           <option value="20250004">Santiago Pérez</option>                      
+                           <option value="20250005">Valentina Gómez</option>
+                       </select>
+                   </label>
+               </div>
+               <div class="certificate-action">
+                   <button class="btn-action secondary" data-modal="preview-cert-pazsalvo">
+                       <i class="fas fa-eye"></i> Previsualizar
+                   </button>
+                   <button class="btn-action">
+                       <i class="fas fa-file-pdf"></i> Generar PDF
+                   </button>
+               </div>
+           </div>
+           
+           <!-- Certificado de Matricula -->
+           <div class="certificate-card">
+               <div class="certificate-header">
+                   <h3 class="certificate-title"><i class="fas fa-user-graduate"></i> Certificado de Matrícula</h3>
+               </div>
+               <p class="certificate-description">Documento que certifica la matrícula actual del estudiante para el año lectivo.</p>
+               <div class="certificate-options">
+                   <label>
+                       <span>Estudiante:</span>
+                       <select>
+                           <option value="">Seleccionar estudiante</option>
+                           <option value="20250001">Ana María López</option>
+                           <option value="20250002">Carlos Rodríguez</option>
+                           <option value="20250003">María Fernanda Torres</option>
+                           <option value="20250004">Santiago Pérez</option>                      
+                           <option value="20250005">Valentina Gómez</option>
+                       </select>
+                   </label>
+               </div>
+               <div class="certificate-action">
+                   <button class="btn-action secondary" data-modal="preview-cert-matricula">
+                       <i class="fas fa-eye"></i> Previsualizar
+                   </button>
+                   <button class="btn-action">
+                       <i class="fas fa-file-pdf"></i> Generar PDF
+                   </button>
+               </div>
+           </div>
+           
+           <!-- Reporte de Asistencia -->
+           <div class="certificate-card">
+               <div class="certificate-header">
+                   <h3 class="certificate-title"><i class="fas fa-calendar-check"></i> Reporte de Asistencia</h3>
+               </div>
+               <p class="certificate-description">Documento con el historial de asistencia del estudiante durante el período académico.</p>
+               <div class="certificate-options">
+                   <label>
+                       <span>Estudiante:</span>
+                       <select>
+                           <option value="">Seleccionar estudiante</option>
+                           <option value="20250001">Ana María López</option>
+                           <option value="20250002">Carlos Rodríguez</option>
+                           <option value="20250003">María Fernanda Torres</option>
+                           <option value="20250004">Santiago Pérez</option>                      
+                           <option value="20250005">Valentina Gómez</option>
+                       </select>
+                   </label>
+                   <label>
+                       <span>Período:</span>
+                       <select>
+                           <option value="2025-1" selected>2025-1</option>
+                           <option value="2024-4">2024-4</option>
+                           <option value="2024-3">2024-3</option>
+                           <option value="2024-2">2024-2</option>                      
+                           <option value="2024-1">2024-1</option>
+                       </select>
+                   </label>
+               </div>
+               <div class="certificate-action">
+                   <button class="btn-action secondary" data-modal="preview-cert-asistencia">
+                       <i class="fas fa-eye"></i> Previsualizar
+                   </button>
+                   <button class="btn-action">
+                       <i class="fas fa-file-pdf"></i> Generar PDF
+                   </button>
+               </div>
+           </div>
+           
+           <!-- Certificado de Conducta -->
+           <div class="certificate-card">
+               <div class="certificate-header">
+                   <h3 class="certificate-title"><i class="fas fa-medal"></i> Certificado de Conducta</h3>
+               </div>
+               <p class="certificate-description">Certifica el comportamiento y conducta del estudiante durante el período escolar.</p>
+               <div class="certificate-options">
+                   <label>
+                       <span>Estudiante:</span>
+                       <select>
+                           <option value="">Seleccionar estudiante</option>
+                           <option value="20250001">Ana María López</option>
+                           <option value="20250002">Carlos Rodríguez</option>
+                           <option value="20250003">María Fernanda Torres</option>
+                           <option value="20250004">Santiago Pérez</option>                      
+                           <option value="20250005">Valentina Gómez</option>
+                       </select>
+                   </label>
+                   <label>
+                       <span>Período:</span>
+                       <select>
+                           <option value="2025-1" selected>2025-1</option>
+                           <option value="2024-4">2024-4</option>
+                           <option value="2024-3">2024-3</option>
+                           <option value="2024-2">2024-2</option>                      
+                           <option value="2024-1">2024-1</option>
+                       </select>
+                   </label>
+               </div>
+               <div class="certificate-action">
+                   <button class="btn-action secondary" data-modal="preview-cert-conducta">
+                       <i class="fas fa-eye"></i> Previsualizar
+                   </button>
+                   <button class="btn-action">
+                       <i class="fas fa-file-pdf"></i> Generar PDF
+                   </button>
+               </div>
+           </div>
+       </section>
+       
+       <!-- Modal de Previsualización para Certificado de Estudio -->
+       <div id="preview-cert-estudio" class="modal">
+         <div class="modal-contenido modal-lg">
+             <div class="modal-header">
+                 <h3>Previsualización: Certificado de Estudio</h3>
+                 <button class="btn-cerrar" data-close-modal><i class="fas fa-times"></i></button>
+             </div>
+             <div class="preview-container">
+                 <div class="preview-document">
+                     <div class="preview-header">
+                         <img src="/api/placeholder/180/60" alt="Logo Institución">
+                         <h4 class="preview-title">Certificado de Estudio</h4>
+                     </div>
+                     <div class="preview-content">
+                         <p>El(La) Rector(a) del COLEGIO INFOJIS certifica que:</p>
+                         <p><strong>ANA MARÍA LÓPEZ</strong> identificado(a) con Documento de Identidad No. <strong>1034567890</strong>, 
+                         está matriculado(a) en esta institución educativa en el grado <strong>JARDÍN</strong>, grupo <strong>A</strong>, 
+                         para el año lectivo <strong>2025</strong>, en la jornada <strong>MAÑANA</strong>.</p>
+                         
+                         <p>El(La) estudiante ha asistido regularmente a clases desde <strong>ENERO 15</strong> 
+                         hasta la fecha de expedición del presente certificado.</p>
+                         
+                         <p>Se expide el presente certificado a solicitud del interesado(a) en la ciudad de 
+                         <strong>BOGOTÁ</strong>, a los <strong>26</strong> días del mes de <strong>FEBRERO</strong> de <strong>2025</strong>.</p>
+                     </div>
+                     <div class="preview-footer">
+                         <div class="preview-signature">
+                             <hr style="width: 200px; margin: 0 auto 5px;">
+                             <p><strong>ADRIANA MARTÍNEZ TORRES</strong><br>
+                             Rector(a)</p>
+                         </div>
+                         <div class="preview-qr">
+                             <i class="fas fa-qrcode fa-5x"></i>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div class="modal-footer">
+                 <button class="btn-action" data-close-modal>Cerrar</button>
+                 <button class="btn-action">
+                     <i class="fas fa-file-pdf"></i> Generar PDF
+                 </button>
+             </div>
+         </div>         
+       </div>
+       
+       <!-- Modal de Previsualización para Constancia de Notas -->
+       <div id="preview-cert-notas" class="modal">
+         <div class="modal-contenido modal-lg">
+             <div class="modal-header">
+                 <h3>Previsualización: Constancia de Notas</h3>
+                 <button class="btn-cerrar" data-close-modal><i class="fas fa-times"></i></button>
+             </div>
+             <div class="preview-container">
+                 <div class="preview-document">
+                     <div class="preview-header">
+                         <img src="/api/placeholder/180/60" alt="Logo Institución">
+                         <h4 class="preview-title">Constancia de Notas</h4>
+                         <p>Período: 2025-1</p>
+                     </div>
+                     <div class="preview-content">
+                         <p><strong>ESTUDIANTE:</strong> Ana María López</p>
+                         <p><strong>IDENTIFICACIÓN:</strong> 1034567890</p>
+                         <p><strong>GRADO:</strong> Jardín - Grupo A</p>
+                         
+                         <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                             <thead>
+                                 <tr style="background-color: #f0f0f0;">
+                                     <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Asignatura</th>
+                                     <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Nota Final</th>
+                                     <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Estado</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                 <tr>
+                                     <td style="border: 1px solid #ddd; padding: 8px;">Matemáticas</td>
+                                     <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">4.5</td>
+                                     <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">Aprobado</td>
+                                 </tr>
+                                 <tr>
+                                     <td style="border: 1px solid #ddd; padding: 8px;">Lenguaje</td>
+                                     <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">4.7</td>
+                                     <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">Aprobado</td>
+                                 </tr>
+                                 <tr>
+                                     <td style="border: 1px solid #ddd; padding: 8px;">Ciencias Naturales</td>
+                                     <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">4.2</td>
+                                     <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">Aprobado</td>
+                                 </tr>
+                                 <tr>
+                                     <td style="border: 1px solid #ddd; padding: 8px;">Ciencias Sociales</td>
+                                     <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">4.0</td>
+                                     <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">Aprobado</td>
+                                 </tr>
+                                 <tr>
+                                     <td style="border: 1px solid #ddd; padding: 8px;">Arte</td>
+                                     <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">4.8</td>
+                                     <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">Aprobado</td>
+                                 </tr>
+                                 <tr>
+                                     <td style="border: 1px solid #ddd; padding: 8px; font-weight: bold;">Promedio</td>
+                                     <td style="border: 1px solid #ddd; padding: 8px; text-align: center; font-weight: bold;">4.44</td>
+                                     <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">-</td>
+                                 </tr>
+                             </tbody>
+                         </table>
+                         
+                         <p>Se expide la presente constancia a solicitud del interesado(a) en la ciudad de 
+                         <strong>BOGOTÁ</strong>, a los <strong>26</strong> días del mes de <strong>FEBRERO</strong> de <strong>2025</strong>.</p>
+                     </div>
+                     <div class="preview-footer">
+                         <div class="preview-signature">
+                             <hr style="width: 200px; margin: 0 auto 5px;">
+                             <p><strong>ADRIANA MARTÍNEZ TORRES</strong><br>
+                             Rector(a)</p>
+                         </div>
+                         <div class="preview-qr">
+                             <i class="fas fa-qrcode fa-5x"></i>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div class="modal-footer">
+                 <button class="btn-action" data-close-modal>Cerrar</button>
+                 <button class="btn-action">
+                     <i class="fas fa-file-pdf"></i> Generar PDF
+                 </button>
+             </div>
+         </div>         
+       </div>
+       
+       <!-- Modal de Previsualización para Paz y Salvo -->
+       <div id="preview-cert-pazsalvo" class="modal">
+         <div class="modal-contenido modal-lg">
+             <div class="modal-header">
+                 <h3>Previsualización: Paz y Salvo</h3>
+                 <button class="btn-cerrar" data-close-modal><i class="fas fa-times"></i></button>
+             </div>
+             <div class="preview-container">
+                 <div class="preview-document">
+                     <div class="preview-header">
+                         <img src="/api/placeholder/180/60" alt="Logo Institución">
+                         <h4 class="preview-title">Certificado de Paz y Salvo</h4>
+                     </div>
+                     <div class="preview-content">
+                         <p>El Departamento Administrativo del COLEGIO INFOJIS certifica que:</p>
+                         <p><strong>ANA MARÍA LÓPEZ</strong> identificado(a) con Documento de Identidad No. <strong>1034567890</strong>, 
+                         estudiante del grado <strong>JARDÍN</strong>, grupo <strong>A</strong>, se encuentra a PAZ Y SALVO 
+                         por todo concepto con la institución a la fecha de expedición del presente certificado.</p>
+                         
+                         <p>Este certificado incluye obligaciones por conceptos de:</p>
+                         <ul style="list-style-type: none; margin-left: 20px;">
+                             <li>✓ Matrícula y pensiones</li>
+                             <li>✓ Biblioteca</li>
+                             <li>✓ Laboratorios</li>
+                             <li>✓ Material didáctico</li>
+                         </ul>
+                         
+                         <p>Se expide el presente certificado a solicitud del interesado(a) en la ciudad de 
+                         <strong>BOGOTÁ</strong>, a los <strong>26</strong> días del mes de <strong>FEBRERO</strong> de <strong>2025</strong>.</p>
+                     </div>
+                     <div class="preview-footer">

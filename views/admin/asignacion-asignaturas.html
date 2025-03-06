@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Infojis - Asignación de Asignaturas</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/filters.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+  <link rel="stylesheet" href="../../styles/components/notifications.css">
+</head>
+<body>
+  <div class="app"-container>
+   <!-- Sidebar -->
+   <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="horario.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Horarios</a></li>
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="asignacion.html" class="nav-link active"><i class="fas fa-book"></i> Asignación</a></li>
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+     <div class="sidebar-footer">
+          <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+     </div>
+   </nav>
+
+   <!-- Overlay para cerrar sidebar en móviles -->
+   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+   <!-- Contenido Principal -->
+   <main class="main-content" id="main-content">
+       <!-- Encabezado -->
+       <header class="header">
+           <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+               <i class="fas fa-bars"></i>
+           </button>                  
+           <div class="user-profile" id="user-profile">
+               <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+               <div>
+                   <span class="user-name">Administrador</span>
+                   <span class="user-role">Coordinador Académico</span>
+               </div>
+           </div>
+       </header>     
+
+       <!-- Filtros de Asignación -->
+       <section class="filter">         
+           <div class="filter-content">
+               <label>
+                   <span>Departamento:</span>               
+                   <select id="select-departamento" name="departamento">
+                       <option value="">Todos los departamentos</option>
+                       <option value="ciencias">Ciencias</option>
+                       <option value="humanidades">Humanidades</option>
+                       <option value="matematicas">Matemáticas</option>
+                       <option value="artes">Artes</option>                      
+                       <option value="deportes">Deportes</option>                      
+                   </select>
+               </label>
+               <label>
+                   <span>Nivel:</span>
+                   <select id="select-nivel">
+                       <option value="">Todos los niveles</option>
+                       <option value="preescolar" selected>Preescolar</option>
+                       <option value="primaria">Primaria</option>
+                       <option value="secundaria">Secundaria</option>
+                   </select>
+               </label>
+               <label>
+                   <span>Año Lectivo:</span>
+                   <select id="select-anio-lectivo">
+                       <option value="2024-2025" selected>2024-2025</option>
+                       <option value="2023-2024">2023-2024</option>
+                   </select>
+               </label>
+               <button class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>               
+           </div>         
+       </section>
+       
+
+       <!-- Lista de Asignación de Asignaturas -->
+       <section class="table-container"> 
+           <div class="table-header">
+               <div class="table-info">
+                   <h3>Asignación de Asignaturas</h3>
+                   <div class="table-details">
+                       <span><i class="fas fa-users"></i> 8 docentes</span>
+                       <span><i class="fas fa-book"></i> 15 asignaturas asignadas</span>
+                   </div>               
+               </div>             
+               <div class="action">
+                   <button class="btn-exportar"><i class="fas fa-file-export"></i> Exportar</button>
+                   <button class="btn-asignar" id="btn-nueva-asignacion"><i class="fas fa-plus-circle"></i> Nueva Asignación</button>
+               </div>
+           </div>         
+           
+           <div class="table-responsive">
+               <table class="table-body">
+                   <thead>
+                       <tr>
+                           <th>#</th>
+                           <th>Foto</th>
+                           <th>Docente</th>
+                           <th>Asignaturas Asignadas</th>
+                           <th>Carga Horaria</th>
+                           <th>Acciones</th>                     
+                       </tr>
+                   </thead>
+                   <tbody id="tabla-asignaciones">
+                       <tr>
+                           <td>1</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="teacher-info">
+                               <span class="teacher-name">Luz Marina Ospino Diaz</span>
+                               <span class="teacher-id">ID: D20250001</span>
+                           </td>
+                           <td>
+                               <div class="assigned-subjects">
+                                   <span class="subject-badge">Arte (Jardín)</span>
+                                   <span class="subject-badge">Expresión Corporal (Pre-Jardín)</span>
+                               </div>
+                           </td>
+                           <td>
+                               <span class="hours-display">12 hrs/semana</span>
+                           </td>
+                           <td>                         
+                               <button class="btn-editar" data-teacher="Luz Marina Ospino Diaz"><i class="fas fa-edit"></i></button>
+                               <button class="btn-ver-detalle" data-teacher="Luz Marina Ospino Diaz"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>2</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="teacher-info">
+                               <span class="teacher-name">Carlos Martínez Ruiz</span>
+                               <span class="teacher-id">ID: D20250002</span>
+                           </td>
+                           <td>
+                               <div class="assigned-subjects">
+                                   <span class="subject-badge">Matemáticas (Jardín)</span>
+                                   <span class="subject-badge">Lógica (Párvulos)</span>
+                                   <span class="subject-badge">Matemáticas (Pre-Jardín)</span>
+                               </div>
+                           </td>
+                           <td>
+                               <span class="hours-display">18 hrs/semana</span>
+                           </td>
+                           <td>                         
+                               <button class="btn-editar" data-teacher="Carlos Martínez Ruiz"><i class="fas fa-edit"></i></button>
+                               <button class="btn-ver-detalle" data-teacher="Carlos Martínez Ruiz"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>3</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="teacher-info">
+                               <span class="teacher-name">Ana María Vega Torres</span>
+                               <span class="teacher-id">ID: D20250003</span>
+                           </td>
+                           <td>
+                               <div class="assigned-subjects">
+                                   <span class="subject-badge">Idioma (Jardín)</span>
+                                   <span class="subject-badge">Idioma (Pre-Jardín)</span>
+                                   <span class="subject-badge">Lenguaje (Párvulos)</span>
+                               </div>
+                           </td>
+                           <td>
+                               <span class="hours-display">16 hrs/semana</span>
+                           </td>
+                           <td>                         
+                               <button class="btn-editar" data-teacher="Ana María Vega Torres"><i class="fas fa-edit"></i></button>
+                               <button class="btn-ver-detalle" data-teacher="Ana María Vega Torres"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>4</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="teacher-info">
+                               <span class="teacher-name">José Luis Ramírez Gómez</span>
+                               <span class="teacher-id">ID: D20250004</span>
+                           </td>
+                           <td>
+                               <div class="assigned-subjects">
+                                   <span class="subject-badge">E. Física (Jardín)</span>
+                                   <span class="subject-badge">E. Física (Pre-Jardín)</span>
+                                   <span class="subject-badge">Deportes (Párvulos)</span>
+                               </div>
+                           </td>
+                           <td>
+                               <span class="hours-display">15 hrs/semana</span>
+                           </td>
+                           <td>                         
+                               <button class="btn-editar" data-teacher="José Luis Ramírez Gómez"><i class="fas fa-edit"></i></button>
+                               <button class="btn-ver-detalle" data-teacher="José Luis Ramírez Gómez"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>5</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="teacher-info">
+                               <span class="teacher-name">Patricia Londoño Vargas</span>
+                               <span class="teacher-id">ID: D20250005</span>
+                           </td>
+                           <td>
+                               <div class="assigned-subjects">
+                                   <span class="subject-badge">Religión (Jardín)</span>
+                                   <span class="subject-badge">Religión (Pre-Jardín)</span>
+                               </div>
+                           </td>
+                           <td>
+                               <span class="hours-display">10 hrs/semana</span>
+                           </td>
+                           <td>                         
+                               <button class="btn-editar" data-teacher="Patricia Londoño Vargas"><i class="fas fa-edit"></i></button>
+                               <button class="btn-ver-detalle" data-teacher="Patricia Londoño Vargas"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                   </tbody>
+               </table>
+           </div>
+           
+           <div class="tabla-paginacion" role="navigation" aria-label="Paginación de resultados">
+               <button class="btn-pagina" aria-label="Página anterior" disabled>
+                   <i class="fas fa-chevron-left" aria-hidden="true"></i>
+               </button>
+               <span>Página 1 de 1</span>
+               <button class="btn-pagina" aria-label="Página siguiente" disabled>
+                   <i class="fas fa-chevron-right" aria-hidden="true"></i>
+               </button>
+           </div>         
+       </section>
+  
+       <!-- Modal de Nueva Asignación -->
+       <div id="modal-asignacion" class="modal">
+         <div class="modal-contenido">
+             <div class="modal-header">
+                 <h3>Nueva Asignación de Asignatura</h3>
+                 <button class="btn-cerrar" id="btn-cerrar-modal"><i class="fas fa-times"></i></button>
+             </div>
+             <form id="form-asignacion"> 
+                 <div class="group-form">                 
+                     <label for="select-docente">Seleccionar Docente:</label>
+                     <select id="select-docente" required>
+                         <option value="">Seleccione un docente</option>
+                         <option value="1">Luz Marina Ospino Diaz</option>
+                         <option value="2">Carlos Martínez Ruiz</option>
+                         <option value="3">Ana María Vega Torres</option>
+                         <option value="4">José Luis Ramírez Gómez</option>
+                         <option value="5">Patricia Londoño Vargas</option>
+                     </select>                
+                 </div>
+                 <div class="group-form">                 
+                     <label for="select-asignatura-modal">Seleccionar Asignatura:</label>
+                     <select id="select-asignatura-modal" required>
+                         <option value="">Seleccione una asignatura</option>
+                         <option value="matematicas">Matemáticas</option>
+                         <option value="arte">Arte</option>
+                         <option value="idioma">Idioma</option>
+                         <option value="efisica">E. Física</option>
+                         <option value="religion">Religión</option>
+                         <option value="logica">Lógica</option>
+                         <option value="lenguaje">Lenguaje</option>
+                         <option value="expresion">Expresión Corporal</option>
+                         <option value="deportes">Deportes</option>
+                     </select>                
+                 </div>
+                 <div class="group-form">                 
+                     <label for="select-curso-modal">Seleccionar Curso:</label>
+                     <select id="select-curso-modal" required>
+                         <option value="">Seleccione un curso</option>
+                         <option value="parvulos">Párvulos</option>
+                         <option value="maternos">Maternos</option>
+                         <option value="pre-jardin">Pre-Jardín</option>
+                         <option value="jardin">Jardín</option>
+                         <option value="primero">Primero</option>
+                     </select>                
+                 </div>
+                 <div class="group-form">                 
+                     <label for="input-horas">Horas Semanales:</label>
+                     <input type="number" id="input-horas" min="1" max="20" value="4" required>               
+                 </div>
+                 <div class="group-form">                 
+                     <label for="observacion-texto">Observaciones:</label>
+                     <textarea id="observacion-texto" placeholder="Observaciones sobre la asignación..."></textarea>                 
+                 </div>
+                 <div class="form-acciones">                              
+                     <button type="button" class="btn-cancelar">Cancelar</button>
+                     <button type="submit" class="btn-guardar">Guardar Asignación</button>                              
+                 </div>                
+             </form>
+         </div>         
+       </div>
+
+       <!-- Modal de Detalles de Asignación -->
+       <div id="modal-detalle" class="modal">
+         <div class="modal-contenido">
+             <div class="modal-header">
+                 <h3>Detalle de Asignaciones: <span id="teacher-name"></span></h3>
+                 <button class="btn-cerrar" id="btn-cerrar-detalle"><i class="fas fa-times"></i></button>
+             </div>
+             <div class="detalle-contenido">
+                 <div class="teacher-detail-header">
+                     <img src="../../imagenes/user-fond.jpeg" alt="Foto" class="teacher-detail-avatar">
+                     <div class="teacher-detail-info">
+                         <h4 id="detail-teacher-name">Luz Marina Ospino Diaz</h4>
+                         <p id="detail-teacher-id">ID: D20250001</p>
+                         <p>Departamento: <span id="detail-department">Artes</span></p>
+                         <p>Total Horas: <span id="detail-hours">12 hrs/semana</span></p>
+                     </div>
+                 </div>
+                 <div class="teacher-assignments">
+                     <h4>Asignaturas Asignadas</h4>
+                     <table class="detail-table">
+                         <thead>
+                             <tr>
+                                 <th>Asignatura</th>
+                                 <th>Curso</th>
+                                 <th>Horas/Semana</th>
+                             </tr>
+                         </thead>
+                         <tbody id="detail-assignments">
+                             <tr>
+                                 <td>Arte</td>
+                                 <td>Jardín</td>
+                                 <td>6 hrs</td>
+                             </tr>
+                             <tr>
+                                 <td>Expresión Corporal</td>
+                                 <td>Pre-Jardín</td>
+                                 <td>6 hrs</td>
+                             </tr>
+                         </tbody>
+                     </table>
+                 </div>
+                 <div class="form-acciones">                              
+                     <button type="button" class="btn-cerrar-detalle">Cerrar</button>                          
+                 </div>                
+             </div>
+         </div>         
+       </div>
+
+       <!-- Notificación de éxito -->
+       <div class="notification" id="notification">
+           <i class="fas fa-check-circle"></i>
+           <span id="notification-message">Asignación guardada con éxito</span>
+       </div>
+  </main>
+  </div>
+  <script>
+    // Toggle sidebar solo en móviles
+document.getElementById('sidebar-toggle').addEventListener('click', function() {
+    if (window.innerWidth <= 992) { // Solo ejecutar en pantallas pequeñas
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('sidebar-overlay').classList.toggle('active');
+        document.getElementById('main-content').classList.toggle('expanded');
+    }
+});
+    
+    // Cerrar sidebar cuando se hace clic en el overlay
+    document.getElementById('sidebar-overlay').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.remove('active');
+        document.getElementById('sidebar-overlay').classList.remove('active');
+    });
+    
+    // Abrir modal de asignación
+    document.getElementById('btn-nueva-asignacion').addEventListener('click', function() {
+        document.getElementById('modal-asignacion').classList.add('active');
+    });
+    
+    // Cerrar modal de asignación
+    document.getElementById('btn-cerrar-modal').addEventListener('click', function() {
+        document.getElementById('modal-asignacion').classList.remove('active');
+    });
+    
+    document.querySelectorAll('.btn-cancelar').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('modal-asignacion').classList.remove('active');
+        });
+    });
+    
+    // Abrir modal de detalles
+    const botonesVerDetalle = document.querySelectorAll('.btn-ver-detalle');
+    const modalDetalle = document.getElementById('modal-detalle');
+    
+    botonesVerDetalle.forEach(boton => {
+        boton.addEventListener('click', function() {
+            const teacherName = this.getAttribute('data-teacher');
+            document.getElementById('teacher-name').textContent = teacherName;
+            document.getElementById('detail-teacher-name').textContent = teacherName;
+            
+            // Aquí se cargarían los detalles específicos del docente
+            // En una implementación real, esto utilizaría AJAX o datos del backend
+            
+            modalDetalle.classList.add('active');
+        });
+    });
+    
+    // Cerrar modal de detalles
+    document.getElementById('btn-cerrar-detalle').addEventListener('click', function() {
+        modalDetalle.classList.remove('active');
+    });
+    
+    document.querySelectorAll('.btn-cerrar-detalle').forEach(btn => {
+        btn.addEventListener('click', function() {
+            modalDetalle.classList.remove('active');
+        });
+    });
+    
+    // Abrir modal de edición (usa el mismo modal pero con datos precargados)
+    const botonesEditar = document.querySelectorAll('.btn-editar');
+    const modalAsignacion = document.getElementById('modal-asignacion');
+    
+    botonesEditar.forEach(boton => {
+        boton.addEventListener('click', function() {
+            const teacherName = this.getAttribute('data-teacher');
+            
+            // Encontrar el índice del docente en el select
+            const selectDocente = document.getElementById('select-docente');
+            for (let i = 0; i < selectDocente.options.length; i++) {
+                if (selectDocente.options[i].text === teacherName) {
+                    selectDocente.selectedIndex = i;
+                    break;
+                }
+            }
+            
+            // En una implementación real, aquí se cargarían los datos de la asignatura a editar
+            // Por ahora solo cambiamos el título del modal
+            document.querySelector('#modal-asignacion .modal-header h3').textContent = 'Editar Asignación de Asignatura';
+            
+            modalAsignacion.classList.add('active');
+        });
+    });
+    
+    // Guardar formulario de asignación
+    document.getElementById('form-asignacion').addEventListener('submit', function(e) {
+        e.preventDefault();
+        document.getElementById('modal-asignacion').classList.remove('active');
+        
+        // Restablecer el título del modal para futuras aperturas
+        document.querySelector('#modal-asignacion .modal-header h3').textContent = 'Nueva Asignación de Asignatura';
+        
+        // Mostrar notificación
+        const notification = document.getElementById('notification');
+        notification.classList.add('show');
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    });
+  </script>
+</body>
+</html>

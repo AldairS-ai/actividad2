@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Infojis - Tarjetas Acumuladas</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/filters.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+  <link rel="stylesheet" href="../../styles/components/notifications.css">
+  <style>
+    .tarjeta {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 3px;
+      margin-right: 5px;
+    }
+    
+    .tarjeta-amarilla {
+      background-color: #FFEB3B;
+      border: 1px solid #FBC02D;
+    }
+    
+    .tarjeta-roja {
+      background-color: #F44336;
+      border: 1px solid #D32F2F;
+    }
+    
+    .contador-tarjetas {
+      display: flex;
+      align-items: center;
+    }
+    
+    .tarjetas-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .badge {
+      background-color: #f0f0f0;
+      border-radius: 12px;
+      padding: 2px 8px;
+      font-size: 0.85em;
+      margin-left: 5px;
+    }
+    
+    .btn-agregar-tarjeta {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #444;
+      font-size: 14px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-agregar-tarjeta:hover {
+      background-color: #f0f0f0;
+    }
+    
+    .historial-tarjetas {
+      margin-top: 15px;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+    
+    .historial-item {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .historial-fecha {
+      color: #666;
+      font-size: 0.9em;
+    }
+    
+    .historial-tipo {
+      display: flex;
+      align-items: center;
+    }
+    
+    .resumen-seccion {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+    
+    .resumen-datos {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 10px;
+    }
+    
+    .resumen-item {
+      text-align: center;
+    }
+    
+    .resumen-valor {
+      font-size: 1.8em;
+      font-weight: bold;
+      color: #444;
+    }
+    
+    .resumen-etiqueta {
+      font-size: 0.9em;
+      color: #666;
+    }
+    
+    @media (max-width: 768px) {
+      .tarjetas-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+   <!-- Sidebar -->
+   <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Inicio</a></li>        
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="observaciones.html" class="nav-link"><i class="fas fa-comment-dots"></i> Observaciones</a></li>
+          <li><a href="tarjetas-acumuladas.html" class="nav-link active"><i class="fas fa-id-card"></i> Tarjetas</a></li>
+          <li><a href="reportes.html" class="nav-link"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+          <div class="sidebar-footer">
+              <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+          </div>
+      </ul>
+   </nav>
+
+   <!-- Overlay para cerrar sidebar en móviles -->
+   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+   <!-- Contenido Principal -->
+   <main class="main-content" id="main-content">
+       <!-- Encabezado -->
+       <header class="header">
+           <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+               <i class="fas fa-bars"></i>
+           </button>                  
+           <div class="user-profile" id="user-profile">
+               <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+               <div>
+                   <span class="user-name">Luz Ospino</span>
+                   <span class="user-role">Docente</span>
+               </div>
+           </div>
+       </header>     
+
+       <!-- Filtros de Tarjetas -->
+       <section class="filter">         
+           <div class="filter-content">
+               <label>
+                   <span>Curso:</span>               
+                   <select id="select-curso" name="cursos">
+                       <option value="">Seleccionar curso</option>
+                       <option value="parvulos">Párvulos</option>
+                       <option value="maternos">Maternos</option>
+                       <option value="pre-jardin">Pre-Jardín</option>
+                       <option value="jardin" selected>Jardín</option>                      
+                       <option value="primero">Primero</option>                      
+                   </select>
+               </label>
+               <label>
+                   <span>Periodo:</span>
+                   <select id="select-periodo">
+                       <option value="">Todos los periodos</option>
+                       <option value="periodo1" selected>Primer periodo</option>
+                       <option value="periodo2">Segundo periodo</option>
+                       <option value="periodo3">Tercer periodo</option>
+                       <option value="periodo4">Cuarto periodo</option>                      
+                   </select>
+               </label>
+               <label>
+                   <span>Tipo:</span>
+                   <select id="select-tipo">
+                       <option value="todos" selected>Todos</option>
+                       <option value="amarilla">Tarjeta amarilla</option>
+                       <option value="roja">Tarjeta roja</option>
+                   </select>
+               </label>
+               <button class="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>               
+           </div>         
+       </section>
+       
+       <!-- Resumen de tarjetas -->
+       <section class="resumen-seccion">
+           <h3><i class="fas fa-chart-pie"></i> Resumen de tarjetas - Jardín Grupo A</h3>
+           <div class="resumen-datos">
+               <div class="resumen-item">
+                   <div class="resumen-valor">12</div>
+                   <div class="resumen-etiqueta">Tarjetas amarillas</div>
+               </div>
+               <div class="resumen-item">
+                   <div class="resumen-valor">3</div>
+                   <div class="resumen-etiqueta">Tarjetas rojas</div>
+               </div>
+               <div class="resumen-item">
+                   <div class="resumen-valor">2</div>
+                   <div class="resumen-etiqueta">Estudiantes suspendidos</div>
+               </div>
+               <div class="resumen-item">
+                   <div class="resumen-valor">7</div>
+                   <div class="resumen-etiqueta">Notificaciones enviadas</div>
+               </div>
+           </div>
+       </section>
+
+       <!-- Lista de Tarjetas -->
+       <section class="table-container"> 
+           <div class="table-header">
+               <div class="table-info">
+                   <h3>Registro de Tarjetas</h3>
+                   <div class="table-details">
+                       <span><i class="fas fa-users"></i> 26 estudiantes</span>
+                       <span><i class="fas fa-chalkboard-teacher"></i><strong>Profesora:</strong> Luz Marina Ospino Diaz</span>
+                   </div>               
+               </div>             
+               <div class="action">
+                   <button class="btn-exportar"><i class="fas fa-file-export"></i> Exportar</button>
+                   <button class="btn-guardar" id="guardar"><i class="fas fa-save"></i> Guardar</button>
+               </div>
+           </div>         
+           
+           <div class="table-responsive">
+               <table class="table-body">
+                   <thead>
+                       <tr>
+                           <th>#</th>
+                           <th>Foto</th>
+                           <th>Estudiante</th>
+                           <th>Tarjetas acumuladas</th>
+                           <th>Estado</th>
+                           <th>Acciones</th>                     
+                       </tr>
+                   </thead>
+                   <tbody id="tabla-tarjetas">
+                       <tr>
+                           <td>1</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">Ana María López</span>
+                               <span class="student-id">ID: 20250001</span>
+                           </td>
+                           <td>
+                               <div class="tarjetas-container">
+                                   <div class="contador-tarjetas">
+                                       <div class="tarjeta tarjeta-amarilla"></div>
+                                       <span>3</span>
+                                   </div>
+                                   <div class="contador-tarjetas">
+                                       <div class="tarjeta tarjeta-roja"></div>
+                                       <span>0</span>
+                                   </div>
+                               </div>
+                           </td>
+                           <td><span class="badge">Normal</span></td>
+                           <td>
+                               <button class="btn-agregar-tarjeta" data-student="Ana María López"><i class="fas fa-plus-circle"></i> Tarjeta</button>
+                               <button class="btn-observacion" data-student="Ana María López"><i class="fas fa-history"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>2</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">Carlos Rodríguez</span>
+                               <span class="student-id">ID: 20250002</span>
+                           </td>
+                           <td>
+                               <div class="tarjetas-container">
+                                   <div class="contador-tarjetas">
+                                       <div class="tarjeta tarjeta-amarilla"></div>
+                                       <span>2</span>
+                                   </div>
+                                   <div class="contador-tarjetas">
+                                       <div class="tarjeta tarjeta-roja"></div>
+                                       <span>1</span>
+                                   </div>
+                               </div>
+                           </td>
+                           <td><span class="badge">Notificado</span></td>
+                           <td>
+                               <button class="btn-agregar-tarjeta" data-student="Carlos Rodríguez"><i class="fas fa-plus-circle"></i> Tarjeta</button>
+                               <button class="btn-observacion" data-student="Carlos Rodríguez"><i class="fas fa-history"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>3</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">María Fernanda Torres</span>
+                               <span class="student-id">ID: 20250003</span>
+                           </td>
+                           <td>
+                               <div class="tarjetas-container">
+                                   <div class="contador-tarjetas">
+                                       <div class="tarjeta tarjeta-amarilla"></div>
+                                       <span>0</span>
+                                   </div>
+                                   <div class="contador-tarjetas">
+                                       <div class="tarjeta tarjeta-roja"></div>
+                                       <span>0</span>
+                                   </div>
+                               </div>
+                           </td>
+                           <td><span class="badge">Normal</span></td>
+                           <td>
+                               <button class="btn-agregar-tarjeta" data-student="María Fernanda Torres"><i class="fas fa-plus-circle"></i> Tarjeta</button>
+                               <button class="btn-observacion" data-student="María Fernanda Torres"><i class="fas fa-history"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>4</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">Santiago Pérez</span>
+                               <span class="student-id">ID: 20250004</span>
+                           </td>
+                           <td>
+                               <div class="tarjetas-container">
+                                   <div class="contador-tarjetas">
+                                       <div class="tarjeta tarjeta-amarilla"></div>
+                                       <span>3</span>
+                                   </div>
+                                   <div class="contador-tarjetas">
+                                       <div class="tarjeta tarjeta-roja"></div>
+                                       <span>2</span>
+                                   </div>
+                               </div>
+                           </td>
+                           <td><span class="badge">Suspendido</span></td>
+                           <td>
+                               <button class="btn-agregar-tarjeta" data-student="Santiago Pérez"><i class="fas fa-plus-circle"></i> Tarjeta</button>
+                               <button class="btn-observacion" data-student="Santiago Pérez"><i class="fas fa-history"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>5</td>
+                           <td><img src="../../imagenes/user-fond.jpeg" alt="Foto" class="student-avatar"></td>
+                           <td class="student-info">
+                               <span class="student-name">Valentina Gómez</span>
+                               <span class="student-id">ID: 20250005</span>
+                           </td>
+                           <td>
+                               <div class="tarjetas-container">
+                                   <div class="contador-tarjetas">
+                                       <div class="tarjeta tarjeta-amarilla"></div>
+                                       <span>4</span>
+                                   </div>
+                                   <div class="contador-tarjetas">
+                                       <div class="tarjeta tarjeta-roja"></div>
+                                       <span>0</span>
+                                   </div>
+                               </div>
+                           </td>
+                           <td><span class="badge">Notificado</span></td>
+                           <td>
+                               <button class="btn-agregar-tarjeta" data-student="Valentina Gómez"><i class="fas fa-plus-circle"></i> Tarjeta</button>
+                               <button class="btn-observacion" data-student="Valentina Gómez"><i class="fas fa-history"></i></button>
+                           </td>                     
+                       </tr>
+                   </tbody>
+               </table>
+           </div>
+           
+           <div class="tabla-paginacion" role="navigation" aria-label="Paginación de resultados">
+               <button class="btn-pagina" aria-label="Página anterior" disabled>
+                   <i class="fas fa-chevron-left" aria-hidden="true"></i>
+               </button>
+               <span>Página 1 de 1</span>
+               <button class="btn-pagina" aria-label="Página siguiente" disabled>
+                   <i class="fas fa-chevron-right" aria-hidden="true"></i>
+               </button>
+           </div>         
+       </section>
+  
+       <!-- Modal para agregar tarjeta -->
+       <div id="modal-tarjeta" class="modal">
+         <div class="modal-contenido">
+             <div class="modal-header">
+                 <h3>Agregar tarjeta: <span id="student-name-tarjeta"></span></h3>
+                 <button class="btn-cerrar" id="btn-cerrar-modal-tarjeta"><i class="fas fa-times"></i></button>
+             </div>
+             <form id="form-tarjeta"> 
+                 <div class="group-form">                 
+                     <label for="tipo-tarjeta">Tipo de tarjeta:</label>
+                     <select id="tipo-tarjeta" required>
+                         <option value="amarilla">Tarjeta Amarilla</option>
+                         <option value="roja">Tarjeta Roja</option>
+                     </select>                 
+                 </div>
+                 <div class="group-form">                 
+                     <label for="motivo-tarjeta">Motivo:</label>
+                     <textarea id="motivo-tarjeta" placeholder="Describa el motivo de la tarjeta..." required></textarea>                 
+                 </div>
+                 <div class="group-form">                 
+                     <label for="fecha-tarjeta">Fecha:</label>
+                     <input type="date" id="fecha-tarjeta" value="2025-02-28" required>                 
+                 </div>
+                 <div class="form-acciones">                              
+                     <button type="button" class="btn-cancelar">Cancelar</button>
+                     <button type="submit" class="btn-guardar">Guardar</button>                              
+                 </div>                
+             </form>
+         </div>         
+       </div>
+       
+       <!-- Modal historial de tarjetas -->
+       <div id="modal-historial" class="modal">
+         <div class="modal-contenido">
+             <div class="modal-header">
+                 <h3>Historial de tarjetas: <span id="student-name-historial"></span></h3>
+                 <button class="btn-cerrar" id="btn-cerrar-modal-historial"><i class="fas fa-times"></i></button>
+             </div>
+             <div class="historial-tarjetas">
+                 <!-- Santiago Pérez -->
+                 <div class="historial-item">
+                     <div class="historial-info">
+                         <div class="historial-tipo">
+                             <div class="tarjeta tarjeta-amarilla"></div>
+                             <strong>Tarjeta Amarilla</strong>
+                         </div>
+                         <div>Interrupción constante durante la clase</div>
+                     </div>
+                     <div class="historial-fecha">15/01/2025</div>
+                 </div>
+                 <div class="historial-item">
+                     <div class="historial-info">
+                         <div class="historial-tipo">
+                             <div class="tarjeta tarjeta-amarilla"></div>
+                             <strong>Tarjeta Amarilla</strong>
+                         </div>
+                         <div>No completó actividad en clase</div>
+                     </div>
+                     <div class="historial-fecha">22/01/2025</div>
+                 </div>
+                 <div class="historial-item">
+                     <div class="historial-info">
+                         <div class="historial-tipo">
+                             <div class="tarjeta tarjeta-amarilla"></div>
+                             <strong>Tarjeta Amarilla</strong>
+                         </div>
+                         <div>Uso de vocabulario inapropiado</div>
+                     </div>
+                     <div class="historial-fecha">01/02/2025</div>
+                 </div>
+                 <div class="historial-item">
+                     <div class="historial-info">
+                         <div class="historial-tipo">
+                             <div class="tarjeta tarjeta-roja"></div>
+                             <strong>Tarjeta Roja</strong>
+                         </div>
+                         <div>Agresión física a compañero</div>
+                     </div>
+                     <div class="historial-fecha">10/02/2025</div>
+                 </div>
+                 <div class="historial-item">
+                     <div class="historial-info">
+                         <div class="historial-tipo">
+                             <div class="tarjeta tarjeta-roja"></div>
+                             <strong>Tarjeta Roja</strong>
+                         </div>
+                         <div>Daño a materiales del salón</div>
+                     </div>
+                     <div class="historial-fecha">20/02/2025</div>
+                 </div>
+             </div>
+             <div class="form-acciones">                              
+                 <button type="button" class="btn-cancelar">Cerrar</button>
+                 <button type="button" class="btn-exportar"><i class="fas fa-print"></i> Imprimir</button>                              
+             </div>
+         </div>         
+       </div>
+       
+       <div class="notification" id="notification">
+           <i class="fas fa-check-circle"></i>
+           <span id="notification-message">Tarjeta registrada con éxito</span>
+       </div>
+  </main>
+  </div>
+     <script src="../../scripts/docente/sidebar.js"></script>
+     <script>
+         document.addEventListener('DOMContentLoaded', function() {
+             // Referencias a elementos de la página
+             const btnAgregarTarjetas = document.querySelectorAll('.btn-agregar-tarjeta');
+             const btnHistorialTarjetas = document.querySelectorAll('.btn-observacion');
+             const modalTarjeta = document.getElementById('modal-tarjeta');
+             const modalHistorial = document.getElementById('modal-historial');
+             const studentNameTarjeta = document.getElementById('student-name-tarjeta');
+             const studentNameHistorial = document.getElementById('student-name-historial');
+             const btnCerrarModalTarjeta = document.getElementById('btn-cerrar-modal-tarjeta');
+             const btnCerrarModalHistorial = document.getElementById('btn-cerrar-modal-historial');
+             const formTarjeta = document.getElementById('form-tarjeta');
+             const notification = document.getElementById('notification');
+             const notificationMessage = document.getElementById('notification-message');
+             const btnGuardar = document.getElementById('guardar');
+             
+             // Mostrar modal de agregar tarjeta
+             btnAgregarTarjetas.forEach(function(btn) {
+                 btn.addEventListener('click', function() {
+                     const studentName = this.dataset.student;
+                     studentNameTarjeta.textContent = studentName;
+                     modalTarjeta.style.display = 'flex';
+                 });
+             });
+             
+             // Mostrar modal de historial de tarjetas
+             btnHistorialTarjetas.forEach(function(btn) {
+                 btn.addEventListener('click', function() {
+                     const studentName = this.dataset.student;
+                     studentNameHistorial.textContent = studentName;
+                     modalHistorial.style.display = 'flex';
+                 });
+             });
+             
+             // Cerrar modales
+             btnCerrarModalTarjeta.addEventListener('click', function() {
+                 modalTarjeta.style.display = 'none';
+             });
+             
+             btnCerrarModalHistorial.addEventListener('click', function() {
+                 modalHistorial.style.display = 'none';
+             });
+             
+             // Cerrar modales con botones cancelar
+             document.querySelectorAll('.btn-cancelar').forEach(function(btn) {
+                 btn.addEventListener('click', function() {
+                     modalTarjeta.style.display = 'none';
+                     modalHistorial.style.display = 'none';
+                 });
+             });
+             
+             // Enviar formulario de tarjeta
+             formTarjeta.addEventListener('submit', function(e) {
+                 e.preventDefault();
+                 
+                 // Aquí se procesaría el formulario
+                 
+                 // Cerrar modal
+                 modalTarjeta.style.display = 'none';
+                 
+                 // Mostrar notificación
+                 notificationMessage.textContent = 'Tarjeta registrada con éxito';
+                 notification.classList.add('show');
+                 
+                 // Ocultar notificación después de 3 segundos
+                 setTimeout(function() {
+                     notification.classList.remove('show');
+                 }, 3000);
+             });
+             
+             // Guardar cambios
+             btnGuardar.addEventListener('click', function() {
+                 notificationMessage.textContent = 'Cambios guardados con éxito';
+                 notification.classList.add('show');
+                 
+                 setTimeout(function() {
+                     notification.classList.remove('show');
+                 }, 3000);
+             });
+             
+             // Cerrar modales al hacer clic fuera de ellos
+             window.addEventListener('click', function(e) {
+                 if (e.target === modalTarjeta) {
+                     modalTarjeta.style.display = 'none';
+                 }
+                 if (e.target === modalHistorial) {
+                     modalHistorial.style.display = 'none';
+                 }
+             });
+         });
+     </script>
+</body>
+</html>

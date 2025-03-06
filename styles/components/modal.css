@@ -1,0 +1,122 @@
+/* Modal de observaciones */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-contenido {
+    background-color: #fff;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    transform: scale(0.8);
+    transition: transform 0.3s;
+}
+
+.modal.active .modal-contenido {
+    transform: scale(1);
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #ffe0cc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    color: #333333;
+    font-size: 18px;
+}
+
+.btn-cerrar {
+    font-size: 20px;
+    color: #666666;
+    transition: color 0.2s;
+}
+
+.btn-cerrar:hover {
+    color: #ff3300;
+}
+
+#form-observacion {
+    padding: 20px;
+}
+
+.group-form {
+    margin-bottom: 20px;
+}
+
+.group-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #333333;
+}
+
+#observacion-texto {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 15px;
+    resize: vertical;
+    min-height: 120px;
+    background-color: #f9f9f9;
+}
+
+#observacion-texto, select:focus {
+    border-color: #ff6600;
+    box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.2);
+    outline: none;
+}
+
+.form-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.btn-cancelar, .form-acciones .btn-guardar {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.2s;
+}
+
+.btn-cancelar {
+    background-color: #ffeee6;
+    color: #666666;
+}
+
+.btn-cancelar:hover {
+    background-color: #ffe0cc;
+}
+
+
+
+
+@media (max-width: 576px) {
+    .modal-contenido {
+        width: 95%;
+    }
+}

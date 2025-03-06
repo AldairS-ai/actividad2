@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gestión académica INFOJIS">   
+  <meta name="theme-color" content="#ff6600">
+  <title>Infojis - Reportes de Asistencias</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../../styles/docente/main.css">
+  <link rel="stylesheet" href="../../styles/components/table.css">
+  <link rel="stylesheet" href="../../styles/components/filters.css">
+  <link rel="stylesheet" href="../../styles/components/modal.css">
+  <link rel="stylesheet" href="../../styles/components/notifications.css">
+  <style>
+    /* Estilos específicos para reportes */
+    .report-types {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+ 
+    .report-card {
+      flex: 1;
+      min-width: 250px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .report-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .report-card i {
+      font-size: 2rem;
+      color: #ff6600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .report-card h4 {
+      margin: 0.5rem 0;
+      color: #333;
+    }
+    
+    .report-card p {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 0;
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .stat-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    .stat-card h4 {
+      margin: 0;
+      color: #666;
+      font-size: 0.9rem;
+      font-weight: normal;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .stat-card.asistencia .value {
+      color: #28a745;
+    }
+    
+    .stat-card.inasistencia .value {
+      color: #dc3545;
+    }
+    
+    .stat-card.justificado .value {
+      color: #fd7e14;
+    }
+    
+    .stat-card.tardanza .value {
+      color: #17a2b8;
+    }
+    
+    .chart-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    @media (max-width: 768px) {
+      .chart-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .chart-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+    }
+    
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .chart-header h3 {
+      margin: 0;
+      color: #333;
+    }
+    
+    .chart-placeholder {
+      height: 300px;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #666;
+    }
+    
+    .chart-placeholder svg {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    .report-options {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .date-range-select {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-left: auto;
+    }
+    
+    .export-options {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .export-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .export-btn:hover {
+      background-color: #e9ecef;
+    }
+    
+    .attendance-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .legend-color {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+    }
+    
+    .asistencia-color {
+      background-color: #28a745;
+    }
+    
+    .inasistencia-color {
+      background-color: #dc3545;
+    }
+    
+    .justificado-color {
+      background-color: #fd7e14;
+    }
+    
+    .tardanza-color {
+      background-color: #17a2b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="app"-container>
+   <!-- Sidebar -->
+   <nav class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <span class="logo">>_<</span>
+        <h1>Info<span class="logo">jis</span></h1>        
+      </div>
+      
+      <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Inicio</a></li>        
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="observaciones.html" class="nav-link"><i class="fas fa-comment-dots"></i> Observaciones</a></li>        
+          <li><a href="reportes.html" class="nav-link active"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+          <div class="sidebar-footer">
+              <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+          </div>
+      </ul>
+   </nav>
+
+   <!-- Overlay para cerrar sidebar en móviles -->
+   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+   <!-- Contenido Principal -->
+   <main class="main-content" id="main-content">
+       <!-- Encabezado -->
+       <header class="header">
+           <button id="sidebar-toggle" class="header-menu-toggle" aria-label="Abrir menú">
+               <i class="fas fa-bars"></i>
+           </button>                  
+           <div class="user-profile" id="user-profile">
+               <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+               <div>
+                   <span class="user-name">Luz Ospino</span>
+                   <span class="user-role">Docente</span>
+               </div>
+           </div>
+       </header>     
+
+       <!-- Título de la sección -->
+       <div class="section-title">
+           <h2><i class="fas fa-chart-bar"></i> Reportes de Asistencias</h2>
+           <p>Visualiza y genera informes detallados sobre la asistencia de tus estudiantes</p>
+       </div>
+
+       <!-- Tipos de reportes -->
+       <section class="report-types">
+           <div class="report-card active" data-report="asistencia">
+               <i class="fas fa-user-check"></i>
+               <h4>Reporte de Asistencia</h4>
+               <p>Análisis general de asistencia por curso y período</p>
+           </div>
+           <div class="report-card" data-report="estudiante">
+               <i class="fas fa-user"></i>
+               <h4>Reporte por Estudiante</h4>
+               <p>Seguimiento individual de asistencia</p>
+           </div>
+           <div class="report-card" data-report="periodo">
+               <i class="fas fa-calendar-alt"></i>
+               <h4>Reporte por Período</h4>
+               <p>Comparativa de asistencia entre períodos</p>
+           </div>
+       </section>
+
+       <!-- Filtros de Reporte -->
+       <section class="filter">         
+           <div class="filter-content">
+               <label>
+                   <span>Curso:</span>               
+                   <select id="select-curso" name="cursos">
+                       <option value="">Todos los cursos</option>
+                       <option value="parvulos">Párvulos</option>
+                       <option value="maternos">Maternos</option>
+                       <option value="pre-jardin">Pre-Jardín</option>
+                       <option value="jardin" selected>Jardín</option>                      
+                       <option value="primero">Primero</option>                      
+                   </select>
+               </label>
+               <label>
+                   <span>Grupo:</span>
+                   <select id="select-grupo">
+                       <option value="">Todos los grupos</option>
+                       <option value="a" selected>Grupo A</option>
+                       <option value="b">Grupo B</option>
+                       <option value="c">Grupo C</option>
+                   </select>
+               </label>
+               <label>
+                   <span>Período:</span>
+                   <select id="select-periodo">
+                       <option value="actual" selected>Período actual</option>
+                       <option value="1">Primer período</option>
+                       <option value="2">Segundo período</option>
+                       <option value="3">Tercer período</option>
+                   </select>
+               </label>
+               <label>
+                   <span>Rango:</span>
+                   <div class="date-range">
+                       <input type="date" id="fecha-inicio" value="2025-01-01">
+                       <span>a</span>
+                       <input type="date" id="fecha-fin" value="2025-02-28">
+                   </div>
+               </label>
+               <button class="btn-filtrar"><i class="fas fa-filter"></i> Generar</button>               
+           </div>         
+       </section>
+
+       <!-- Estadísticas generales -->
+       <section class="stats-container">
+           <div class="stat-card asistencia">
+               <h4>Asistencia</h4>
+               <div class="value">85%</div>
+           </div>
+           <div class="stat-card inasistencia">
+               <h4>Inasistencia</h4>
+               <div class="value">10%</div>
+           </div>
+           <div class="stat-card justificado">
+               <h4>Justificados</h4>
+               <div class="value">4%</div>
+           </div>
+           <div class="stat-card tardanza">
+               <h4>Tardanzas</h4>
+               <div class="value">1%</div>
+           </div>
+       </section>
+
+       <!-- Opciones de exportación -->
+       <div class="export-options">
+           <button class="export-btn" title="Exportar como PDF">
+               <i class="fas fa-file-pdf"></i> PDF
+           </button>
+           <button class="export-btn" title="Exportar como Excel">
+               <i class="fas fa-file-excel"></i> Excel
+           </button>
+           <button class="export-btn" title="Imprimir reporte">
+               <i class="fas fa-print"></i> Imprimir
+           </button>
+       </div>
+
+       <!-- Gráficos -->
+       <section class="chart-container">
+           <!-- Gráfico principal -->
+           <div class="chart-card">
+               <div class="chart-header">
+                   <h3>Tendencia de Asistencia - Jardín Grupo A</h3>
+                   <div class="date-range-select">
+                       <select id="chart-range">
+                           <option value="semana">Última semana</option>
+                           <option value="mes" selected>Último mes</option>
+                           <option value="periodo">Período completo</option>
+                       </select>
+                   </div>
+               </div>
+               <div class="chart-placeholder">
+                   <svg viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+                       <!-- Eje X -->
+                       <line x1="50" y1="250" x2="450" y2="250" stroke="#ccc" stroke-width="2" />
+                       <!-- Eje Y -->
+                       <line x1="50" y1="50" x2="50" y2="250" stroke="#ccc" stroke-width="2" />
+                       
+                       <!-- Etiquetas del eje X -->
+                       <text x="100" y="270" text-anchor="middle" font-size="12">Sem 1</text>
+                       <text x="175" y="270" text-anchor="middle" font-size="12">Sem 2</text>
+                       <text x="250" y="270" text-anchor="middle" font-size="12">Sem 3</text>
+                       <text x="325" y="270" text-anchor="middle" font-size="12">Sem 4</text>
+                       <text x="400" y="270" text-anchor="middle" font-size="12">Sem 5</text>
+                       
+                       <!-- Etiquetas del eje Y -->
+                       <text x="40" y="250" text-anchor="end" font-size="12">0%</text>
+                       <text x="40" y="200" text-anchor="end" font-size="12">25%</text>
+                       <text x="40" y="150" text-anchor="end" font-size="12">50%</text>
+                       <text x="40" y="100" text-anchor="end" font-size="12">75%</text>
+                       <text x="40" y="50" text-anchor="end" font-size="12">100%</text>
+                       
+                       <!-- Líneas de cuadrícula horizontales -->
+                       <line x1="50" y1="200" x2="450" y2="200" stroke="#eee" stroke-width="1" />
+                       <line x1="50" y1="150" x2="450" y2="150" stroke="#eee" stroke-width="1" />
+                       <line x1="50" y1="100" x2="450" y2="100" stroke="#eee" stroke-width="1" />
+                       <line x1="50" y1="50" x2="450" y2="50" stroke="#eee" stroke-width="1" />
+                       
+                       <!-- Gráfico de línea de asistencia -->
+                       <polyline 
+                           points="100,70 175,90 250,60 325,75 400,65" 
+                           fill="none" 
+                           stroke="#28a745" 
+                           stroke-width="3" 
+                       />
+                       
+                       <!-- Gráfico de línea de inasistencia -->
+                       <polyline 
+                           points="100,230 175,220 250,235 325,225 400,230" 
+                           fill="none" 
+                           stroke="#dc3545" 
+                           stroke-width="3" 
+                       />
+                       
+                       <!-- Gráfico de línea de justificados -->
+                       <polyline 
+                           points="100,180 175,170 250,185 325,180 400,185" 
+                           fill="none" 
+                           stroke="#fd7e14" 
+                           stroke-width="3" 
+                       />
+                   </svg>
+               </div>
+               <div class="attendance-legend">
+                   <div class="legend-item">
+                       <div class="legend-color asistencia-color"></div>
+                       <span>Asistencia</span>
+                   </div>
+                   <div class="legend-item">
+                       <div class="legend-color inasistencia-color"></div>
+                       <span>Inasistencia</span>
+                   </div>
+                   <div class="legend-item">
+                       <div class="legend-color justificado-color"></div>
+                       <span>Justificado</span>
+                   </div>
+                   <div class="legend-item">
+                       <div class="legend-color tardanza-color"></div>
+                       <span>Tardanza</span>
+                   </div>
+               </div>
+           </div>
+           
+           <!-- Gráfico secundario -->
+           <div class="chart-card">
+               <div class="chart-header">
+                   <h3>Distribución de Asistencia</h3>
+               </div>
+               <div class="chart-placeholder">
+                   <svg viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
+                       <!-- Gráfico de pastel -->
+                       <circle cx="125" cy="125" r="100" fill="#f8f9fa" stroke="#ccc" stroke-width="1" />
+                       
+                       <!-- Segmentos del gráfico de pastel -->
+                       <!-- Asistencia: 85% -->
+                       <path d="M 125 125 L 225 125 A 100 100 0 1 1 125 25 Z" fill="#28a745" />
+                       
+                       <!-- Inasistencia: 10% -->
+                       <path d="M 125 125 L 125 25 A 100 100 0 0 1 160 30 Z" fill="#dc3545" />
+                       
+                       <!-- Justificados: 4% -->
+                       <path d="M 125 125 L 160 30 A 100 100 0 0 1 170 35 Z" fill="#fd7e14" />
+                       
+                       <!-- Tardanzas: 1% -->
+                       <path d="M 125 125 L 170 35 A 100 100 0 0 1 175 40 Z" fill="#17a2b8" />
+                       
+                       <!-- Etiquetas de porcentaje -->
+                       <text x="150" y="120" font-size="16" font-weight="bold" fill="#fff">85%</text>
+                       <text x="135" y="45" font-size="12" fill="#fff">10%</text>
+                       <text x="165" y="45" font-size="10" fill="#fff">4%</text>
+                       <text x="175" y="50" font-size="8" fill="#fff">1%</text>
+                   </svg>
+               </div>
+           </div>
+       </section>
+
+       <!-- Tabla de datos -->
+       <section class="table-container"> 
+           <div class="table-header">
+               <div class="table-info">
+                   <h3>Reporte detallado: Jardín - Grupo A</h3>
+                   <div class="table-details">
+                       <span><i class="fas fa-users"></i> 26 estudiantes</span>
+                       <span><i class="fas fa-chalkboard-teacher"></i><strong>Profesora:</strong> Luz Marina Ospino Diaz</span>
+                   </div>               
+               </div>
+           </div>         
+           
+           <div class="table-responsive">
+               <table class="table-body">
+                   <thead>
+                       <tr>
+                           <th>ID</th>
+                           <th>Estudiante</th>
+                           <th>Asistencias</th>
+                           <th>Inasistencias</th>
+                           <th>Justificados</th>
+                           <th>Tardanzas</th>
+                           <th>% Asistencia</th>
+                           <th>Acción</th>
+                       </tr>
+                   </thead>
+                   <tbody id="tabla-reporte">
+                       <tr>
+                           <td>20250001</td>
+                           <td class="student-info">
+                               <span class="student-name">Ana María López</span>
+                           </td>
+                           <td class="text-center">38</td>
+                           <td class="text-center">2</td>
+                           <td class="text-center">0</td>
+                           <td class="text-center">0</td>
+                           <td class="text-center">95%</td>
+                           <td>                         
+                             <button class="btn-detalles" data-student="Ana María López"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>20250002</td>
+                           <td class="student-info">
+                               <span class="student-name">Carlos Rodríguez</span>
+                           </td>
+                           <td class="text-center">32</td>
+                           <td class="text-center">5</td>
+                           <td class="text-center">3</td>
+                           <td class="text-center">0</td>
+                           <td class="text-center">80%</td>
+                           <td>                         
+                             <button class="btn-detalles" data-student="Carlos Rodríguez"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>20250003</td>
+                           <td class="student-info">
+                               <span class="student-name">María Fernanda Torres</span>
+                           </td>
+                           <td class="text-center">35</td>
+                           <td class="text-center">2</td>
+                           <td class="text-center">3</td>
+                           <td class="text-center">0</td>
+                           <td class="text-center">87.5%</td>
+                           <td>                         
+                             <button class="btn-detalles" data-student="María Fernanda Torres"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>20250004</td>
+                           <td class="student-info">
+                               <span class="student-name">Santiago Pérez</span>
+                           </td>
+                           <td class="text-center">40</td>
+                           <td class="text-center">0</td>
+                           <td class="text-center">0</td>
+                           <td class="text-center">0</td>
+                           <td class="text-center">100%</td>
+                           <td>                         
+                             <button class="btn-detalles" data-student="Santiago Pérez"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                       <tr>
+                           <td>20250005</td>
+                           <td class="student-info">
+                               <span class="student-name">Valentina Gómez</span>
+                           </td>
+                           <td class="text-center">36</td>
+                           <td class="text-center">3</td>
+                           <td class="text-center">1</td>
+                           <td class="text-center">0</td>
+                           <td class="text-center">90%</td>
+                           <td>                         
+                             <button class="btn-detalles" data-student="Valentina Gómez"><i class="fas fa-eye"></i></button>
+                           </td>                     
+                       </tr>
+                   </tbody>
+               </table>
+           </div>
+           
+           <div class="tabla-paginacion" role="navigation" aria-label="Paginación de resultados">
+               <button class="btn-pagina" aria-label="Página anterior" disabled>
+                   <i class="fas fa-chevron-left" aria-hidden="true"></i>
+               </button>
+               <span>Página 1 de 1</span>
+               <button class="btn-pagina" aria-label="Página siguiente" disabled>
+                   <i class="fas fa-chevron-right" aria-hidden="true"></i>
+               </button>
+           </div>         
+       </section>
+  
+       <!-- Modal de detalles de estudiante -->
+       <div id="modal-detalle" class="modal">
+         <div class="modal-contenido">
+             <div class="modal-header">
+                 <h3>Detalle de Asistencia: <span id="student-detail-name"></span></h3>
+                 <button class="btn-cerrar" id="btn-cerrar-modal"><i class="fas fa-times"></i></button>
+             </div>
+             <div class="modal-body">
+                 <div class="student-stats">
+                     <div class="stat-item">
+                         <span class="stat-label">Total de clases:</span>
+                         <span class="stat-value">40</span>
+                     </div>
+                     <div class="stat-item">
+                         <span class="stat-label">Asistencias:</span>
+                         <span class="stat-value">36 (90%)</span>
+                     </div>
+                     <div class="stat-item">
+                         <span class="stat-label">Inasistencias:</span>
+                         <span class="stat-value">4 (10%)</span>
+                     </div>
+                     <div class="stat-item">
+                         <span class="stat-label">Justificados:</span>
+                         <span class="stat-value">3 (7.5%)</span>
+                     </div>
+                 </div>
+                 
+                 <div class="detail-chart-container">
+                     <h4>Historial de asistencia</h4>
+                     <div class="detail-chart-placeholder">
+                         <!-- Aquí iría un gráfico detallado del estudiante -->
+                     </div>
+                 </div>
+                 
+                 <div class="attendance-history">
+                     <h4>Registro de inasistencias</h4>
+                     <table class="detail-table">
+                         <thead>
+                             <tr>
+                                 <th>Fecha</th>
+                                 <th>Estado</th>
+                                 <th>Observación</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             <tr>
+                                 <td>15/01/2025</td>
+                                 <td><span class="badge inasistencia">Inasistencia</span></td>
+                                 <td>Enfermedad</td>
+                             </tr>
+                             <tr>
+                                 <td>02/02/2025</td>
+                                 <td><span class="badge justificado">Justificado</span></td>
+                                 <td>Cita médica</td>
+                             </tr>
+                             <tr>
+                                 <td>18/02/2025</td>
+                                 <td><span class="badge justificado">Justificado</span></td>
+                                 <td>Viaje familiar</td>
+                             </tr>
+                             <tr>
+                                 <td>25/02/2025</td>
+                                 <td><span class="badge inasistencia">Inasistencia</span></td>
+                                 <td>Sin justificación</td>
+                             </tr>
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
+             <div class="form-acciones">                              
+                 <button type="button" class="btn-exportar"><i class="fas fa-file-export"></i> Exportar reporte</button>
+                 <button type="button" class="btn-cerrar">Cerrar</button>                              
+             </div>
+         </div>         
+       </div>
+
+       <!-- Notificación -->
+       <div class="notification" id="notification">
+           <i class="fas fa-check-circle"></i>
+           <span id="notification-message">Reporte generado con éxito</span>
+       </div>
+  </main>
+  </div>
+     <script src="../../scripts/docente/sidebar.js"></script>
+     <script>
+        // Script básico para la funcionalidad de la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Manejo de las tarjetas de reporte
+            const reportCards = document.querySelectorAll('.report-card');
+            reportCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    reportCards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    // Aquí se cambiaría el contenido según el tipo de reporte
+                });
+            });
+            
+            // Modal de detalles
+            const btnDetalles = document.querySelectorAll('.btn-detalles

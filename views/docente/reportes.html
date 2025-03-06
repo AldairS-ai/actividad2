@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infojis</title>
+    <link rel="stylesheet" href="../../styles/docentes/estilos.css">
+    <link rel="stylesheet" href="../../styles/docente/main.css">
+    <link rel="stylesheet" href="../../styles/components/table.css">
+    <link rel="stylesheet" href="../../styles/components/filters.css">
+    <link rel="stylesheet" href="../../styles/components/modal.css">
+    <link rel="stylesheet" href="../../styles/components/notifications.css">  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos específicos para el módulo de reportes */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card-stats {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .card-stats-title {
+            font-size: 16px;
+            color: #666666;
+            margin-bottom: 5px;
+        }
+        
+        .card-stats-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333333;
+            margin-bottom: 5px;
+        }
+        
+        .card-stats-info {
+            font-size: 14px;
+            color: #666666;
+        }
+        
+        .card-stats-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .icon-asistencia {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+        
+        .icon-inasistencia {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+        
+        .icon-justificacion {
+            background-color: rgba(255, 150, 0, 0.1);
+            color: #ff8c00;
+        }
+        
+        .icon-estudiantes {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-value {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .progress-asistencia {
+            background-color: #27ae60;
+        }
+        
+        .progress-inasistencia {
+            background-color: #e74c3c;
+        }
+        
+        .progress-justificacion {
+            background-color: #ff8c00;
+        }
+        
+        .progress-estudiantes {
+            background-color: #3498db;
+        }
+        
+        .chart-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333333;
+        }
+        
+        .chart-period {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chart-period select {
+            padding: 8px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+        }
+        
+        .chart-content {
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Simulación de gráficos para el prototipo */
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #666666;
+            font-style: italic;
+        }
+        
+        /* Tabla de top estudiantes */
+        .table-top-students th, .table-top-students td {
+            text-align: center;
+        }
+        
+        .table-top-students td:first-child,
+        .table-top-students th:first-child {
+            text-align: left;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .badge-asistencia {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+        
+        .badge-inasistencia {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+        
+        .badge-justificado {
+            background-color: rgba(255, 150, 0, 0.1);
+            color: #ff8c00;
+        }
+        
+        /* Estilos para reportes exportables */
+        .report-types {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .report-type {
+            flex: 1;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 10px;
+            border: 2px solid #f1f1f1;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .report-type:hover, .report-type.active {
+            border-color: #ff6600;
+            background-color: #fff6f0;
+        }
+        
+        .report-type i {
+            font-size: 24px;
+            color: #ff6600;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .report-type h4 {
+            margin-bottom: 5px;
+            color: #333333;
+        }
+        
+        .report-type p {
+            font-size: 14px;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo-container">
+            <span class="logo">>_<</span>
+            <h1>Info<span class="logo">jis</span></h1>        
+        </div>
+        <ul class="nav-menu">
+          <li><a href="inicio.html" class="nav-link"><i class="fas fa-home"></i> Inicio</a></li>        
+          <li><a href="asistencias.html" class="nav-link"><i class="fas fa-user-check"></i> Asistencias</a></li>
+          <li><a href="calificaciones.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Calificaciones</a></li>
+          <li><a href="observaciones.html" class="nav-link"><i class="fas fa-comment-dots"></i> Observaciones</a></li>        
+          <li><a href="reportes.html" class="nav-link active"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+          <li><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i> Configuración</a></li>        
+          <div class="sidebar-footer">
+              <li><a href="../../index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Salir</a></li>       
+          </div>
+      </ul>
+    </div>
+    
+    <!-- Overlay para móviles -->
+    <div class="sidebar-overlay"></div>
+    
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <button class="header-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-profile">
+                <img src="../../imagenes/perfil-foto.jpg" alt="Foto de perfil" class="user-avatar">
+                <div>
+                    <span class="user-name">Ana García</span>
+                    <span class="user-role">Coordinadora</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filtros -->
+        <div class="filter">
+            <div class="filter-content">
+                <label>
+                    <span>Curso</span>
+                    <select>
+                        <option value="">Todos los cursos</option>
+                        <option value="1A">1° Año A</option>
+                        <option value="1B">1° Año B</option>
+                        <option value="2A">2° Año A</option>
+                        <option value="2B">2° Año B</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Período</span>
+                    <select>
+                        <option value="trimestre1">1er Trimestre</option>
+                        <option value="trimestre2">2do Trimestre</option>
+                        <option value="trimestre3">3er Trimestre</option>
+                        <option value="anual">Anual</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Desde</span>
+                    <input type="date" value="2023-03-01">
+                </label>
+                <label>
+                    <span>Hasta</span>
+                    <input type="date" value="2023-06-30">
+                </label>
+                <button class="btn-filtrar">
+                    <i class="fas fa-filter"></i>
+                    Filtrar
+                </button>
+            </div>
+        </div>
+        
+        <!-- Tarjetas estadísticas -->
+        <div class="cards-container">
+            <div class="card-stats">
+                <div class="card-stats-header">
+                    <div>
+                        <div class="card-stats-title">Asistencia</div>
+                        <div class="card-stats-number">85.7%</div>
+                        <div class="card-stats-info">+2.5% vs. período anterior</div>
+                    </div>
+                    <div class="card-stats-icon icon-asistencia">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value progress-asistencia" style="width: 85.7%"></div>
+                </div>
+            </div>
+            
+            <div class="card-stats">
+                <div class="card-stats-header">
+                    <div>
+                        <div class="card-stats-title">Inasistencias</div>
+                        <div class="card-stats-number">9.3%</div>
+                        <div class="card-stats-info">-1.2% vs. período anterior</div>
+                    </div>
+                    <div class="card-stats-icon icon-inasistencia">
+                        <i class="fas fa-times"></i>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value progress-inasistencia" style="width: 9.3%"></div>
+                </div>
+            </div>
+            
+            <div class="card-stats">
+                <div class="card-stats-header">
+                    <div>
+                        <div class="card-stats-title">Justificaciones</div>
+                        <div class="card-stats-number">5.0%</div>
+                        <div class="card-stats-info">-1.3% vs. período anterior</div>
+                    </div>
+                    <div class="card-stats-icon icon-justificacion">
+                        <i class="fas fa-file-medical"></i>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value progress-justificacion" style="width: 5%"></div>
+                </div>
+            </div>
+            
+            <div class="card-stats">
+                <div class="card-stats-header">
+                    <div>
+                        <div class="card-stats-title">Total Estudiantes</div>
+                        <div class="card-stats-number">248</div>
+                        <div class="card-stats-info">+12 estudiantes nuevos</div>
+                    </div>
+                    <div class="card-stats-icon icon-estudiantes">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value progress-estudiantes" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gráficos -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3 class="chart-title">Evolución de Asistencia por Semana</h3>
+                <div class="chart-period">
+                    <select>
+                        <option value="semanal">Semanal</option>
+                        <option value="mensual">Mensual</option>
+                        <option value="trimestral">Trimestral</option>
+                    </select>
+                </div>
+            </div>
+            <div class="chart-content">
+                <div class="chart-placeholder">
+                    <i class="fas fa-chart-line fa-3x"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gráficos en fila -->
+        <div class="cards-container">
+            <div class="chart-container" style="margin-bottom: 0;">
+                <div class="chart-header">
+                    <h3 class="chart-title">Asistencia por Curso</h3>
+                </div>
+                <div class="chart-content" style="height: 250px;">
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-bar fa-3x"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-container" style="margin-bottom: 0;">
+                <div class="chart-header">
+                    <h3 class="chart-title">Motivos de Inasistencia</h3>
+                </div>
+                <div class="chart-content" style="height: 250px;">
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-pie fa-3x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Top estudiantes -->
+        <div class="table-container" style="margin-top: 30px;">
+            <div class="table-header">
+                <div class="table-info">
+                    <h3>Top 10 - Estudiantes con Más Inasistencias</h3>
+                    <div class="table-details">
+                        <span><i class="fas fa-calendar"></i> Período: 1er Trimestre</span>
+                        <span><i class="fas fa-filter"></i> Todos los cursos</span>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table-body table-top-students">
+                    <thead>
+                        <tr>
+                            <th>Estudiante</th>
+                            <th>Curso</th>
+                            <th>Asistencias</th>
+                            <th>Inasistencias</th>
+                            <th>Justificadas</th>
+                            <th>% Asistencia</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <img src="/api/placeholder/35/35" alt="Avatar" class="student-avatar">
+                                    <div class="student-info">
+                                        <div class="student-name">Martín Rodríguez</div>
+                                        <div class="student-id">ID: 2023-0042</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>1° Año A</td>
+                            <td>35</td>
+                            <td>12</td>
+                            <td>3</td>
+                            <td>74.5%</td>
+                            <td><span class="badge badge-inasistencia">Riesgo</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <img src="/api/placeholder/35/35" alt="Avatar" class="student-avatar">
+                                    <div class="student-info">
+                                        <div class="student-name">Lucía Martínez</div>
+                                        <div class="student-id">ID: 2023-0078</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>2° Año B</td>
+                            <td>38</td>
+                            <td>10</td>
+                            <td>6</td>
+                            <td>79.2%</td>
+                            <td><span class="badge badge-justificado">Atención</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <img src="/api/placeholder/35/35" alt="Avatar" class="student-avatar">
+                                    <div class="student-info">
+                                        <div class="student-name">Gabriel López</div>
+                                        <div class="student-id">ID: 2023-0105</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>1° Año B</td>
+                            <td>40</td>
+                            <td>9</td>
+                            <td>5</td>
+                            <td>81.6%</td>
+                            <td><span class="badge badge-justificado">Atención</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <img src="/api/placeholder/35/35" alt="Avatar" class="student-avatar">
+                                    <div class="student-info">
+                                        <div class="student-name">Valentina Sánchez</div>
+                                        <div class="student-id">ID: 2023-0056</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>2° Año A</td>
+                            <td>42</td>
+                            <td>8</td>
+                            <td>4</td>
+                            <td>84.0%</td>
+                            <td><span class="badge badge-asistencia">Regular</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <img src="/api/placeholder/35/35" alt="Avatar" class="student-avatar">
+                                    <div class="student-info">
+                                        <div class="student-name">Mateo González</div>
+                                        <div class="student-id">ID: 2023-0089</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>1° Año A</td>
+                            <td>43</td>
+                            <td>7</td>
+                            <td>2</td>
+                            <td>86.0%</td>
+                            <td><span class="badge badge-asistencia">Regular</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tabla-paginacion">
+                <button class="btn-pagina" disabled><i class="fas fa-angle-left"></i></button>
+                <button class="btn-pagina" style="background-color: #ff6600; color: white;">1</button>
+                <button class="btn-pagina">2</button>
+                <button class="btn-pagina"><i class="fas fa-angle-right"></i></button>
+            </div>
+        </div>
+        
+        <!-- Exportar reportes -->
+        <div class="table-container" style="margin-top: 30px;">
+            <div class="table-header">
+                <div class="table-info">
+                    <h3>Exportar Reportes</h3>
+                    <div class="table-details">
+                        <span><i class="fas fa-info-circle"></i> Selecciona el tipo de reporte que deseas generar</span>
+                    </div>
+                </div>
+                <div class="action">
+                    <button class="btn-exportar">
+                        <i class="fas fa-download"></i>
+                        Exportar
+                    </button>
+                </div>
+            </div>
+            
+            <div style="padding: 20px;">
+                <div class="report-types">
+                    <div class="report-type active">
+                        <i class="fas fa-file-excel"></i>
+                        <h4>Asistencia General</h4>
+                        <p>Resumen de asistencia por curso y estudiante</p>
+                    </div>
+                    <div class="report-type">
+                        <i class="fas fa-file-pdf"></i>
+                        <h4>Estudiantes en Riesgo</h4>
+                        <p>Listado de estudiantes con alto índice de inasistencias</p>
+                    </div>
+                    <div class="report-type">
+                        <i class="fas fa-file-csv"></i>
+                        <h4>Tendencias</h4>
+                        <p>Evolución de la asistencia en el tiempo</p>
+                    </div>
+                    <div class="report-type">
+                        <i class="fas fa-file-word"></i>
+                        <h4>Reporte Completo</h4>
+                        <p>Informe detallado de asistencia con análisis</p>
+                    </div>
+                </div>
+                
+                <div class="filter-content">
+                    <label>
+                        <span>Formato</span>
+                        <select>
+                            <option value="excel">Excel (.xlsx)</option>
+                            <option value="pdf">PDF (.pdf)</option>
+                            <option value="csv">CSV (.csv)</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>Incluir</span>
+                        <select>
+                            <option value="todos">Todos los datos</option>
+                            <option value="resumen">Solo resumen</option>
+                            <option value="graficos">Datos y gráficos</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts (para prototipo) -->
+    <script>
+        // Toggle para el menú en móviles
+        document.querySelector('.header-menu-toggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('active');
+            document.querySelector('.sidebar-overlay').classList.toggle('active');
+        });
+        
+        // Cerrar sidebar al hacer clic en overlay
+        document.querySelector('.sidebar-overlay').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.remove('active');
+            document.querySelector('.sidebar-overlay').classList.remove('active');
+        });
+        
+        // Selección de tipo de reporte
+        document.querySelectorAll('.report-type').forEach(function(reportType) {
+            reportType.addEventListener('click', function() {
+                document.querySelectorAll('.report-type').forEach(function(el) {
+                    el.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
